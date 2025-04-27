@@ -1,0 +1,47 @@
+mat-toolbar{
+    position:fixed;
+    top:0;
+    z-index: 2;
+  }
+  
+  .maintoolbar{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+mat-sidenav-container {
+    height:100%;
+}
+
+.white-toolbar {
+  background-color: white !important;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h2 {padding: 1rem;}
+
+mat-sidenav-content{
+    padding-top: 3.5rem;
+    @media screen and (min-width: 600px) {
+        padding-top: 4rem;
+    }
+}
+
+mat-sidenav {
+    padding-top: 3.5rem;
+    @media screen and (min-width: 600px) {
+      padding-top: 4rem;
+    }
+
+    .entry{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding:0.75rem;
+    }
+  }
+  .menu-label {
+    font-size: 14px; /* o el tamaño que prefieras */
+  }

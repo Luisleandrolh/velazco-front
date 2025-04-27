@@ -1,0 +1,33 @@
+.container {
+  padding: 2rem;
+}
+
+.center {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.logo-container img {
+  width: 100px;
+  height: auto;
+  margin-top: 1rem;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.dashboard-card mat-icon {
+  font-size: 32px;
+  margin-right: 8px;
+  color: #8e24aa; /* un toque pastel elegante */
+}
+
+mat-card h3 {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+}

@@ -1,0 +1,75 @@
+<mat-toolbar class="white-toolbar">
+  <div class="maintoolbar">
+    <button mat-icon-button aria-label="Menu icon" (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="mainheader">
+      <app-header></app-header>
+    </div>
+  </div>
+</mat-toolbar>
+
+<mat-sidenav-container autosize>
+  <mat-sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="isMobile ? 'false' : 'true'">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/">
+        <span class="entry">
+          <mat-icon>home</mat-icon>
+          <span class="menu-label">Dashboard</span>
+        </span>
+      </a>
+
+      <a mat-list-item routerLink="/inventario">
+        <span class="entry">
+          <mat-icon>cake</mat-icon>
+          <span class="menu-label">Inventario</span>
+        </span>
+      </a>
+
+      <a mat-list-item routerLink="/pedidos">
+        <span class="entry">
+          <mat-icon>point_of_sale</mat-icon>
+          <span class="menu-label">Pedidos en tienda</span>
+        </span>
+      </a>
+
+      <a mat-list-item routerLink="/caja">
+        <span class="entry">
+          <mat-icon>receipt_long</mat-icon>
+          <span class="menu-label">Caja</span>
+        </span>
+      </a>
+
+      <a mat-list-item routerLink="/entregas">
+        <span class="entry">
+          <mat-icon>delivery_dining</mat-icon>
+          <span class="menu-label">Entregas</span>
+        </span>
+      </a>
+
+      <a mat-list-item routerLink="/produccion">
+        <span class="entry">
+          <mat-icon>bar_chart</mat-icon>
+          <span class="menu-label">Producción</span>
+        </span>
+      </a>
+
+      <a mat-list-item routerLink="/ordenes-produccion">
+        <span class="entry">
+          <mat-icon>assignment</mat-icon>
+          <span class="menu-label">Órdenes de Producción</span>
+        </span>
+      </a>
+
+      <a mat-list-item routerLink="/usuarios">
+        <span class="entry">
+          <mat-icon>group</mat-icon>
+          <span class="menu-label">Usuarios y Roles</span>
+        </span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

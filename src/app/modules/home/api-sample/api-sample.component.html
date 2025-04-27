@@ -1,0 +1,19 @@
+<div class="container">
+    <mat-form-field appearance="fill">
+        <mat-label>{{'pages.api.search' | translate }}</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input type="text" matInput placeholder="moon" (keyup.enter)="getImages()" [(ngModel)]="inputText">        
+    </mat-form-field>
+
+    <mat-card *ngFor="let item of resultItems" class="result-card">
+        <mat-card-header>
+            <mat-card-title>{{getDataTitle(item)}}</mat-card-title>
+          </mat-card-header>
+        <img mat-card-image [src]="getImageLinkUri(item)" alt="">
+        <mat-card-content>
+            <p>
+            {{getDataDescription(item)}}
+            </p>
+        </mat-card-content>
+    </mat-card>
+</div>

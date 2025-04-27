@@ -1,0 +1,16 @@
+.mainheader {
+  width: 100%;
+  display: flex;
+  align-items: center; /* alinea verticalmente */
+  gap: 6px; /* espacio entre ícono y texto */
+}
+
+.header-icon {
+  font-size: 24px;
+}
+
+.header-title {
+  font-size: 18px;
+  margin: 0;
+  padding-top: 0; /* removemos el padding excesivo */
+}
