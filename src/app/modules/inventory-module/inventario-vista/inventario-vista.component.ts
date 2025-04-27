@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./inventario-vista.component.css']
 })
 export class InventarioVistaComponent {
-
+  
 }

@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SalesModuleRoutingModule } from './sales-module-routing.module';
+import { CajaVistaComponent } from './caja-vista/caja-vista.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    CajaVistaComponent
+  ],
   imports: [
     CommonModule,
     SalesModuleRoutingModule

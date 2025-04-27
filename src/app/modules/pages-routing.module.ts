@@ -19,6 +19,41 @@ const routes: Routes = [
       import('./inventory-module/inventory-module.module').then((m) => m.InventoryModuleModule),
     //canActivate: [SessionGuard]
   },
+
+  {
+    path: 'sales-module',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./sales-module/sales-module.module').then((m) => m.SalesModuleModule),
+    //canActivate: [SessionGuard]
+  },
+
+  {
+    path: 'dashboard-module',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./dashboard-module/dashboard-module.module').then((m) => m.DashboardModuleModule),
+    //canActivate: [SessionGuard]
+  },
+
+  {
+    path: 'orders-modules',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./orders-module/orders-module-routing.module').then((m) => m.OrdersModuleRoutingModule),
+    //canActivate: [SessionGuard]
+  },
+
+  
+
+  
+
+
+
+
+
+
+
   {
     path: 'home',
     component: PagesComponent,

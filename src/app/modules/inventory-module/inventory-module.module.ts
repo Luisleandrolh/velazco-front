@@ -14,4 +14,8 @@ import { InventarioVistaComponent } from './inventario-vista/inventario-vista.co
     InventoryModuleRoutingModule
   ]
 })
-export class InventoryModuleModule { }
+export class InventoryModuleModule {
+
+
+  
+ }

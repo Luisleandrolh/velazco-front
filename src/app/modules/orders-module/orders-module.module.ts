@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { OrdersModuleRoutingModule } from './orders-module-routing.module';
+import { PedidosVistaComponent } from './pedidos-vista/pedidos-vista.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    PedidosVistaComponent
+  ],
   imports: [
     CommonModule,
     OrdersModuleRoutingModule
