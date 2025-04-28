@@ -37,10 +37,10 @@ const routes: Routes = [
   },
 
   {
-    path: 'orders-modules',
+    path: 'orders-module',
     component: PagesComponent,
     loadChildren: () =>
-      import('./orders-module/orders-module-routing.module').then((m) => m.OrdersModuleRoutingModule),
+      import('./orders-module/orders-module.module').then((m) => m.OrdersModuleModule),
     //canActivate: [SessionGuard]
   },
 
