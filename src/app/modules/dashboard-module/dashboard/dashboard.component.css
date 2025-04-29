@@ -1,0 +1,156 @@
+.dashboard-container {
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  
+  /* Grid de tarjetas métricas */
+  .card-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  /* Grid de gráficos */
+  .chart-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilos base para tarjetas */
+  .metric-card, .chart-card, .table-card {
+    height: 100%;
+    min-height: 200px; /* Altura mínima consistente */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Contenido de tarjetas */
+  mat-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Valores métricos */
+  .metric-value {
+    font-size: clamp(1.5rem, 3vw, 2rem); /* Tamaño responsivo */
+    font-weight: bold;
+    margin: 8px 0;
+  }
+  
+  /* Subtítulos */
+  .metric-subtitle {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.85rem;
+  }
+  
+  /* Indicadores de cambio */
+  .metric-change {
+    font-size: 0.85rem;
+  }
+  
+  .positive-change {
+    color: #4CAF50;
+  }
+  
+  .negative-change {
+    color: #F44336;
+  }
+  
+  /* Contenedores de gráficos */
+  .chart-container {
+    position: relative;
+    flex: 1;
+    min-height: 200px;
+  }
+  
+  /* Gráfico circular pequeño */
+  .small-chart-container {
+    position: relative;
+    width: 100%;
+    height: 180px; /* Altura reducida */
+    margin: 0 auto;
+  }
+  
+  /* Leyenda de métodos de pago */
+  .payment-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+    font-size: clamp(0.7rem, 2vw, 0.8rem); /* Tamaño responsivo */
+  }
+  
+  .payment-legend .cash { color: #4CAF50; }
+  .payment-legend .card { color: #2196F3; }
+  .payment-legend .transfer { color: #FF9800; }
+  .payment-legend .others { color: #9E9E9E; }
+  
+  /* Tabla de stock */
+  .stock-table {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .stock-table .critical {
+    color: #F44336;
+    font-weight: bold;
+  }
+  
+  /* Mejoras de responsive design */
+  @media (max-width: 992px) {
+    .card-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .chart-row {
+      grid-template-columns: 1fr;
+    }
+    
+    .small-chart-container {
+      height: 220px; /* Más alto en móviles para mejor legibilidad */
+      max-width: 280px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .dashboard-container {
+      padding: 8px;
+    }
+    
+    .card-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    
+    .metric-card {
+      min-height: auto;
+    }
+    
+    .metric-value {
+      font-size: 1.8rem;
+    }
+    
+    .payment-legend {
+      gap: 8px;
+      font-size: 0.75rem;
+    }
+  }
+  
+  /* Para pantallas muy pequeñas */
+  @media (max-width: 400px) {
+    .small-chart-container {
+      height: 180px;
+      max-width: 240px;
+    }
+    
+    .payment-legend {
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+  }
