@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit {
 
   // Configuración gráfico de métodos de pago
   public paymentMethodsChartData: ChartData<'doughnut'> = {
-    labels: ['Efectivo', 'Tarjeta', 'Transferencia', 'Otros'],
+    labels: ['Efectivo', 'Tarjeta', 'Yape', 'Plin'],
     datasets: [{
       data: [40, 35, 15, 10],
       backgroundColor: [
