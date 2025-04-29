@@ -20,6 +20,7 @@ interface Producto {
 export class InventarioVistaComponent {
   searchTerm: string = '';
   showModal: boolean = false;
+  isEditing: boolean = false;
   categorias: string[] = ['Tortas', 'Pasteles', 'Galletas', 'Cupcakes', 'Panes'];
   
   nuevoProducto: Producto = {
@@ -47,12 +48,21 @@ export class InventarioVistaComponent {
     );
   }
 
-  openModal(): void {
+    openModal(editing: boolean = false, producto?: Producto): void {
+    this.isEditing = editing;
     this.showModal = true;
+    
+    if (editing && producto) {
+      // Copia profunda del producto a editar
+      this.nuevoProducto = JSON.parse(JSON.stringify(producto));
+    } else {
+      this.resetNuevoProducto();
+    }
   }
 
   closeModal(): void {
     this.showModal = false;
+    this.isEditing = false;
     this.resetNuevoProducto();
   }
 
@@ -64,13 +74,30 @@ export class InventarioVistaComponent {
     this.closeModal();
   }
 
+  guardarProducto(): void {
+    if (this.isEditing) {
+      const index = this.productos.findIndex(p => p.id === this.nuevoProducto.id);
+      
+      if (index !== -1) {
+        this.productos[index] = {...this.nuevoProducto};
+      }
+    } else {
+      this.nuevoProducto.id = this.productos.length > 0 
+        ? Math.max(...this.productos.map(p => p.id)) + 1 
+        : 1;
+      this.productos.push({...this.nuevoProducto});
+    }
+    this.closeModal();
+  }
+
   editarProducto(producto: Producto): void {
-    // Implementar lógica de edición
-    console.log('Editar producto:', producto);
+    this.openModal(true, producto);
   }
 
   eliminarProducto(id: number): void {
-    this.productos = this.productos.filter(p => p.id !== id);
+    if (confirm('¿Estás seguro de eliminar este producto?')) {
+      this.productos = this.productos.filter(p => p.id !== id);
+    }
   }
 
   toggleEstado(producto: Producto): void {

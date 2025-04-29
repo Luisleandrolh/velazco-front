@@ -308,3 +308,45 @@ table.table tbody tr:hover,
 .save-btn:hover {
   background-color: #3e8e41;
 }
+
+
+/* Estilos para el modal en modo edición */
+.modal-container.editing {
+  border-top: 4px solid #3498db;
+}
+
+/* Estilos para los botones de acción */
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0 5px;
+  padding: 5px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.action-btn.edit {
+  color: #3498db;
+}
+
+.action-btn.edit:hover {
+  background-color: #ebf5fb;
+}
+
+.action-btn.delete {
+  color: #e74c3c;
+}
+
+.action-btn.delete:hover {
+  background-color: #fdedec;
+}
+
+.action-btn.status {
+  color: #2ecc71;
+}
+
+.action-btn.status:hover {
+  background-color: #e8f8f5;
+}
