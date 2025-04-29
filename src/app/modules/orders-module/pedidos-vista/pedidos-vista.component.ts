@@ -6,97 +6,92 @@ import { Component } from '@angular/core';
   styleUrls: ['./pedidos-vista.component.css']
 })
 export class PedidosVistaComponent {
-  searchText: string = '';
-  selectedCategory: string = 'Todos';
-  isCartOpen: boolean = false;
-
-  cart: { product: any, quantity: number }[] = [];
-
-  products = [
+  productos = [
     {
-      name: 'Torta de Chocolate',
-      description: 'Torta de chocolate con ganache',
-      price: 25.99,
-      category: 'Tortas',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWdg0g8LLBW7KmPSeOqgxktDuU5J-RvEwKfw&s'
+      nombre: 'Torta de Chocolate',
+      descripcion: 'Torta de chocolate con ganache',
+      categoria: 'Tortas',
+      precio: 25.99,
+      imagen: 'https://st4.depositphotos.com/10614052/25239/i/450/depositphotos_252391082-stock-photo-sweet-chocolate-cake-on-wooden.jpg'
     },
     {
-      name: 'Cheesecake',
-      description: 'Cheesecake con frutos rojos',
-      price: 28.50,
-      category: 'Pasteles',
-      image: 'https://images.immediate.co.uk/production/volatile/sites/30/2022/10/No-bake-raspberry-cheesecake-cc1ee62.jpg?quality=90&resize=556,505'
+      nombre: 'Cheesecake',
+      descripcion: 'Cheesecake con frutos rojos',
+      categoria: 'Pasteles',
+      precio: 28.50,
+      imagen: 'https://media.istockphoto.com/id/1167344045/photo/cheesecake-slice-new-york-style-classical-cheese-cake.jpg?s=612x612&w=0&k=20&c=y3eh7cFEefAYxB_5Ow2n1OJZML_PqFOdnB5Z9nvXdgw='
     },
     {
-      name: 'Galletas de Avena',
-      description: 'Galletas de avena con pasas',
-      price: 1.50,
-      category: 'Galletas',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXpwaQVLWtmY-SxO00IxJYV9y0JPrQs4jSRw&s'
+      nombre: 'Galletas de Avena',
+      descripcion: 'Galletas de avena con pasas',
+      categoria: 'Galletas',
+      precio: 1.50,
+      imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTciUHUk40ozv914817AVy9jO23fyTXGLnshg&s'
     },
     {
-      name: 'Cupcakes de Vainilla',
-      description: 'Cupcakes de vainilla con frosting',
-      price: 3.25,
-      category: 'Cupcakes',
-      image: 'https://www.clarin.com/2021/04/29/9lAb2baoa_1200x0__1.jpg'
-    },
+      nombre: 'Cupcakes de Vainilla',
+      descripcion: 'Cupcakes de vainilla con frosting',
+      categoria: 'Cupcakes',
+      precio: 3.25,
+      imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDUlo9wibjLp10nBwM2EiJGfiKTdItEamrAQ&s'
+    }
   ];
 
-  addToCart(product: any) {
-    const found = this.cart.find(item => item.product.name === product.name);
-    if (found) {
-      found.quantity++;
-    } else {
-      this.cart.push({ product, quantity: 1 });
-    }
-  }
+  textoBusqueda: string = '';
+  categoriaSeleccionada: string = 'Todos';
+  mostrarModal: boolean = false;
 
-  filterCategory(category: string) {
-    this.selectedCategory = category;
-  }
+  carrito: { producto: any; cantidad: number }[] = [];
 
-  filteredProducts() {
-    return this.products.filter(product => {
-      const matchesCategory = this.selectedCategory === 'Todos' || product.category === this.selectedCategory;
-      const matchesSearch = product.name.toLowerCase().includes(this.searchText.toLowerCase());
-      return matchesCategory && matchesSearch;
+  get productosFiltrados() {
+    return this.productos.filter(producto => {
+      const coincideTexto =
+        producto.nombre.toLowerCase().includes(this.textoBusqueda.toLowerCase()) ||
+        producto.descripcion.toLowerCase().includes(this.textoBusqueda.toLowerCase());
+
+      const coincideCategoria =
+        this.categoriaSeleccionada === 'Todos' ||
+        producto.categoria === this.categoriaSeleccionada;
+
+      return coincideTexto && coincideCategoria;
     });
   }
 
-  increaseQuantity(index: number) {
-    this.cart[index].quantity++;
+  cambiarCategoria(categoria: string) {
+    this.categoriaSeleccionada = categoria;
   }
 
-  decreaseQuantity(index: number) {
-    if (this.cart[index].quantity > 1) {
-      this.cart[index].quantity--;
+  agregarAlCarrito(producto: any) {
+    const itemExistente = this.carrito.find(item => item.producto.nombre === producto.nombre);
+    if (itemExistente) {
+      itemExistente.cantidad += 1;
     } else {
-      this.cart.splice(index, 1);
+      this.carrito.push({ producto, cantidad: 1 });
     }
   }
 
-  removeItem(index: number) {
-    this.cart.splice(index, 1);
+  quitarDelCarrito(item: any) {
+    const index = this.carrito.indexOf(item);
+    if (index > -1) {
+      this.carrito.splice(index, 1);
+    }
   }
 
-  clearCart() {
-    this.cart = [];
+  vaciarCarrito() {
+    this.carrito = [];
   }
 
-  getTotal() {
-    return this.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  totalCarrito(): number {
+    return this.carrito.reduce((total, item) => total + item.producto.precio * item.cantidad, 0);
   }
 
-  getTotalItems() {
-    return this.cart.reduce((sum, item) => sum + item.quantity, 0);
+  obtenerCantidadTotal(): number {
+    return this.carrito.reduce((acc, item) => acc + item.cantidad, 0);
   }
 
-  openCart() {
-    this.isCartOpen = true;
-  }
-
-  closeCart() {
-    this.isCartOpen = false;
+  finalizarCompra() {
+    alert('¡Gracias por tu compra!');
+    this.vaciarCarrito();
+    this.mostrarModal = false;
   }
 }
