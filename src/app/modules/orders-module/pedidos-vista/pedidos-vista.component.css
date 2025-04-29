@@ -1,0 +1,25 @@
+.card-img-top {
+    background-color: #f8f9fa;
+  }
+  
+  .badge {
+    font-size: 0.8rem;
+  }
+  .product-image {
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  
+  .modal-backdrop {
+    z-index: 1040;
+  }
+  
+  .modal {
+    z-index: 1050;
+  }
+  
+  .modal-backdrop.fade.show {
+    opacity: 0.5;
+  }
+  
