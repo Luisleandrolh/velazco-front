@@ -1,1 +1,52 @@
-<p>caja-vista works!</p>
+<div class="caja-container">
+    <div class="header-container">
+      <h1>Caja</h1>
+  
+      <!-- Buscador debajo del h1 -->
+      <div class="search-container mt-3">
+        <input type="text" placeholder="Buscar pedidos..." class="search-input" />
+      </div>
+    </div>
+  
+    <!-- Botón Filtrar a la derecha -->
+    <div class="d-flex justify-content-end">
+        <button class="btn custom-green btn-sm px-3 py-2">Filtrar</button>
+
+    </div>
+  
+    <!-- Tabs de filtro -->
+    <ul class="nav nav-tabs mt-4">
+      <li class="nav-item">
+        <a class="nav-link active" href="#">Pendientes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Pagados</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Todos</a>
+      </li>
+    </ul>
+  
+    <div class="mt-4">
+      <h2>Pedidos Pendientes de Pago</h2>
+      <div class="subtitle-container">
+        <p class="subtitle">Gestione los pagos de los pedidos realizados en tienda</p>
+      </div>
+  
+      <div *ngFor="let pedido of pedidos" class="card mb-3 shadow-sm">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="card-title mb-1 fw-bold">{{ pedido.codigo }}</h4>
+            <p class="mb-4">{{ pedido.cliente }}</p>
+            <span class="badge badge-pendiente">Pendiente</span>
+          </div>
+          <div class="text-end">
+            <h4 class="text-dark">${{ pedido.total.toFixed(2) }}</h4>
+            <p class="text-muted mb-4">{{ pedido.fecha }} - {{ pedido.hora }}</p>
+            <button class="btn btn-dark btn-sm px-4 py-2">Ver Detalles</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

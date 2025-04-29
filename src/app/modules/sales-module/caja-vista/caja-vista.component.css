@@ -1,0 +1,200 @@
+/* --- Contenedor principal --- */
+.caja-container {
+    padding: 1.4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 1rem;
+    box-sizing: border-box;
+}
+
+/* --- Encabezado --- */
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem; /* Espacio entre los elementos */
+}
+
+.header-container h1 {
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+/* --- Buscador y botón de filtro --- */
+.search-container {
+    margin-top: 1rem; /* Espacio entre el título y el buscador */
+}
+
+.search-input {
+    padding: 0.75rem 1rem;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+/* --- Botón Filtrar --- */
+.d-flex.justify-content-end {
+    margin-top: 1rem; /* Espacio por encima del botón */
+}
+
+.btn-outline-primary {
+    border-color: #3498db;
+    color: #3498db;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #3498db;
+    color: #fff;
+}
+
+/* --- Títulos y Subtítulos --- */
+h2 {
+    color: #34495e;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    margin: 0;
+    font-size: 14px;
+}
+
+.subtitle-container {
+    padding-bottom: 20px;
+}
+
+/* --- Badge de estado pendiente --- */
+.badge-pendiente {
+    background-color: #ffeeba;
+    color: #856404;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 20px;
+}
+
+/* --- NAVIGATION TABS (Mejorado) --- */
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border: none;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: 0;
+}
+
+.nav-tabs .nav-link {
+    background-color: #ffffff;
+    color: #2c3e50;
+    padding: 0.75rem 2rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #ffffff;
+    color: #2c3e50;
+    font-weight: 700;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    border: 2px solid #3498db;
+}
+
+/* --- Tarjetas de pedidos --- */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: #2c3e50;
+}
+
+.text-dark {
+    color: #2c3e50;
+}
+
+.text-muted {
+    color: #7f8c8d;
+}
+
+/* --- Botón "Ver Detalles" --- */
+.btn-dark.btn-sm {
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+}
+
+.custom-green {
+    background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s;
+  }
+  
+  .custom-green:hover {
+    background-color: #218838; /* verde oscuro para hover */
+    border-color: #1e7e34;
+  }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-container {
+        width: 100%;
+        margin-top: 1rem;
+    }
+}
+
+/* --- Mat-divider ajuste (si usas mat-divider) --- */
+.mat-divider {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}

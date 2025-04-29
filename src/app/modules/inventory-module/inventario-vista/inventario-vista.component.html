@@ -19,8 +19,8 @@
   </div>
   
   <div class="table-container">
-    <table class="product-table">
-      <thead>
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
         <tr>
           <th>Nombre</th>
           <th>Categoría</th>
@@ -32,31 +32,40 @@
       </thead>
       <tbody>
         <tr *ngFor="let producto of filteredProducts">
-          <td><strong>{{producto.nombre}}</strong></td>
-          <td>{{producto.categoria}}</td>
-          <td>{{producto.stock}} unidades</td>
-          <td>{{producto.precio | currency:'USD':'symbol':'1.2-2'}}</td>
+          <td><strong>{{ producto.nombre }}</strong></td>
+          <td>{{ producto.categoria }}</td>
+          <td>{{ producto.stock }} unidades</td>
+          <td>{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</td>
           <td>
-            <span [class]="'status ' + producto.estado.toLowerCase()">
-              {{producto.estado}}
+            <span class="status" [ngClass]="{
+                'activo': producto.estado === 'Activo',
+                'inactivo': producto.estado === 'Inactivo'
+              }">
+              {{ producto.estado }}
             </span>
           </td>
           <td class="actions">
-            <button (click)="editarProducto(producto)" class="action-btn edit">
+            <button (click)="editarProducto(producto)" class="action-btn edit" title="Editar">
               <i class="fas fa-edit"></i>
             </button>
-            <button (click)="eliminarProducto(producto.id)" class="action-btn delete">
+            <button (click)="eliminarProducto(producto.id)" class="action-btn delete" title="Eliminar">
               <i class="fas fa-trash"></i>
             </button>
-            <button (click)="toggleEstado(producto)" class="action-btn status">
-              <i class="fas" [class.fa-toggle-on]="producto.estado === 'Activo'" 
-                          [class.fa-toggle-off]="producto.estado === 'Inactivo'"></i>
+            <button (click)="toggleEstado(producto)" class="action-btn status" title="Cambiar Estado">
+              <i class="fas"
+                [ngClass]="{
+                  'fa-toggle-on': producto.estado === 'Activo',
+                  'fa-toggle-off': producto.estado === 'Inactivo'
+                }">
+              </i>
             </button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Modal para agregar producto -->
   <div class="modal-overlay" *ngIf="showModal">

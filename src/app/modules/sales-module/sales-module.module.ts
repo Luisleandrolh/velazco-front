@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 
 import { SalesModuleRoutingModule } from './sales-module-routing.module';
 import { CajaVistaComponent } from './caja-vista/caja-vista.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -11,7 +12,10 @@ import { CajaVistaComponent } from './caja-vista/caja-vista.component';
   ],
   imports: [
     CommonModule,
-    SalesModuleRoutingModule
+    SalesModuleRoutingModule,
+    FormsModule,
+    NgIf
+   
   ]
 })
 export class SalesModuleModule { }

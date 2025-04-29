@@ -14,8 +14,6 @@ interface Producto {
 
 @Component({
   selector: 'app-inventario-vista',
-  standalone: true,
-  imports: [CommonModule, FormsModule, NgIf],
   templateUrl: './inventario-vista.component.html',
   styleUrls: ['./inventario-vista.component.css']
 })

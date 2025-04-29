@@ -25,21 +25,21 @@ export class PedidosVistaComponent {
       description: 'Cheesecake con frutos rojos',
       price: 28.50,
       category: 'Pasteles',
-      image: 'assets/images/cheesecake.jpg'
+      image: 'https://images.immediate.co.uk/production/volatile/sites/30/2022/10/No-bake-raspberry-cheesecake-cc1ee62.jpg?quality=90&resize=556,505'
     },
     {
       name: 'Galletas de Avena',
       description: 'Galletas de avena con pasas',
       price: 1.50,
       category: 'Galletas',
-      image: 'assets/images/galletas-avena.jpg'
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXpwaQVLWtmY-SxO00IxJYV9y0JPrQs4jSRw&s'
     },
     {
       name: 'Cupcakes de Vainilla',
       description: 'Cupcakes de vainilla con frosting',
       price: 3.25,
       category: 'Cupcakes',
-      image: 'assets/images/cupcake-vainilla.jpg'
+      image: 'https://www.clarin.com/2021/04/29/9lAb2baoa_1200x0__1.jpg'
     },
   ];
 
