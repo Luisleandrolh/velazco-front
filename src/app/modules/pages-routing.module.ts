@@ -6,29 +6,7 @@ import { WelcomeComponent } from './home/welcome/welcome.component';
 const routes: Routes = [
 
   {
-    path: 'home',
-    component: PagesComponent,
-    loadChildren: () =>
-      import('./home/home.module').then((m) => m.HomeModule),
-    //canActivate: [SessionGuard]
-  },
-  {
-    path: 'inventario-module',
-    component: PagesComponent,
-    loadChildren: () =>
-      import('./inventory-module/inventory-module.module').then((m) => m.InventoryModuleModule),
-    //canActivate: [SessionGuard]
-  },
-
-  {
-    path: 'sales-module',
-    component: PagesComponent,
-    loadChildren: () =>
-      import('./sales-module/sales-module.module').then((m) => m.SalesModuleModule),
-    //canActivate: [SessionGuard]
-  },
-
-  {
+    //dashboard
     path: 'dashboard-module',
     component: PagesComponent,
     loadChildren: () =>
@@ -36,7 +14,39 @@ const routes: Routes = [
     //canActivate: [SessionGuard]
   },
 
+
   {
+    //entregas
+    path: 'deliveries-module',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./deliveries-module/deliveries-module.module').then((m) => m.DeliveriesModuleModule),
+    //canActivate: [SessionGuard]
+  },
+
+
+  {
+    //inicio
+    path: 'home',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./home/home.module').then((m) => m.HomeModule),
+    //canActivate: [SessionGuard]
+  },
+
+
+  {
+    //inventario
+    path: 'inventario-module',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./inventory-module/inventory-module.module').then((m) => m.InventoryModuleModule),
+    //canActivate: [SessionGuard]
+  },
+
+
+  {
+    //pedidos en tienda
     path: 'orders-module',
     component: PagesComponent,
     loadChildren: () =>
@@ -44,24 +54,47 @@ const routes: Routes = [
     //canActivate: [SessionGuard]
   },
 
-  
 
-  
-
-
-
-
-
+  {
+    //ordenes de produccion
+    path: 'orders-production-module',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./orders-production-module/orders-production-module.module').then((m) => m.OrdersProductionModuleModule),
+    //canActivate: [SessionGuard]
+  },
 
 
   {
-    path: 'home',
+    // produccion
+    path: 'production-module',
     component: PagesComponent,
     loadChildren: () =>
-      import('./home/home.module').then((m) => m.HomeModule),
+      import('./production-module/production-module.module').then((m) => m.ProductionModuleModule),
     //canActivate: [SessionGuard]
   },
- 
+
+
+  {
+    //caja
+    path: 'sales-module',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./sales-module/sales-module.module').then((m) => m.SalesModuleModule),
+    //canActivate: [SessionGuard]
+  },
+
+
+  {
+    //usuarios y roles
+    path: 'users-module',
+    component: PagesComponent,
+    loadChildren: () =>
+      import('./users-module/users-module.module').then((m) => m.UsersModuleModule),
+    //canActivate: [SessionGuard]
+  },
+
+
   {
     path: '**',
     redirectTo: '/home/welcome'

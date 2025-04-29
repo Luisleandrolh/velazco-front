@@ -1,33 +1,58 @@
-.container {
+/* Estilos generales */
+.container-fluid {
   padding: 2rem;
 }
 
-.center {
-  text-align: center;
-  margin-bottom: 1rem;
+/* Estilo para las tarjetas */
+.card {
+  transition: all 0.3s ease;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
-.logo-container img {
-  width: 100px;
-  height: auto;
-  margin-top: 1rem;
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
 }
 
-.dashboard-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
+/* Contenedor de imagen */
+.card-img-container {
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.dashboard-card mat-icon {
-  font-size: 32px;
-  margin-right: 8px;
-  color: #8e24aa; /* un toque pastel elegante */
+.card-img-main {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
 }
 
-mat-card h3 {
-  font-size: 1.8rem;
-  color: #333;
-  margin: 0;
+/* Estilo para los botones */
+.btn {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .card-img-container {
+    height: 200px;
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+  }
+  
+  .card-text {
+    font-size: 1rem !important;
+  }
 }
