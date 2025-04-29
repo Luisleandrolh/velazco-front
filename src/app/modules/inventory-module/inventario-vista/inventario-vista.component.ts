@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { NgIf } from '@angular/common';
 
 interface Producto {
   id: number;
   nombre: string;
   categoria: string;
   stock: number;
+  unidadMedida: string;
   precio: number;
   estado: 'Activo' | 'Inactivo';
 }
@@ -18,85 +18,60 @@ interface Producto {
   styleUrls: ['./inventario-vista.component.css']
 })
 export class InventarioVistaComponent {
+  // Variables de estado
   searchTerm: string = '';
   showModal: boolean = false;
   isEditing: boolean = false;
   categorias: string[] = ['Tortas', 'Pasteles', 'Galletas', 'Cupcakes', 'Panes'];
+  unidadesMedida: string[] = ['unidades', 'kilogramos', 'gramos', 'litros'];
   
-  nuevoProducto: Producto = {
-    id: 0,
-    nombre: '',
-    categoria: '',
-    stock: 0,
-    precio: 0,
-    estado: 'Activo'
-  };
+  // Modelo para nuevo producto/edición
+  productoActual: Producto = this.crearProductoVacio();
 
-  productos: Producto[] = [
-    { id: 1, nombre: 'Torta de Chocolate', categoria: 'Tortas', stock: 15, precio: 25.99, estado: 'Activo' },
-    { id: 2, nombre: 'Cheesecake', categoria: 'Pasteles', stock: 8, precio: 28.50, estado: 'Activo' },
-    { id: 3, nombre: 'Galletas de Avena', categoria: 'Galletas', stock: 45, precio: 1.50, estado: 'Activo' },
-    { id: 4, nombre: 'Cupcakes de Vainilla', categoria: 'Cupcakes', stock: 20, precio: 3.25, estado: 'Activo' },
-    { id: 5, nombre: 'Pan de Banana', categoria: 'Panes', stock: 5, precio: 12.99, estado: 'Inactivo' }
+  // "Base de datos" en memoria
+  private _productos: Producto[] = [
+    { id: 1, nombre: 'Torta de Chocolate', categoria: 'Tortas', stock: 15, unidadMedida: 'unidades', precio: 25.99, estado: 'Activo' },
+    { id: 2, nombre: 'Cheesecake', categoria: 'Pasteles', stock: 8, unidadMedida: 'unidades', precio: 28.50, estado: 'Activo' },
+    { id: 3, nombre: 'Galletas de Avena', categoria: 'Galletas', stock: 45, unidadMedida: 'unidades', precio: 1.50, estado: 'Activo' },
+    { id: 4, nombre: 'Cupcakes de Vainilla', categoria: 'Cupcakes', stock: 20, unidadMedida: 'unidades', precio: 3.25, estado: 'Activo' },
+    { id: 5, nombre: 'Pan de Banana', categoria: 'Panes', stock: 5, unidadMedida: 'unidades', precio: 12.99, estado: 'Inactivo' }
   ];
 
+  // Getter para productos filtrados
   get filteredProducts(): Producto[] {
-    if (!this.searchTerm) return this.productos;
-    return this.productos.filter(producto => 
-      producto.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      producto.categoria.toLowerCase().includes(this.searchTerm.toLowerCase())
+    if (!this.searchTerm) return this._productos;
+    const term = this.searchTerm.toLowerCase();
+    return this._productos.filter(p => 
+      p.nombre.toLowerCase().includes(term) || 
+      p.categoria.toLowerCase().includes(term)
     );
   }
 
-    openModal(editing: boolean = false, producto?: Producto): void {
-    this.isEditing = editing;
+  // Métodos públicos
+  abrirModalEdicion(producto: Producto): void {
+    this.isEditing = true;
+    this.productoActual = {...producto};
     this.showModal = true;
-    
-    if (editing && producto) {
-      // Copia profunda del producto a editar
-      this.nuevoProducto = JSON.parse(JSON.stringify(producto));
-    } else {
-      this.resetNuevoProducto();
-    }
   }
 
-  closeModal(): void {
-    this.showModal = false;
+  abrirModalCreacion(): void {
     this.isEditing = false;
-    this.resetNuevoProducto();
-  }
-
-  agregarProducto(): void {
-    this.nuevoProducto.id = this.productos.length > 0 
-      ? Math.max(...this.productos.map(p => p.id)) + 1 
-      : 1;
-    this.productos.push({...this.nuevoProducto});
-    this.closeModal();
+    this.productoActual = this.crearProductoVacio();
+    this.showModal = true;
   }
 
   guardarProducto(): void {
     if (this.isEditing) {
-      const index = this.productos.findIndex(p => p.id === this.nuevoProducto.id);
-      
-      if (index !== -1) {
-        this.productos[index] = {...this.nuevoProducto};
-      }
+      this.actualizarProducto();
     } else {
-      this.nuevoProducto.id = this.productos.length > 0 
-        ? Math.max(...this.productos.map(p => p.id)) + 1 
-        : 1;
-      this.productos.push({...this.nuevoProducto});
+      this.agregarProducto();
     }
-    this.closeModal();
-  }
-
-  editarProducto(producto: Producto): void {
-    this.openModal(true, producto);
+    this.cerrarModal();
   }
 
   eliminarProducto(id: number): void {
-    if (confirm('¿Estás seguro de eliminar este producto?')) {
-      this.productos = this.productos.filter(p => p.id !== id);
+    if (confirm('¿Está seguro de eliminar este producto?')) {
+      this._productos = this._productos.filter(p => p.id !== id);
     }
   }
 
@@ -104,14 +79,57 @@ export class InventarioVistaComponent {
     producto.estado = producto.estado === 'Activo' ? 'Inactivo' : 'Activo';
   }
 
-  private resetNuevoProducto(): void {
-    this.nuevoProducto = {
+  // Métodos privados
+  private agregarProducto(): void {
+    const nuevoId = this._productos.length > 0 
+      ? Math.max(...this._productos.map(p => p.id)) + 1 
+      : 1;
+    
+    this._productos.push({
+      ...this.productoActual,
+      id: nuevoId
+    });
+  }
+
+  private actualizarProducto(): void {
+    const index = this._productos.findIndex(p => p.id === this.productoActual.id);
+    if (index !== -1) {
+      this._productos[index] = {...this.productoActual};
+    }
+  }
+
+  private crearProductoVacio(): Producto {
+    return {
       id: 0,
       nombre: '',
       categoria: '',
       stock: 0,
+      unidadMedida: 'unidades',
       precio: 0,
       estado: 'Activo'
     };
   }
+
+  cerrarModal(): void {
+    try {
+      this.showModal = false;
+      this.isEditing = false;
+      this.productoActual = {
+        id: 0,
+        nombre: '',
+        categoria: '',
+        unidadMedida: '',
+
+        stock: 0,
+        
+        precio: 0,
+        estado: 'Activo'
+      };
+      console.log('Modal cerrado correctamente'); // Para depuración
+    } catch (error) {
+      console.error('Error al cerrar el modal:', error);
+      // Fallback seguro
+      this.showModal = false;
+    }
+} 
 }

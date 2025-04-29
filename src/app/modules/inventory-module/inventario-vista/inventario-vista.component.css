@@ -350,3 +350,26 @@ table.table tbody tr:hover,
 .action-btn.status:hover {
   background-color: #e8f8f5;
 }
+
+/* Estilos para el contenedor de stock y unidad de medida */
+.stock-input-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.stock-input,
+.unit-select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.example-text {
+  color: #6c757d;
+  font-size: 0.875em;
+  display: block;
+  margin-top: 5px;
+}
