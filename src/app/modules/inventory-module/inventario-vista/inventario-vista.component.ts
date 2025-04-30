@@ -33,10 +33,7 @@ export class InventarioVistaComponent {
   // "Base de datos" en memoria
   private _productos: Producto[] = [
     { id: 1, nombre: 'Torta de Chocolate', categoria: 'Tortas', stock: 15, unidadMedida: 'unidades', precio: 25.99, estado: 'Activo' },
-    { id: 2, nombre: 'Cheesecake', categoria: 'Pasteles', stock: 8, unidadMedida: 'unidades', precio: 28.50, estado: 'Activo' },
-    { id: 3, nombre: 'Galletas de Avena', categoria: 'Galletas', stock: 45, unidadMedida: 'unidades', precio: 1.50, estado: 'Activo' },
-    { id: 4, nombre: 'Cupcakes de Vainilla', categoria: 'Cupcakes', stock: 20, unidadMedida: 'unidades', precio: 3.25, estado: 'Activo' },
-    { id: 5, nombre: 'Pan de Banana', categoria: 'Panes', stock: 5, unidadMedida: 'unidades', precio: 12.99, estado: 'Inactivo' }
+    
   ];
 
 
