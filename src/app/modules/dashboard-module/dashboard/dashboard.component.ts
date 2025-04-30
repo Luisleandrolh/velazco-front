@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
 
   // Configuración gráfico de productos más vendidos
   public topProductsChartData: ChartConfiguration['data'] = {
-    labels: ['Torta Chocolate', 'Pan Francés', 'Cupcake Vainilla', 'Galleta Mantequilla', 'Pastel Tres Leches'],
+    labels: ['Torta Chocolate', 'King Kong', 'Cupcake Vainilla', 'torta de chocolate', 'Pastel Tres Leches'],
     datasets: [{
       label: 'Unidades Vendidas',
       data: [120, 90, 85, 75, 65],
@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit {
 
   // Configuración gráfico de producción
   public productionChartData: ChartConfiguration['data'] = {
-    labels: ['Tortas', 'Pasteles', 'Galletas', 'Cupcakes', 'Panes'],
+    labels: ['Torta', 'Pasteles', 'Galleta', 'Cupcakes', 'Panes'],
     datasets: [{
       label: 'Cumplimiento (%)',
       data: [90, 85, 75, 95, 60],
