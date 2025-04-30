@@ -15,7 +15,7 @@
   
   <div class="header-section">
     <h2>Productos</h2>
-    <p class="subtitle">Gestiona el inventario de productos de la pasteleria</p>
+    <p class="subtitle">Gestiona el inventario de productos de la pastelería</p>
   </div>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -33,18 +33,17 @@
       </thead>
       <tbody>
         <tr *ngFor="let producto of filteredProducts">
-          <td><strong>{{ producto.name }}</strong></td>
-          <td>{{ producto.category.name }}</td>
+          <td><strong>{{ producto.nombre }}</strong></td>
+          <td>{{ producto.categoria }}</td>
           <td>{{ producto.stock }} {{ producto.unidadMedida }}</td>
-          <td>{{ producto.price | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</td>
           <td>
             <span class="status" [ngClass]="{
-              'activo': producto.active,
-              'inactivo': !producto.active
-            }">
-              {{ producto.active ? 'Activo' : 'Inactivo' }}
+                'activo': producto.estado === 'Activo',
+                'inactivo': producto.estado === 'Inactivo'
+              }">
+              {{ producto.estado }}
             </span>
-            
           </td>
           <td class="actions">
             <button (click)="abrirModalEdicion(producto)" class="action-btn edit" title="Editar">

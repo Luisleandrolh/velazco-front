@@ -90,7 +90,7 @@ export class PedidosVistaComponent {
   }
 
   finalizarCompra() {
-    alert('¡Gracias por tu compra!');
+    alert('Gracias por tu compra');
     this.vaciarCarrito();
     this.mostrarModal = false;
   }

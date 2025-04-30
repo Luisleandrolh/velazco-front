@@ -1,41 +1,42 @@
-<div class="container">
+<div class="contenedor">
   <h2>Pedidos en Tienda</h2>
-  <button class="carrito-btn" (click)="mostrarModal = true">
-   Carrito de compras ({{ obtenerCantidadTotal() }})
+  <button class="boton-carrito" (click)="mostrarModal = true">
+    Carrito de compras ({{ obtenerCantidadTotal() }})
   </button>
+
   <input
     type="text"
     placeholder="Buscar productos..."
-    class="search-input"
+    class="entrada-busqueda"
     [(ngModel)]="textoBusqueda"
   />
 
-  <div class="filter-buttons">
+  <div class="botones-filtro">
     <button
       *ngFor="let cat of ['Todos', 'Tortas', 'Pasteles', 'Galletas', 'Cupcakes']"
       (click)="cambiarCategoria(cat)"
-      [class.active]="categoriaSeleccionada === cat"
+      [class.activo]="categoriaSeleccionada === cat"
     >
       {{ cat }}
     </button>
   </div>
 
-  <div class="product-grid">
-    <div class="product-card" *ngFor="let producto of productosFiltrados">
+  <div class="grid-productos">
+    <div class="tarjeta-producto" *ngFor="let producto of productosFiltrados">
       <img [src]="producto.imagen" alt="Producto" />
       <h4>{{ producto.nombre }}</h4>
       <p>{{ producto.descripcion }}</p>
-      <div class="price">{{ producto.precio | currency:'S/. ' }}</div>
-      <button class="add-btn" (click)="agregarAlCarrito(producto)">Agregar</button>
+      <div class="precio">{{ producto.precio | currency:'S/. ' }}</div>
+      <button class="boton-agregar" (click)="agregarAlCarrito(producto)">Agregar</button>
     </div>
   </div>
 
-  <div class="modal" [class.show]="mostrarModal">
-    <div class="modal-content">
-      <span class="close" (click)="mostrarModal = false">&times;</span>
+  <div class="modal" [class.mostrar]="mostrarModal">
+    <div class="contenido-modal">
+      <span class="cerrar" (click)="mostrarModal = false">&times;</span>
       <h3>Carrito de Compras</h3>
-      <div *ngIf="carrito.length > 0; else carritoVacio" class="carrito-items">
-        <div class="carrito-item" *ngFor="let item of carrito">
+      <div *ngIf="carrito.length > 0; else carritoVacio" class="items-carrito">
+        <div class="item-carrito" *ngFor="let item of carrito">
           <img [src]="item.producto.imagen" alt="Producto" />
           <div class="info">
             <h4>{{ item.producto.nombre }}</h4>
@@ -43,10 +44,10 @@
             <p>Precio: {{ item.producto.precio | currency:'S/. ' }}</p>
             <p><strong>Total: {{ item.producto.precio * item.cantidad | currency:'S/. ' }}</strong></p>
           </div>
-          <button class="remove-btn" (click)="quitarDelCarrito(item)">X</button>
+          <button class="boton-eliminar" (click)="quitarDelCarrito(item)">X</button>
         </div>
-        <p class="carrito-total"><strong>Total: {{ totalCarrito() | currency:'S/. ' }}</strong></p>
-        <div class="carrito-actions">
+        <p class="total-carrito"><strong>Total: {{ totalCarrito() | currency:'S/. ' }}</strong></p>
+        <div class="acciones-carrito">
           <button (click)="vaciarCarrito()">Vaciar Carrito</button>
           <button (click)="finalizarCompra()">Finalizar Compra</button>
         </div>
@@ -55,6 +56,5 @@
         <p>El carrito está vacío.</p>
       </ng-template>
     </div>
-    
   </div>
 </div>

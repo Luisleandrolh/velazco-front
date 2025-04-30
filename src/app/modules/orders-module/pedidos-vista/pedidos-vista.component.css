@@ -1,5 +1,5 @@
 /* Contenedor principal */
-.container {
+.contenedor {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
@@ -13,7 +13,7 @@ h2 {
 }
 
 /* Input de búsqueda */
-.search-input {
+.entrada-busqueda {
   width: 100%;
   padding: 10px;
   margin: 1rem 0;
@@ -22,14 +22,14 @@ h2 {
 }
 
 /* Botones de filtro */
-.filter-buttons {
+.botones-filtro {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
 
-.filter-buttons button {
+.botones-filtro button {
   border: 1px solid #ccc;
   background: #fff;
   padding: 0.5rem 1rem;
@@ -38,25 +38,25 @@ h2 {
   transition: background 0.3s;
 }
 
-.filter-buttons button.active {
+.botones-filtro button.activo {
   background: #222;
   color: #fff;
   border-color: #222;
 }
 
-.filter-buttons button:hover {
+.botones-filtro button:hover {
   background: #f0f0f0;
 }
 
 /* Grid de productos */
-.product-grid {
+.grid-productos {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
 }
 
 /* Tarjetas de producto */
-.product-card {
+.tarjeta-producto {
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -67,19 +67,19 @@ h2 {
   align-items: center;
 }
 
-.product-card img {
+.tarjeta-producto img {
   width: 100%;
   max-height: 180px;
   object-fit: cover;
   border-radius: 8px;
 }
 
-.product-card h4 {
+.tarjeta-producto h4 {
   margin: 0.5rem 0 0.25rem;
   font-weight: bold;
 }
 
-.product-card p {
+.tarjeta-producto p {
   color: #666;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
@@ -87,7 +87,7 @@ h2 {
 }
 
 /* Precio */
-.price {
+.precio {
   background: #222;
   color: #fff;
   padding: 0.25rem 0.75rem;
@@ -97,7 +97,7 @@ h2 {
 }
 
 /* Botón agregar al carrito */
-.add-btn {
+.boton-agregar {
   background: #222;
   color: white;
   border: none;
@@ -107,12 +107,12 @@ h2 {
   transition: background 0.3s;
 }
 
-.add-btn:hover {
+.boton-agregar:hover {
   background: #444;
 }
 
 /* Botón del carrito */
-.carrito-btn {
+.boton-carrito {
   background: #007bff;
   color: white;
   border: none;
@@ -123,7 +123,7 @@ h2 {
   transition: background 0.3s;
 }
 
-.carrito-btn:hover {
+.boton-carrito:hover {
   background: #0056b3;
 }
 
@@ -142,13 +142,13 @@ h2 {
   transition: opacity 0.3s ease-in-out;
 }
 
-.modal.show {
+.modal.mostrar {
   opacity: 1;
   pointer-events: auto;
 }
 
 /* Contenido del modal */
-.modal-content {
+.contenido-modal {
   background-color: #fff;
   margin: 5% auto;
   padding: 1.5rem;
@@ -157,11 +157,10 @@ h2 {
   max-width: 600px;
   border-radius: 12px;
   position: relative;
-  animation: slideDown 0.3s ease-out;
+  animation: deslizarAbajo 0.3s ease-out;
 }
 
-/* Animación del modal */
-@keyframes slideDown {
+@keyframes deslizarAbajo {
   from {
     transform: translateY(-30px);
     opacity: 0;
@@ -173,7 +172,7 @@ h2 {
 }
 
 /* Botón cerrar modal */
-.close {
+.cerrar {
   color: #aaa;
   position: absolute;
   top: 1rem;
@@ -183,19 +182,19 @@ h2 {
   cursor: pointer;
 }
 
-.close:hover {
+.cerrar:hover {
   color: #000;
 }
 
 /* Contenedor de ítems del carrito */
-.carrito-items {
+.items-carrito {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
 /* Ítem individual del carrito */
-.carrito-item {
+.item-carrito {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
@@ -206,7 +205,7 @@ h2 {
   position: relative;
 }
 
-.carrito-item img {
+.item-carrito img {
   width: 80px;
   height: 80px;
   object-fit: cover;
@@ -214,22 +213,22 @@ h2 {
   border: 1px solid #ccc;
 }
 
-.carrito-item .info {
+.item-carrito .info {
   flex: 1;
 }
 
-.carrito-item .info h4 {
+.item-carrito .info h4 {
   margin: 0;
   font-size: 1rem;
 }
 
-.carrito-item .info p {
+.item-carrito .info p {
   margin: 0.25rem 0;
   font-size: 0.9rem;
 }
 
 /* Botón eliminar del carrito */
-.remove-btn {
+.boton-eliminar {
   background: #dc3545;
   color: white;
   border: none;
@@ -239,25 +238,25 @@ h2 {
   align-self: flex-start;
 }
 
-.remove-btn:hover {
+.boton-eliminar:hover {
   background: #c82333;
 }
 
 /* Total del carrito */
-.carrito-total {
+.total-carrito {
   text-align: right;
   font-size: 1.1rem;
   margin-top: 1rem;
 }
 
-/* Botones del carrito (acciones) */
-.carrito-actions {
+/* Acciones del carrito */
+.acciones-carrito {
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
 }
 
-.carrito-actions button {
+.acciones-carrito button {
   background-color: #007bff;
   color: white;
   border: none;
@@ -267,6 +266,6 @@ h2 {
   transition: background-color 0.3s;
 }
 
-.carrito-actions button:hover {
+.acciones-carrito button:hover {
   background-color: #0056b3;
 }
