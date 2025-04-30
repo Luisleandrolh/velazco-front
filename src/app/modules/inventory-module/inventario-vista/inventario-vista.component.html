@@ -6,6 +6,7 @@
     </button>
   </div>
   
+
   <div class="search-container">
     <input type="text" 
            placeholder="Buscar productos..." 
@@ -32,11 +33,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let producto of filteredProducts">
-          <td><strong>{{ producto.nombre }}</strong></td>
+        <tr *ngFor="let producto of filteredProducts">   <!-- repite la fila  por cada producto agregado en la lista-->
+
+          <td><strong>{{ producto.nombre }}</strong></td>    <!-- nombre del  producto en negrita-->
+
           <td>{{ producto.categoria }}</td>
           <td>{{ producto.stock }} {{ producto.unidadMedida }}</td>
-          <td>{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</td>    <!-- se uso el pipe currency con 2 decimales-->
+
           <td>
             <span class="status" [ngClass]="{
                 'activo': producto.estado === 'Activo',
@@ -98,7 +102,7 @@
               <option value="litros">litros</option>
             </select>
           </div>
-          <small class="example-text">Ej: 10</small>
+          <small class="example-text">Ej: 012</small>
         </div>
         
         <div class="form-group">
