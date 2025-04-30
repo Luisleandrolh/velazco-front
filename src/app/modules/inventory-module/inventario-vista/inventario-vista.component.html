@@ -33,17 +33,18 @@
       </thead>
       <tbody>
         <tr *ngFor="let producto of filteredProducts">
-          <td><strong>{{ producto.nombre }}</strong></td>
-          <td>{{ producto.categoria }}</td>
+          <td><strong>{{ producto.name }}</strong></td>
+          <td>{{ producto.category.name }}</td>
           <td>{{ producto.stock }} {{ producto.unidadMedida }}</td>
-          <td>{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>{{ producto.price | currency:'USD':'symbol':'1.2-2' }}</td>
           <td>
             <span class="status" [ngClass]="{
-                'activo': producto.estado === 'Activo',
-                'inactivo': producto.estado === 'Inactivo'
-              }">
-              {{ producto.estado }}
+              'activo': producto.active,
+              'inactivo': !producto.active
+            }">
+              {{ producto.active ? 'Activo' : 'Inactivo' }}
             </span>
+            
           </td>
           <td class="actions">
             <button (click)="abrirModalEdicion(producto)" class="action-btn edit" title="Editar">
