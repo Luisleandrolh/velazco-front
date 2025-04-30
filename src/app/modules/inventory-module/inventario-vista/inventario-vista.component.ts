@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { InventarioServiceService } from '../services/inventario-service.service';
 
 interface Producto {
   id: number;
@@ -17,6 +18,7 @@ interface Producto {
   templateUrl: './inventario-vista.component.html',
   styleUrls: ['./inventario-vista.component.css']
 })
+
 export class InventarioVistaComponent {
   // Variables de estado
   searchTerm: string = '';
@@ -37,15 +39,39 @@ export class InventarioVistaComponent {
     { id: 5, nombre: 'Pan de Banana', categoria: 'Panes', stock: 5, unidadMedida: 'unidades', precio: 12.99, estado: 'Inactivo' }
   ];
 
+
+  productos: any[] = [];
+  constructor(private serviceProducto: InventarioServiceService) {
+
+  }
+
+  cargarProductos() {
+    this.serviceProducto.obtenerProductos().subscribe({
+      next: (data) => {
+        this.productos = data;
+      },
+      error: (err) => console.error('Error al obtener productos:', err)
+    });
+  }
+
+  ngOnInit(): void {
+   this.cargarProductos();
+   console.log(this.productos);
+  }
+
+
+
+
   // Getter para productos filtrados
-  get filteredProducts(): Producto[] {
-    if (!this.searchTerm) return this._productos;
+  get filteredProducts(): any[] {
+    if (!this.searchTerm) return this.productos;
     const term = this.searchTerm.toLowerCase();
-    return this._productos.filter(p => 
-      p.nombre.toLowerCase().includes(term) || 
-      p.categoria.toLowerCase().includes(term)
+    return this.productos.filter(p =>
+      p.name.toLowerCase().includes(term) ||
+      p.category?.name.toLowerCase().includes(term)
     );
   }
+
 
   // Métodos públicos
   abrirModalEdicion(producto: Producto): void {
