@@ -22,6 +22,13 @@ export class InventarioServiceService {
     );
   }
 
+  //post
+  agregarProducto(producto: any): Observable<any> {
+    return this.http.post(this.apiUrl, producto).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la petición:', error);
     return throwError(() => new Error('Hubo un problema con la solicitud. Inténtelo de nuevo más tarde.'));

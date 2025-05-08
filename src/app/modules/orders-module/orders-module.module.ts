@@ -13,6 +13,9 @@ import { PedidosVistaComponent } from './pedidos-vista/pedidos-vista.component';
     CommonModule,
     OrdersModuleRoutingModule,
     FormsModule,
+
+
+ 
     
   ]
 })
