@@ -18,8 +18,7 @@ export class InventarioServiceService {
   //get
   obtenerProductos(): Observable<any> {  //get
     return this.http.get(`${this.apiUrl}`).pipe( 
-      catchError(this.handleError)
-    );
+      catchError(this.handleError));
   }
 
   //post
@@ -28,6 +27,34 @@ export class InventarioServiceService {
       catchError(this.handleError)
     );
   }
+
+  
+  // PUT: Actualizar producto por ID
+actualizarProducto(id: number, producto: any): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${id}`, producto).pipe(
+    catchError(this.handleError)
+  );
+}
+
+// DELETE: Eliminar producto por ID
+eliminarProducto(id: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+    catchError(this.handleError)
+  );
+}
+
+// PATCH: Cambiar estado "active" del producto por ID
+actualizarEstadoActivo(id: number, activo: boolean): Observable<any> {
+  return this.http.patch(`${this.apiUrl}/${id}/active`, { active: activo }).pipe(
+    catchError(this.handleError)
+  );
+}
+
+// GET: Obtener productos disponibles
+obtenerProductosDisponibles(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/available`).pipe(
+    catchError(this.handleError)
+  );}
 
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la petición:', error);
