@@ -374,6 +374,56 @@ table.table tbody tr:hover,
   margin-top: 5px;
 }
 
+.categoria-header {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoria-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.categoria-input {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 200px;
+}
+
+.categoria-lista-container {
+  margin-top: 1rem;
+}
+
+.categoria-lista {
+  list-style: none;
+  padding: 0;
+}
+
+.categoria-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  background-color: #f9f9f9;
+  margin-bottom: 0.3rem;
+  border-radius: 6px;
+}
+
+.delete-button {
+  background-color: transparent;
+  border: none;
+  color: #d9534f;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  color: #c9302c;
+}
+
 /* Responsive design para móviles */
 @media (max-width: 768px) {
   .header-container {

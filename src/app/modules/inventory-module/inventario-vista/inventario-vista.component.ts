@@ -98,9 +98,58 @@ export class InventarioVistaComponent {
     }
   }
 
-  toggleEstado(producto: Producto): void {
-    producto.estado = producto.estado === 'Activo' ? 'Inactivo' : 'Activo';
+mostrarModalCategoria = false;
+nuevaCategoria = '';
+Categorias: string[] = ['Tortas', 'Galletas', 'Bebidas'];
+categoriaEnEdicion: number | null = null;
+
+abrirModalCategoria() {
+  this.mostrarModalCategoria = true;
+}
+
+cerrarModalCategoria() {
+  this.mostrarModalCategoria = false;
+  this.cancelarEdicion();
+}
+
+agregarNuevaCategoria() {
+  const nueva = this.nuevaCategoria.trim();
+  if (nueva && !this.categorias.includes(nueva)) {
+    this.categorias.push(nueva);
+    this.nuevaCategoria = '';
   }
+}
+
+editarCategoria(index: number) {
+  this.categoriaEnEdicion = index;
+  this.nuevaCategoria = this.categorias[index];
+}
+
+actualizarCategoria() {
+  const editada = this.nuevaCategoria.trim();
+  if (
+    editada &&
+    !this.categorias.includes(editada) &&
+    this.categoriaEnEdicion !== null
+  ) {
+    this.categorias[this.categoriaEnEdicion] = editada;
+    this.cancelarEdicion();
+  }
+}
+
+cancelarEdicion() {
+  this.categoriaEnEdicion = null;
+  this.nuevaCategoria = '';
+}
+
+eliminarCategoria(cat: string) {
+  this.categorias = this.categorias.filter(c => c !== cat);
+  this.cancelarEdicion();
+}
+
+toggleEstado(producto: any) {
+  producto.active = !producto.active;
+}
 
   // Métodos privados
   private agregarProducto(): void {
