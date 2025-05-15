@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { InventarioServiceService } from '../services/inventario-service.service';
+import { CategoriaService } from '../services/categoria.service';
 
 interface Producto {
   id: number;
@@ -24,11 +25,17 @@ export class InventarioVistaComponent {
   searchTerm: string = '';
   showModal: boolean = false;
   isEditing: boolean = false;
-  categorias: string[] = ['Tortas', 'Pasteles', 'Galletas', 'Cupcakes', 'Panes'];
+  categorias: any[] = [];
   unidadesMedida: string[] = ['unidades', 'kilogramos', 'gramos', 'litros'];
   
   // Modelo para nuevo producto/edición
-  productoActual: Producto = this.crearProductoVacio();
+  productoActual: any = {
+  name: '',
+  price: 0,
+  stock: 0,
+  active: true,
+  categoryId: null
+};
 
   // "Base de datos" en memoria
   private _productos: Producto[] = [
@@ -38,7 +45,7 @@ export class InventarioVistaComponent {
 
 
   productos: any[] = [];
-  constructor(private serviceProducto: InventarioServiceService) {
+  constructor(private serviceProducto: InventarioServiceService, private serviceCategory: CategoriaService) {
 
   }
 
@@ -51,9 +58,20 @@ export class InventarioVistaComponent {
     });
   }
 
+    cargarCategorias() {
+    this.serviceCategory.obtenerCategorias().subscribe({
+      next: (data) => {
+        this.categorias = data;
+      },
+      error: (err) => console.error('Error al obtener productos:', err)
+    });
+  }
+
   ngOnInit(): void {
    this.cargarProductos();
    console.log(this.productos);
+   this.cargarCategorias();
+   console.log(this.categorias)
   }
 
 
@@ -100,7 +118,6 @@ export class InventarioVistaComponent {
 
 mostrarModalCategoria = false;
 nuevaCategoria = '';
-Categorias: string[] = ['Tortas', 'Galletas', 'Bebidas'];
 categoriaEnEdicion: number | null = null;
 
 abrirModalCategoria() {
@@ -113,12 +130,22 @@ cerrarModalCategoria() {
 }
 
 agregarNuevaCategoria() {
-  const nueva = this.nuevaCategoria.trim();
-  if (nueva && !this.categorias.includes(nueva)) {
-    this.categorias.push(nueva);
-    this.nuevaCategoria = '';
-  }
+  const nombre = this.nuevaCategoria.trim(); // Limpia espacios en blanco al inicio y final
+  if (!nombre) return;
+
+  const categoriaObj = { name: nombre };
+
+  this.serviceCategory.agregarCategoria(categoriaObj).subscribe({
+    next: () => {
+      this.categorias.push(categoriaObj); // Solo si el backend responde exitosamente
+      this.nuevaCategoria = '';
+    },
+    error: (error) => {
+      console.error('Error al agregar categoría:', error);
+    }
+  });
 }
+
 
 editarCategoria(index: number) {
   this.categoriaEnEdicion = index;
@@ -152,23 +179,30 @@ toggleEstado(producto: any) {
 }
 
   // Métodos privados
-  private agregarProducto(): void {
-    const nuevoId = this._productos.length > 0 
-      ? Math.max(...this._productos.map(p => p.id)) + 1 
-      : 1;
-    
-    this._productos.push({
-      ...this.productoActual,
-      id: nuevoId
-    });
+agregarProducto() {
+  this.serviceProducto.agregarProducto(this.productoActual).subscribe({
+    next: (res) => {
+      console.log('Producto agregado:', res);
+      // Aquí actualiza tu lista o notifica al usuario
+    },
+    error: (err) => console.error('Error al agregar producto:', err)
+  });
+}
+
+actualizarProducto() {
+  if (!this.productoActual.id) {
+    console.error('No hay ID para actualizar el producto');
+    return;
   }
 
-  private actualizarProducto(): void {
-    const index = this._productos.findIndex(p => p.id === this.productoActual.id);
-    if (index !== -1) {
-      this._productos[index] = {...this.productoActual};
-    }
-  }
+  this.serviceProducto.actualizarProducto(this.productoActual.id, this.productoActual).subscribe({
+    next: (res) => {
+      console.log('Producto actualizado:', res);
+      // Actualiza lista o notifica al usuario
+    },
+    error: (err) => console.error('Error al actualizar producto:', err)
+  });
+}
 
   private crearProductoVacio(): Producto {
     return {
