@@ -1,4 +1,3 @@
-
 // Se exporta una constante llamada "environment" que contiene variables de configuración
 export const environment = {
   
@@ -14,5 +13,3 @@ export const environment = {
   // URL base del frontend donde se maneja la autenticación (generalmente usada para redireccionamiento)
   baseUrlAuth: 'http://localhost:4200/oauth2sample',
 };
-
-
