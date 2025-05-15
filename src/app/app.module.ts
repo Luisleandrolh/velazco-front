@@ -25,7 +25,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
     PageUnauthorizedComponent,
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     BrowserAnimationsModule,
     MatToolbarModule,
