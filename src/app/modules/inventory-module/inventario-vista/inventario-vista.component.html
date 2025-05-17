@@ -26,7 +26,7 @@
       <!-- Formulario para agregar o editar categoría -->
       <div class="form-group">
         <label>{{ categoriaEnEdicion !== null ? 'Editar Categoría' : 'Nueva Categoría' }}</label>
-        <input type="text" [(ngModel)]="nuevaCategoria" placeholder="Ej: Pasteles fríos" class="categoria-input" /> <br> <br>
+        <input type="text" [(ngModel)]="nuevaCategoria" placeholder="" class="categoria-input" /> <br> <br>
         <button class="save-btn"
                 *ngIf="categoriaEnEdicion === null"
                 (click)="agregarNuevaCategoria()"
@@ -103,7 +103,7 @@
           <td><strong>{{ producto.name }}</strong></td>
           <td>{{ producto.category.name }}</td>
           <td>{{ producto.stock }} {{ producto.unidadMedida }}</td>
-          <td>{{ producto.price | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>{{ producto.price | currency:'PEN ':'symbol':'1.2-2' }}</td>
           <td>
             <span class="status" [ngClass]="{
               'activo': producto.active,
@@ -145,7 +145,7 @@
         
         <div class="form-group">
           <label>Nombre del Producto</label>
-          <input type="text" [(ngModel)]="productoActual.name" placeholder="Ej: Torta de Chocolate">
+          <input type="text" [(ngModel)]="productoActual.name" placeholder="">
         </div>
         
         <div class="form-group">
@@ -161,15 +161,15 @@
         <div class="form-group">
           <label>Stock Inicial</label>
           <div class="stock-input-container">
-            <input type="number" [(ngModel)]="productoActual.stock" placeholder="Ej: 10" class="stock-input">
+            <input type="number" [(ngModel)]="productoActual.stock" placeholder="" class="stock-input">
             
           </div>
-          <small class="example-text">Ej: 10</small>
+          <small class="example-text"></small>
         </div>
         
         <div class="form-group">
           <label>Precio</label>
-          <input type="number" step="0.01" [(ngModel)]="productoActual.price" placeholder="Ej: 25.99">
+          <input type="number" step="0.01" [(ngModel)]="productoActual.price" placeholder="">
         </div>
         
         <div class="form-group">
