@@ -1,15 +1,30 @@
-<div class="container">
-  <h2>Pedidos en Tienda</h2>
-  <button class="carrito-btn" (click)="mostrarModal = true">
-   Carrito de compras ({{ obtenerCantidadTotal() }})
-  </button>
-  <input
-    type="text"
-    placeholder="Buscar productos..."
-    class="search-input"
-    [(ngModel)]="textoBusqueda"
-  />
+<!-- En tu index.html -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+<div class="container">
+
+  <!-- Encabezado con título, búsqueda y carrito -->
+  <div class="header-container">
+    <div class="left-section">
+      <h2>Pedidos en Tienda</h2>
+      <input
+        type="text"
+        placeholder="Buscar productos..."
+        class="search-input"
+        [(ngModel)]="textoBusqueda"
+      />
+    </div>
+
+    <div class="right-section">
+      <button class="carrito-btn" (click)="mostrarModal = true">
+        <i class="bi bi-cart"></i>
+        <span>Carrito</span>
+        <span class="badge">{{ obtenerCantidadTotal() }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Botones de filtro -->
   <div class="filter-buttons">
     <button
       *ngFor="let cat of ['Todos', 'Tortas', 'Pasteles', 'Galletas', 'Cupcakes']"
@@ -20,6 +35,7 @@
     </button>
   </div>
 
+  <!-- Productos -->
   <div class="product-grid">
     <div class="product-card" *ngFor="let producto of productosFiltrados">
       <img [src]="producto.imagen" alt="Producto" />
@@ -30,31 +46,59 @@
     </div>
   </div>
 
+  <!-- Modal del carrito -->
   <div class="modal" [class.show]="mostrarModal">
-    <div class="modal-content">
+    <div class="modal-content p-4">
       <span class="close" (click)="mostrarModal = false">&times;</span>
-      <h3>Carrito de Compras</h3>
-      <div *ngIf="carrito.length > 0; else carritoVacio" class="carrito-items">
-        <div class="carrito-item" *ngFor="let item of carrito">
-          <img [src]="item.producto.imagen" alt="Producto" />
-          <div class="info">
-            <h4>{{ item.producto.nombre }}</h4>
-            <p>Cantidad: {{ item.cantidad }}</p>
-            <p>Precio: {{ item.producto.precio | currency:'S/. ' }}</p>
-            <p><strong>Total: {{ item.producto.precio * item.cantidad | currency:'S/. ' }}</strong></p>
+      <h4>Carrito de Pedido</h4>
+      <p class="text-muted">Revise los productos antes de confirmar el pedido.</p>
+
+      <div *ngIf="carrito.length > 0; else carritoVacio">
+        <div *ngFor="let item of carrito" class="d-flex align-items-center mb-3 border-bottom pb-2">
+          <img [src]="item.producto.imagen" alt="Producto" width="50" height="50" class="me-3" />
+          <div class="flex-grow-1">
+            <strong>{{ item.producto.nombre }}</strong>
+            <div class="text-muted">{{ item.producto.precio | currency:'S/. ' }}</div>
           </div>
-          <button class="remove-btn" (click)="quitarDelCarrito(item)">X</button>
+          <div class="d-flex align-items-center">
+            <button class="btn btn-outline-secondary btn-sm" (click)="cambiarCantidad(item, -1)">−</button>
+            <span class="mx-2">{{ item.cantidad }}</span>
+            <button class="btn btn-outline-secondary btn-sm" (click)="cambiarCantidad(item, 1)">+</button>
+          </div>
+          <button class="btn btn-link text-danger ms-2" (click)="quitarDelCarrito(item)">
+            <i class="bi bi-trash"></i>
+          </button>
         </div>
-        <p class="carrito-total"><strong>Total: {{ totalCarrito() | currency:'S/. ' }}</strong></p>
-        <div class="carrito-actions">
-          <button (click)="vaciarCarrito()">Vaciar Carrito</button>
-          <button (click)="finalizarCompra()">Finalizar Compra</button>
+
+        <div class="mt-4">
+          <div class="d-flex justify-content-between">
+            <span>Subtotal</span>
+            <strong>{{ subtotalCarrito() | currency:'S/. ' }}</strong>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>Impuestos</span>
+            <strong>{{ impuestosCarrito() | currency:'S/. ' }}</strong>
+          </div>
+          <div class="d-flex justify-content-between border-top pt-2 mt-2">
+            <span>Total</span>
+            <strong>{{ totalCarrito() | currency:'S/. ' }}</strong>
+          </div>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="cliente">Nombre del Cliente</label>
+          <input type="text" class="form-control" id="cliente" [(ngModel)]="nombreCliente" placeholder="Ingrese el nombre del cliente" />
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-secondary me-2" (click)="mostrarModal = false">Cancelar</button>
+          <button class="btn btn-dark" (click)="finalizarCompra()">Confirmar Pedido</button>
         </div>
       </div>
+
       <ng-template #carritoVacio>
         <p>El carrito está vacío.</p>
       </ng-template>
     </div>
-    
   </div>
 </div>

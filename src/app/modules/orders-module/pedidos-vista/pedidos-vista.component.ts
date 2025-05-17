@@ -6,6 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./pedidos-vista.component.css']
 })
 export class PedidosVistaComponent {
+
+  /* =======================
+     Productos disponibles
+     ======================= */
   productos = [
     {
       nombre: 'Torta de Chocolate',
@@ -37,12 +41,22 @@ export class PedidosVistaComponent {
     }
   ];
 
+  /* =======================
+     Estado de la vista
+     ======================= */
   textoBusqueda: string = '';
   categoriaSeleccionada: string = 'Todos';
   mostrarModal: boolean = false;
 
+  /* =======================
+     Carrito y cliente
+     ======================= */
   carrito: { producto: any; cantidad: number }[] = [];
+  nombreCliente: string = '';
 
+  /* =======================
+     Filtros de productos
+     ======================= */
   get productosFiltrados() {
     return this.productos.filter(producto => {
       const coincideTexto =
@@ -61,12 +75,22 @@ export class PedidosVistaComponent {
     this.categoriaSeleccionada = categoria;
   }
 
+  /* =======================
+     Carrito: operaciones
+     ======================= */
   agregarAlCarrito(producto: any) {
     const itemExistente = this.carrito.find(item => item.producto.nombre === producto.nombre);
     if (itemExistente) {
       itemExistente.cantidad += 1;
     } else {
       this.carrito.push({ producto, cantidad: 1 });
+    }
+  }
+
+  cambiarCantidad(item: any, delta: number) {
+    item.cantidad += delta;
+    if (item.cantidad <= 0) {
+      this.quitarDelCarrito(item);
     }
   }
 
@@ -81,17 +105,44 @@ export class PedidosVistaComponent {
     this.carrito = [];
   }
 
-  totalCarrito(): number {
-    return this.carrito.reduce((total, item) => total + item.producto.precio * item.cantidad, 0);
+  /* =======================
+     Cálculos monetarios
+     ======================= */
+  subtotalCarrito(): number {
+    return this.carrito.reduce(
+      (total, item) => total + item.producto.precio * item.cantidad,
+      0
+    );
   }
 
+  impuestosCarrito(): number {
+    const tasaImpuestos = 0.10; // 10 %
+    return this.subtotalCarrito() * tasaImpuestos;
+  }
+
+  totalCarrito(): number {
+    return this.subtotalCarrito() + this.impuestosCarrito();
+  }
+
+  /* =======================
+     Utilidades
+     ======================= */
   obtenerCantidadTotal(): number {
     return this.carrito.reduce((acc, item) => acc + item.cantidad, 0);
   }
 
+  /* =======================
+     Finalizar compra
+     ======================= */
   finalizarCompra() {
-    alert('¡Gracias por tu compra!');
+    if (!this.nombreCliente.trim()) {
+      alert('Por favor, ingrese el nombre del cliente.');
+      return;
+    }
+
+    alert(`¡Gracias por tu compra, ${this.nombreCliente}!`);
     this.vaciarCarrito();
+    this.nombreCliente = '';
     this.mostrarModal = false;
   }
 }
