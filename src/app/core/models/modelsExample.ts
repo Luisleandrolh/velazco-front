@@ -9,12 +9,12 @@ export interface Collection {
   metadata: Metadata;
   links: CollectionLink[];
 }
-
 export interface Item {
   href: string;
   data: Datum[];
   links?: ItemLink[];
 }
+//a
 
 export interface Datum {
   center: Center;

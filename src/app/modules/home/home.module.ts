@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { HomeRoutingModule } from './home-routing.module';
 import { WelcomeComponent } from './welcome/welcome.component';
-import { ApiSampleComponent } from './api-sample/api-sample.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,8 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
-    WelcomeComponent,
-    ApiSampleComponent,
+    WelcomeComponent
   ],
   imports: [
     CommonModule,

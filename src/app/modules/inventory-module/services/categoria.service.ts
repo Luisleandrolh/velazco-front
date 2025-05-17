@@ -38,6 +38,10 @@ export class CategoriaService {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
+
+    
+
+
   }
 
   
