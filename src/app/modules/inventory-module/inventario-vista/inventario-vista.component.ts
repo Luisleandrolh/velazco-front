@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { InventarioServiceService } from '../services/inventario-service.service';
+import { CategoriaService } from '../services/categoria.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface Producto {
   id: number;
@@ -24,42 +26,48 @@ export class InventarioVistaComponent {
   searchTerm: string = '';
   showModal: boolean = false;
   isEditing: boolean = false;
-  categorias: string[] = ['Tortas', 'Pasteles', 'Galletas', 'Cupcakes', 'Panes'];
-  unidadesMedida: string[] = ['unidades', 'kilogramos', 'gramos', 'litros'];
-  
+  categorias: any[] = [];
+
+
   // Modelo para nuevo producto/edición
-  productoActual: Producto = this.crearProductoVacio();
+  productoActual: any = {
+    name: '',
+    price: 0,
+    stock: 0,
+    active: true,
+    categoryId: null
+  };
 
   // "Base de datos" en memoria
   private _productos: Producto[] = [
     { id: 1, nombre: 'Torta de Chocolate', categoria: 'Tortas', stock: 15, unidadMedida: 'unidades', precio: 25.99, estado: 'Activo' },
-    
+
   ];
 
 
   productos: any[] = [];
-  constructor(private serviceProducto: InventarioServiceService) {
+  constructor(private serviceProducto: InventarioServiceService, private serviceCategory: CategoriaService, private snackBar: MatSnackBar) {
 
   }
 
-  cargarProductos() {
-    this.serviceProducto.obtenerProductos().subscribe({
-      next: (data) => {
-        this.productos = data;
-      },
-      error: (err) => console.error('Error al obtener productos:', err)
+
+  mostrarAlerta(texto: string) {
+    this.snackBar.open(texto, 'Cerrar', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
     });
   }
 
+
+
   ngOnInit(): void {
-   this.cargarProductos();
-   console.log(this.productos);
+    this.cargarProductos();
+    console.log(this.productos);
+    this.cargarCategorias();
+    console.log(this.categorias)
   }
 
-
-
-
-  // Getter para productos filtrados
   get filteredProducts(): any[] {
     if (!this.searchTerm) return this.productos;
     const term = this.searchTerm.toLowerCase();
@@ -73,7 +81,7 @@ export class InventarioVistaComponent {
   // Métodos públicos
   abrirModalEdicion(producto: Producto): void {
     this.isEditing = true;
-    this.productoActual = {...producto};
+    this.productoActual = { ...producto };
     this.showModal = true;
   }
 
@@ -92,34 +100,138 @@ export class InventarioVistaComponent {
     this.cerrarModal();
   }
 
+
+
   eliminarProducto(id: number): void {
     if (confirm('¿Está seguro de eliminar este producto?')) {
-      this._productos = this._productos.filter(p => p.id !== id);
+
+      this.serviceProducto.eliminarProducto(id).subscribe({
+        next: () => {
+          console.log("producto eliminado");
+          this.cargarProductos();
+        },
+        error: (err) => console.error('Error al eliminar producto')
+
+      })
     }
   }
 
-  toggleEstado(producto: Producto): void {
-    producto.estado = producto.estado === 'Activo' ? 'Inactivo' : 'Activo';
+  mostrarModalCategoria = false;
+  nuevaCategoria = '';
+  categoriaEnEdicion: number | null = null;
+
+  abrirModalCategoria() {
+    this.mostrarModalCategoria = true;
   }
 
-  // Métodos privados
-  private agregarProducto(): void {
-    const nuevoId = this._productos.length > 0 
-      ? Math.max(...this._productos.map(p => p.id)) + 1 
-      : 1;
-    
-    this._productos.push({
-      ...this.productoActual,
-      id: nuevoId
+  cerrarModalCategoria() {
+    this.mostrarModalCategoria = false;
+    this.cancelarEdicion();
+  }
+
+
+  editarCategoria(index: number) {
+    this.categoriaEnEdicion = index;
+    this.nuevaCategoria = this.categorias[index];
+  }
+
+  actualizarCategoria() {
+    const editada = this.nuevaCategoria.trim();
+    if (
+      editada &&
+      !this.categorias.includes(editada) &&
+      this.categoriaEnEdicion !== null
+    ) {
+      this.categorias[this.categoriaEnEdicion] = editada;
+      this.cancelarEdicion();
+    }
+  }
+
+  cancelarEdicion() {
+    this.categoriaEnEdicion = null;
+    this.nuevaCategoria = '';
+  }
+
+  eliminarCategoria(cat: string) {
+    this.categorias = this.categorias.filter(c => c !== cat);
+    this.cancelarEdicion();
+  }
+
+  toggleEstado(producto: any) {
+    producto.active = !producto.active;
+  }
+
+  // Métodos de los servicios
+
+
+
+  cargarProductos() {
+    this.serviceProducto.obtenerProductos().subscribe({
+      next: (data) => {
+        this.productos = data;
+      },
+      error: (err) => console.error('Error al obtener productos:', err)
     });
   }
 
-  private actualizarProducto(): void {
-    const index = this._productos.findIndex(p => p.id === this.productoActual.id);
-    if (index !== -1) {
-      this._productos[index] = {...this.productoActual};
-    }
+  cargarCategorias() {
+    this.serviceCategory.obtenerCategorias().subscribe({
+      next: (data) => {
+        this.categorias = data;
+      },
+      error: (err) => console.error('Error al obtener productos:', err)
+    });
   }
+
+  agregarNuevaCategoria() {
+    const nombre = this.nuevaCategoria.trim(); // Limpia espacios en blanco al inicio y final
+    if (!nombre) return;
+
+    const categoriaObj = { name: nombre };
+
+    this.serviceCategory.agregarCategoria(categoriaObj).subscribe({
+      next: () => {
+        this.categorias.push(categoriaObj); // Solo si el backend responde exitosamente
+        this.nuevaCategoria = '';
+      },
+      error: (error) => {
+        console.error('Error al agregar categoría:', error);
+      }
+    });
+  }
+
+  agregarProducto() {
+    this.serviceProducto.agregarProducto(this.productoActual).subscribe({
+      next: (res) => {
+        console.log('Producto agregado:', res);
+        this.mostrarAlerta("Producto agregado correctamente");
+        this.cargarProductos();
+
+      },
+      error: (err) => console.error('Error al agregar producto:', err)
+    });
+  }
+
+  actualizarProducto() {
+    if (!this.productoActual.id) {
+      console.error('No hay ID para actualizar el producto');
+      return;
+    }
+
+    this.serviceProducto.actualizarProducto(this.productoActual.id, this.productoActual).subscribe({
+      next: (res) => {
+        console.log('Producto actualizado:', res);
+        // Actualiza lista o notifica al usuario
+      },
+      error: (err) => console.error('Error al actualizar producto:', err)
+    });
+  }
+
+  actualizarEstado(){
+
+  }
+
+
 
   private crearProductoVacio(): Producto {
     return {
@@ -144,7 +256,7 @@ export class InventarioVistaComponent {
         unidadMedida: '',
 
         stock: 0,
-        
+
         precio: 0,
         estado: 'Activo'
       };
@@ -154,5 +266,5 @@ export class InventarioVistaComponent {
       // Fallback seguro
       this.showModal = false;
     }
-} 
+  }
 }

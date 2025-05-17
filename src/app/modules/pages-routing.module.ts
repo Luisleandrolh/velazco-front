@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PagesComponent } from './pages.component';
 import { WelcomeComponent } from './home/welcome/welcome.component';
+import { UsersComponent } from './users-module/users/users.component';
 
 const routes: Routes = [
 
@@ -88,7 +89,7 @@ const routes: Routes = [
   {
     //usuarios y roles
     path: 'users-module',
-    component: PagesComponent,
+    component: UsersComponent,
     loadChildren: () =>
       import('./users-module/users-module.module').then((m) => m.UsersModuleModule),
     //canActivate: [SessionGuard]

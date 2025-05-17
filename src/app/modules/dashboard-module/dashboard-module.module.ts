@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { NgChartsModule } from 'ng2-charts';
 
-// Angular Material 15 imports
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
