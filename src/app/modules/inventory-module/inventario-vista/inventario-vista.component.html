@@ -88,6 +88,7 @@
     <table class="table table-hover align-middle">
       <thead class="table-light">
         <tr>
+          <th>ID</th>
           <th>Nombre</th>
           <th>Categoría</th>
           <th>Stock</th>
@@ -98,6 +99,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let producto of filteredProducts">
+          <td>{{ producto.id }}</td>
           <td><strong>{{ producto.name }}</strong></td>
           <td>{{ producto.category.name }}</td>
           <td>{{ producto.stock }} {{ producto.unidadMedida }}</td>

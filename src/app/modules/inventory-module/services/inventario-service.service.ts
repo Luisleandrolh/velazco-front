@@ -43,7 +43,7 @@ eliminarProducto(id: number): Observable<any> {
   );
 }
 
-// PATCH: Cambiar estado "active" del producto por ID
+
 actualizarEstadoActivo(id: number, activo: boolean): Observable<any> {
   return this.http.patch(`${this.apiUrl}/${id}/active`, { active: activo }).pipe(
     catchError(this.handleError)

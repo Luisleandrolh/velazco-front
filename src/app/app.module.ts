@@ -41,11 +41,11 @@ import { JwtInterceptor } from './core/auth/interceptor/jwt.interceptor';
       },
     }),
   ],
-  providers: [
+  providers: [ //servicios q angular debe inyectar
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
-      multi: true, // Muy importante para que puedas tener varios interceptores si quieres
+      multi: true,
     }
   ],
   bootstrap: [AppComponent],
