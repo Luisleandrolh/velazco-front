@@ -1,0 +1,708 @@
+
+/* 
+  =============================================
+  ESTILOS GENERALES DEL CONTENEDOR PRINCIPAL
+  =============================================
+*/
+.entregas-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 100%;
+}
+
+/* 
+  ==============================
+  ESTILOS DE LA SECCIÓN DE CABECERA
+  ==============================
+*/
+.header-section h1 {
+  font-size: 24px;
+  font-weight: normal;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+/* Fila de acciones con buscador y filtros */
+.action-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+/* Estilos comunes para cajas de búsqueda y filtro */
+.search-box, .filter-box {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+/* Estilos específicos para la caja de búsqueda */
+.search-box {
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  margin-left: 8px;
+  width: 100%;
+}
+
+/* Estilos para las cajas de filtro */
+.filter-box {
+  cursor: pointer;
+}
+
+.filter-box span:first-child {
+  margin-right: 8px;
+  font-weight: bold;
+  color: #666;
+}
+
+/* 
+  ==============================
+  ESTILOS DE LAS PESTAÑAS
+  ==============================
+*/
+.tabs-section {
+  display: flex;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 8px 20px;
+  cursor: pointer;
+  color: #555;
+  font-weight: normal;
+  margin-right: 5px;
+}
+
+.tab.active {
+  color: #1890ff;
+  font-weight: bold;
+  border-bottom: 2px solid #1890ff;
+  margin-bottom: -1px;
+}
+
+/* 
+  ==============================
+  ESTILOS DE LA SECCIÓN DE CONTENIDO
+  ==============================
+*/
+.content-section {
+  min-height: 300px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+}
+
+/* Texto de subtítulo común */
+.subtitle {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+/* 
+  ===================================
+  ESTILOS PARA PESTAÑA "PENDIENTES"
+  ===================================
+  Grid de 3 columnas para pedidos pendientes
+*/
+.three-column-grid {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  gap: 1px;
+  margin-top: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Encabezados de columnas */
+.column-header {
+  padding: 12px 15px;
+  background-color: #fafafa;
+  font-weight: bold;
+  text-align: left;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+/* Celdas de contenido */
+.column-cell {
+  padding: 15px;
+  background-color: white;
+  min-height: 100px;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Estilos para la información del pedido */
+.order-id {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+.order-status {
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 100;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.paid {
+  background-color: #e8f5e9;
+  color: #0909ea;
+}
+
+.customer-info {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.order-date {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Lista de productos */
+.products-list div {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.order-total {
+  font-weight: 500;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* Celda de acciones */
+.action-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.details-button {
+  background: none;
+  border: none;
+  padding: auto;
+  color: #1890ff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.details-button:hover {
+  text-decoration: underline;
+}
+
+/* 
+  =================================
+  ESTILOS PARA PESTAÑA "ENTREGADOS"
+  =================================
+  Tarjetas para pedidos entregados
+*/
+.delivered-orders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* Tarjeta individual de pedido entregado */
+.delivered-order-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.delivered-order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Encabezado de la tarjeta */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #eaeef2;
+}
+
+.order-code {
+  font-weight: 600;
+  font-size: 15px;
+  color: #2d3748;
+}
+
+/* Badge de estado */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.delivered {
+  background-color: #eeffeb;
+  color: #5cb811;
+  border: 1px solid #bee3f8;
+}
+
+/* Grid de detalles del pedido */
+.order-details-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 12px 16px;
+  padding: 20px;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: #718096;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.highlight {
+  font-weight: 600;
+  color: #2b6cb0;
+}
+
+/* Sección de acciones */
+.order-actions {
+  padding: 12px 20px;
+  border-top: 1px solid #edf2f7;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Botón de detalles mejorado */
+.details-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #4299e1;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.details-button:hover {
+  background-color: #ebf8ff;
+  color: #3182ce;
+}
+
+/* 
+  ==============================
+  ESTILOS COMPLEMENTARIOS
+  ==============================
+*/
+.material-icons {
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+/* Versión alternativa de grid (no usada actualmente) */
+.order-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  margin-top: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.grid-header {
+  padding: 12px 15px;
+  background-color: #fafafa;
+  font-weight: bold;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.grid-cell {
+  padding: 1px;
+  background-color: white;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Estilos para la vista de detalles (no usada en este componente) */
+.detail-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+
+
+/* ESTILOS MEJORADOS PARA EL MODAL */
+.delivery-details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo más oscuro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  backdrop-filter: blur(3px); /* Efecto de desenfoque */
+}
+
+.delivery-details-container {
+  background-color: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.details-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  padding: 5px;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.delivery-status {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.details-section {
+  margin-bottom: 25px;
+}
+
+.details-section h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #555;
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.info-value {
+  color: #333;
+}
+
+.highlight {
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.products-table th, 
+.products-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.products-table th {
+  font-weight: 600;
+  background-color: #f9f9f9;
+}
+
+.products-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Estilos para el textarea de notas */
+.notes-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  transition: border 0.2s;
+}
+
+.notes-textarea:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* Botones de acción */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.mark-delivered-button {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.mark-delivered-button:hover {
+  background-color: #1478d6;
+}
+
+.cancel-button {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #d9d9d9;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-button:hover {
+  background-color: #e8e8e8;
+  border-color: #bfbfbf;
+}
+
+
+
+
+/* Estilos para el modal de confirmación */
+.delivery-confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001; /* Mayor que el modal de detalles */
+  backdrop-filter: blur(5px);
+}
+
+.delivery-confirmation-container {
+  background-color: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.confirmation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.confirmation-header h2 {
+  color: #4CAF50;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.confirmation-content {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.confirmation-icon {
+  color: #4CAF50;
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.confirmation-icon i {
+  font-size: 4rem;
+}
+
+.confirmation-message {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.delivery-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 25px;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.delivery-time i {
+  color: #2196F3;
+}
+
+.notes-section {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.notes-section h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.notes-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn.primary {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+}
+
+.btn.primary:hover {
+  background-color: #3d8b40;
+}
+
+.btn.secondary {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.btn.secondary:hover {
+  background-color: #e8e8e8;
+}
+
+/* Animación */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+/* ULTIMOS CAMBIOS */ 
