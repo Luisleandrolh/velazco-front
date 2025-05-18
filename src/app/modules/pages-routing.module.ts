@@ -89,7 +89,7 @@ const routes: Routes = [
   {
     //usuarios y roles
     path: 'users-module',
-    component: UsersComponent,
+    component: PagesComponent,
     loadChildren: () =>
       import('./users-module/users-module.module').then((m) => m.UsersModuleModule),
     //canActivate: [SessionGuard]

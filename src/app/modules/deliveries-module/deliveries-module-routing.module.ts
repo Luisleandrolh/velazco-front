@@ -4,7 +4,7 @@ import { EntregasVistaComponent } from './entregas-vista/entregas-vista.componen
 
 const routes: Routes = [
   {
-      path: 'entregas',
+      path: 'entregas-vista',
       component: EntregasVistaComponent,
     },
 ];
