@@ -31,6 +31,7 @@ export class InventarioVistaComponent {
 
   // Modelo para nuevo producto/edición
   productoActual: any = {
+    id: null,
     name: '',
     price: 0,
     stock: 0,
@@ -101,21 +102,6 @@ export class InventarioVistaComponent {
   }
 
 
-
-  eliminarProducto(id: number): void {
-    if (confirm('¿Está seguro de eliminar este producto?')) {
-
-      this.serviceProducto.eliminarProducto(id).subscribe({
-        next: () => {
-          console.log("producto eliminado");
-          this.cargarProductos();
-        },
-        error: (err) => console.error('Error al eliminar producto')
-
-      })
-    }
-  }
-
   mostrarModalCategoria = false;
   nuevaCategoria = '';
   categoriaEnEdicion: number | null = null;
@@ -132,34 +118,71 @@ export class InventarioVistaComponent {
 
   editarCategoria(index: number) {
     this.categoriaEnEdicion = index;
-    this.nuevaCategoria = this.categorias[index];
+    this.nuevaCategoria = this.categorias[index].cat.name;
+    this.mostrarModalCategoria = true; // si usas un modal para editar
+    this.isEditing = true; // opcional, si controlas con esto
+
   }
 
-  actualizarCategoria() {
-    const editada = this.nuevaCategoria.trim();
-    if (
-      editada &&
-      !this.categorias.includes(editada) &&
-      this.categoriaEnEdicion !== null
-    ) {
-      this.categorias[this.categoriaEnEdicion] = editada;
-      this.cancelarEdicion();
-    }
+actualizarCategoria() {
+  const editada = this.nuevaCategoria.trim();
+  
+  if (
+    editada &&
+    this.categoriaEnEdicion !== null
+  ) {
+    const categoria = this.categorias[this.categoriaEnEdicion!];
+
+    this.serviceCategory.actualizarCategoria(categoria.id, { name: editada }).subscribe({ //llama al servicio para actualiar la cat
+      next: (res) => { //si la api se ejecuta correctamente se ejecuta el bloque 
+        this.categorias[this.categoriaEnEdicion!].name = editada; //se actualiza el name
+        this.cancelarEdicion();
+        alert('✅ Categoría actualizada correctamente');
+      },
+      error: (err) => {
+        console.error('Error al actualizar categoría', err);
+      }
+    });
   }
+}
+
+
+
+    eliminarCategoria(categoria: any) {
+  this.serviceCategory.eliminarCategoria(categoria.id).subscribe({
+    next: () => {
+      this.categorias = this.categorias.filter(c => c.id !== categoria.id);
+      this.cancelarEdicion();
+      alert('🗑️ Categoría eliminada correctamente');
+    },
+    error: (err) => {
+      console.error('Error al eliminar categoría', err);
+    }
+  });
+}
+
 
   cancelarEdicion() {
     this.categoriaEnEdicion = null;
     this.nuevaCategoria = '';
   }
 
-  eliminarCategoria(cat: string) {
-    this.categorias = this.categorias.filter(c => c !== cat);
-    this.cancelarEdicion();
-  }
 
-  toggleEstado(producto: any) {
-    producto.active = !producto.active;
-  }
+ toggleEstado(producto: any) {
+  const nuevoEstado = !producto.active;  // Invertir el estado actual
+
+  this.serviceProducto.actualizarEstadoActivo(producto.id, nuevoEstado).subscribe({ //llama al servicio para actualizar en el back
+    next: (res) => {
+      producto.active = nuevoEstado;  // Actualizar localmente en la interfaz solo si la petición fue exitosa
+      console.log('Estado actualizado correctamente', res);
+    },
+    error: (err) => {
+      console.error('Error al actualizar estado', err);
+      // Opcional: revertir el toggle si hubo error
+    }
+  });
+}
+
 
   // Métodos de los servicios
 
@@ -200,6 +223,9 @@ export class InventarioVistaComponent {
     });
   }
 
+  //CRUD DE PRODUCTOS
+
+  // post
   agregarProducto() {
     this.serviceProducto.agregarProducto(this.productoActual).subscribe({
       next: (res) => {
@@ -212,23 +238,38 @@ export class InventarioVistaComponent {
     });
   }
 
-  actualizarProducto() {
-    if (!this.productoActual.id) {
-      console.error('No hay ID para actualizar el producto');
-      return;
-    }
-
-    this.serviceProducto.actualizarProducto(this.productoActual.id, this.productoActual).subscribe({
-      next: (res) => {
-        console.log('Producto actualizado:', res);
-        // Actualiza lista o notifica al usuario
-      },
-      error: (err) => console.error('Error al actualizar producto:', err)
-    });
+  // put
+actualizarProducto() {
+  if (!this.productoActual.id) {
+    console.error('No hay ID para actualizar el producto');
+    return;
   }
 
-  actualizarEstado(){
+  this.serviceProducto.actualizarProducto(this.productoActual.id, this.productoActual).subscribe({
+    next: (res) => {
+      console.log('Producto actualizado:', res);
+      alert('✅ Producto actualizado correctamente');
+      this.cargarProductos();
+    },
+    error: (err) => console.error('Error al actualizar producto:', err)
+  });
+  
+}
 
+
+  //delete
+    eliminarProducto(id: number): void {
+    if (confirm('¿Está seguro de eliminar este producto?')) {
+
+      this.serviceProducto.eliminarProducto(id).subscribe({
+        next: () => {
+          console.log("producto eliminado");
+          this.cargarProductos();
+        },
+        error: (err) => console.error('Error al eliminar producto')
+
+      })
+    }
   }
 
 

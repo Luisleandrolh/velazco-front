@@ -16,7 +16,7 @@ export class InventarioServiceService {
 
 
   //get
-  obtenerProductos(): Observable<any> {  //get
+  obtenerProductos(): Observable<any> {  
     return this.http.get(`${this.apiUrl}`).pipe( 
       catchError(this.handleError));
   }
@@ -28,13 +28,13 @@ export class InventarioServiceService {
     );
   }
 
-  
-  // PUT: Actualizar producto por ID
-actualizarProducto(id: number, producto: any): Observable<any> {
-  return this.http.put(`${this.apiUrl}/${id}`, producto).pipe(
-    catchError(this.handleError)
-  );
-}
+    
+    // PUT: Actualizar producto por ID
+  actualizarProducto(id: number, producto: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, producto).pipe(
+  catchError(this.handleError)
+);
+  }
 
 // DELETE: Eliminar producto por ID
 eliminarProducto(id: number): Observable<any> {
@@ -44,10 +44,14 @@ eliminarProducto(id: number): Observable<any> {
 }
 
 
+//PATCH; Actualizar estado del producto.
+
 actualizarEstadoActivo(id: number, activo: boolean): Observable<any> {
   return this.http.patch(`${this.apiUrl}/${id}/active`, { active: activo }).pipe(
     catchError(this.handleError)
+    
   );
+  
 }
 
 // GET: Obtener productos disponibles
