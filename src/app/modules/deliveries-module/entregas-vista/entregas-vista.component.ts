@@ -9,7 +9,7 @@ export class EntregasVistaComponent {
   showOrderDetails = false;
   showDeliveryConfirmation = false;
   deliveryDateTime = '';
-  
+
   selectedOrder: any = {
     id: 'PED-1019',
     status: 'Pagado',
@@ -51,11 +51,11 @@ export class EntregasVistaComponent {
   confirmDelivery(): void {
     // Aquí iría la lógica para actualizar el estado en tu backend
     console.log(`Pedido ${this.selectedOrder.id} marcado como entregado el ${this.deliveryDateTime}`);
-    
+
     // Cerrar ambos modales
     this.showDeliveryConfirmation = false;
     this.closeDetails();
-    
+
     // Aquí deberías actualizar la lista de pedidos
     // this.loadOrders();
   }
@@ -76,7 +76,7 @@ export class EntregasVistaComponent {
       second: '2-digit',
       hour12: true
     };
-    
+
     return date.toLocaleString('es-ES', options);
   }
 
@@ -84,9 +84,9 @@ export class EntregasVistaComponent {
     this.activeTab = tab;
   }
   updateNotes(event: Event): void {
-  this.selectedOrder.notes = (event.target as HTMLTextAreaElement).value;
-}
+    this.selectedOrder.notes = (event.target as HTMLTextAreaElement).value;
+  }
 }
 
 
-// ULTIMOS CAMBIOS
+// ULTIMOS CAMBIOS  ULTIMOS CAMBIOS  ULTIMOS CAMBIOS  ULTIMOS CAMBIOS 

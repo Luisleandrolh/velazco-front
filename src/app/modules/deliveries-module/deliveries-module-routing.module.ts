@@ -4,9 +4,9 @@ import { EntregasVistaComponent } from './entregas-vista/entregas-vista.componen
 
 const routes: Routes = [
   {
-      path: 'entregas-vista',
-      component: EntregasVistaComponent,
-    },
+    path: 'entregas-vista',
+    component: EntregasVistaComponent,
+  },
 ];
 
 @NgModule({
