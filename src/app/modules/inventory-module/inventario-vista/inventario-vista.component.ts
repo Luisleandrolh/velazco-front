@@ -27,6 +27,7 @@ export class InventarioVistaComponent {
   showModal: boolean = false;
   isEditing: boolean = false;
   categorias: any[] = [];
+intentoGuardar: boolean = false;
 
 
   // Modelo para nuevo producto/edición
@@ -308,4 +309,24 @@ actualizarProducto() {
       this.showModal = false;
     }
   }
+  validarYGuardar() {
+  this.intentoGuardar = true;
+  
+  // Validar campos obligatorios
+  if (!this.productoActual.name || 
+      !this.productoActual.categoryId || 
+      this.productoActual.stock === null || 
+      this.productoActual.stock === undefined ||
+      this.productoActual.stock < 0 ||
+      this.productoActual.price === null || 
+      this.productoActual.price === undefined ||
+      this.productoActual.price <= 0 ||
+      this.productoActual.active === null) {
+    return; // No guardar si hay errores
+  }
+  
+  // Si pasa la validación, guardar el producto
+  this.guardarProducto();
+  this.intentoGuardar = false;
+}
 }

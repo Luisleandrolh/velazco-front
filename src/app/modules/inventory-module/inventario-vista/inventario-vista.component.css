@@ -485,3 +485,17 @@ table.table tbody tr:hover,
     width: 100%;
   }
 }
+.required {
+  color: red;
+}
+
+.invalid {
+  border-color: red !important;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
