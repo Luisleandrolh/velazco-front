@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Detalles del Pedido</h2>
+
+<mat-dialog-content class="mat-typography">
+  <p><strong>Código:</strong> {{ pedido.codigo }}</p>
+  <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
+  <p><strong>Total:</strong> ${{ pedido.total.toFixed(2) }}</p>
+  <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
+  <p><strong>Hora:</strong> {{ pedido.hora }}</p>
+  <p><strong>Estado:</strong> {{ pedido.estado }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cerrar()">Cerrar</button>
+  <button *ngIf="pedido.estado === 'Pagado'" mat-flat-button color="primary" (click)="imprimir()">
+    Imprimir Boleta
+  </button>
+</mat-dialog-actions>
