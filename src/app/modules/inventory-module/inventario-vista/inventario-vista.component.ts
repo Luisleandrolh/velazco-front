@@ -75,10 +75,11 @@ intentoGuardar: boolean = false;
     const term = this.searchTerm.toLowerCase();
     return this.productos.filter(p =>
       p.name.toLowerCase().includes(term) ||
-      p.category?.name.toLowerCase().includes(term)
+      p.category?.name.toLowerCase().includes(term) ||
+      p.id.toString().includes(term)
     );
   }
-
+  
 
   // Métodos públicos
   abrirModalEdicion(producto: Producto): void {
@@ -138,7 +139,7 @@ actualizarCategoria() {
       next: (res) => { //si la api se ejecuta correctamente se ejecuta el bloque 
         this.categorias[this.categoriaEnEdicion!].name = editada; //se actualiza el name
         this.cancelarEdicion();
-        alert('✅ Categoría actualizada correctamente');
+        this.mostrarAlerta("Categoria actualizada correctamente")
       },
       error: (err) => {
         console.error('Error al actualizar categoría', err);
@@ -154,7 +155,7 @@ actualizarCategoria() {
     next: () => {
       this.categorias = this.categorias.filter(c => c.id !== categoria.id);
       this.cancelarEdicion();
-      alert('🗑️ Categoría eliminada correctamente');
+      this.mostrarAlerta('🗑️ Categoría eliminada correctamente');
     },
     error: (err) => {
       console.error('Error al eliminar categoría', err);
@@ -249,7 +250,7 @@ actualizarProducto() {
   this.serviceProducto.actualizarProducto(this.productoActual.id, this.productoActual).subscribe({
     next: (res) => {
       console.log('Producto actualizado:', res);
-      alert('✅ Producto actualizado correctamente');
+      this.mostrarAlerta('✅ Producto actualizado correctamente');
       this.cargarProductos();
     },
     error: (err) => console.error('Error al actualizar producto:', err)

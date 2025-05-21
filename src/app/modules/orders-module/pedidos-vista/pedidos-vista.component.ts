@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { InventarioServiceService } from '../../inventory-module/services/inventario-service.service';
+import { CategoriaService } from '../../inventory-module/services/categoria.service';
 
 @Component({
   selector: 'app-pedidos-vista',
@@ -10,6 +12,10 @@ export class PedidosVistaComponent {
   /* =======================
      Productos disponibles
      ======================= */
+
+  productos: any = [];
+  categorias: any = [];
+  /*
   productos = [
     {
       nombre: 'Torta de Chocolate',
@@ -41,6 +47,8 @@ export class PedidosVistaComponent {
     }
   ];
 
+  */
+
   /* =======================
      Estado de la vista
      ======================= */
@@ -57,19 +65,54 @@ export class PedidosVistaComponent {
   /* =======================
      Filtros de productos
      ======================= */
+
+
+  constructor(private inventarioService: InventarioServiceService, private categoriaService: CategoriaService){
+
+  }
+
+
+  ngOnInit(): void {
+    this.cargarProductos();
+    this.cargarCategorias();
+    console.log(this.productos);
+
+  }
+
+  cargarProductos() {
+    this.inventarioService.obtenerProductosActivos().subscribe({
+      next: (data) => {
+        this.productos = data;
+      },
+      error: (err) => console.error('Error al obtener productos:', err)
+    });
+  }
+
+  cargarCategorias() {
+    this.categoriaService.obtenerCategorias().subscribe({
+      next: (data) => {
+        this.categorias = ['Todos', ...data.map((cat: { name: any; }) => cat.name)];
+      },
+      error: (err) => console.error('Error al obtener productos:', err)
+    });
+  }
+
+
+  
   get productosFiltrados() {
-    return this.productos.filter(producto => {
+    return this.productos.filter((producto: { name: string; category: { name: string; }; }) => {
       const coincideTexto =
-        producto.nombre.toLowerCase().includes(this.textoBusqueda.toLowerCase()) ||
-        producto.descripcion.toLowerCase().includes(this.textoBusqueda.toLowerCase());
+        producto.name.toLowerCase().includes(this.textoBusqueda.toLowerCase()) 
 
       const coincideCategoria =
         this.categoriaSeleccionada === 'Todos' ||
-        producto.categoria === this.categoriaSeleccionada;
+        producto.category.name === this.categoriaSeleccionada;
 
       return coincideTexto && coincideCategoria;
     });
   }
+
+ 
 
   cambiarCategoria(categoria: string) {
     this.categoriaSeleccionada = categoria;

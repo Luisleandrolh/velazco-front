@@ -21,6 +21,12 @@ export class InventarioServiceService {
       catchError(this.handleError));
   }
 
+  obtenerProductosActivos(): Observable<any> {  
+    return this.http.get(`${this.apiUrl}/available`).pipe( 
+      catchError(this.handleError));
+  }
+
+
   //post
   agregarProducto(producto: any): Observable<any> {
     return this.http.post(this.apiUrl, producto).pipe(
