@@ -20,6 +20,23 @@ private dominio: string = environment.baseUrlApi;
     );
   }
 
+    // GET - Obtener pedidos por estado con paginación
+  obtenerPedidosPorEstado(
+    estado: string, 
+    pagina: number = 0, 
+    tamanio: number = 10
+  ): Observable<any> {
+    const url = `${this.apiUrl}/status/${estado}`;
+    const params = {
+      page: pagina.toString(),
+      size: tamanio.toString()
+    };
+
+    return this.http.get(url, { params }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
 
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la petición:', error);

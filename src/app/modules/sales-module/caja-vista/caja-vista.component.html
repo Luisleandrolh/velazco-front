@@ -30,22 +30,22 @@
     <h2 *ngIf="tabIndex === 0" class="subtitulo">Pedidos Pendientes de Pago</h2>
     <p class="text-muted" *ngIf="tabIndex === 0">Gestione los pagos de los pedidos realizados en tienda</p>
 
-    <mat-card *ngFor="let pedido of getPedidosFiltrados()" class="pedido-card">
+    <mat-card *ngFor="let pedido of pedidosPendientes" class="pedido-card">
       <!-- Itera sobre los pedidos filtrados según el texto de búsqueda y el tab seleccionado. -->
 
       <mat-card-content class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
-          <h3 class="codigo">{{ pedido.codigo }}</h3>
-          <p class="cliente">{{ pedido.cliente }}</p>
+          <h3 class="codigo">{{ pedido.id }}</h3>
+          <p class="cliente">{{ pedido.clienteName }}</p>
 
       <!-- Muestra el código del pedido, el nombre del cliente, y un chip que indica el estado con estilos diferentes. -->
 
           <mat-chip [ngClass]="{
-              'chip-pendiente': pedido.estado === 'Pendiente',
-              'chip-pagado': pedido.estado === 'Pagado',
-              'chip-cancelado': pedido.estado === 'Cancelado'
+              'chip-pendiente': pedido.status === 'PENDIENTE',
+              'chip-pagado': pedido.status === 'Pagado',
+              'chip-cancelado': pedido.status === 'Cancelado'
             }" selected>
-            {{ pedido.estado }}
+            {{ pedido.status }}
           </mat-chip>
         </div>
 

@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
 import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pedido-dialog.component';
+import { OrdersModuleService } from "../../orders-module/services/orders-module.service";
 
 
 export interface Pedido {   // Define una interfaz para los pedidos
@@ -22,23 +23,19 @@ export class CajaVistaComponent {  // Clase del componente
   tabIndex = 0; // Índice de la pestaña activa (0 = Pendiente, 1 = Pagado, 2 = Cancelado, 3 = Todos)
 
   pedidos: Pedido[] = [ // Lista de pedidos simulada
-    { codigo: 'PED-1023', cliente: 'María González', total: 49.49, fecha: '23/04/2023', hora: '14:30', estado: 'Pendiente' },
-    { codigo: 'PED-1022', cliente: 'Carlos Rodríguez', total: 35.75, fecha: '23/04/2023', hora: '12:15', estado: 'Pagado' },
-    { codigo: 'PED-1021', cliente: 'Luis Pérez', total: 62.30, fecha: '22/04/2023', hora: '17:45', estado: 'Cancelado' },
-    { codigo: 'PED-1020', cliente: 'Ana Martínez', total: 28.10, fecha: '22/04/2023', hora: '10:05', estado: 'Pendiente' },
-    { codigo: 'PED-1019', cliente: 'Pedro López', total: 75.99, fecha: '21/04/2023', hora: '13:20', estado: 'Pagado' },
-    { codigo: 'PED-1018', cliente: 'Lucía Ramírez', total: 19.50, fecha: '21/04/2023', hora: '15:50', estado: 'Cancelado' },
-    { codigo: 'PED-1017', cliente: 'Jorge Salazar', total: 88.00, fecha: '20/04/2023', hora: '11:10', estado: 'Pagado' },
-    { codigo: 'PED-1016', cliente: 'Isabel Torres', total: 42.25, fecha: '20/04/2023', hora: '09:35', estado: 'Pendiente' },
-    { codigo: 'PED-1015', cliente: 'Gabriela Castro', total: 53.40, fecha: '19/04/2023', hora: '14:45', estado: 'Cancelado' },
-    { codigo: 'PED-1014', cliente: 'Héctor Fernández', total: 37.60, fecha: '19/04/2023', hora: '16:30', estado: 'Pagado' },
-    { codigo: 'PED-1013', cliente: 'Verónica Ríos', total: 61.10, fecha: '18/04/2023', hora: '12:00', estado: 'Pendiente' },
-    { codigo: 'PED-1012', cliente: 'Mario Aguilar', total: 25.30, fecha: '18/04/2023', hora: '17:20', estado: 'Pagado' },
-    { codigo: 'PED-1011', cliente: 'Rosa Delgado', total: 33.90, fecha: '17/04/2023', hora: '15:00', estado: 'Cancelado' }
-  ];
+    ];
 
-  constructor(private dialog: MatDialog) { } // Inyección del servicio MatDialog para abrir modales
 
+
+  pedidosPendientes: any = [];
+
+  constructor(private dialog: MatDialog, private orderService: OrdersModuleService) { } // Inyección del servicio MatDialog para abrir modales
+
+
+  ngOnInit(): void {
+    this.getPedidosPendiente();
+    
+  }
 
   getPedidosFiltrados(): Pedido[] {
     const estados = ['Pendiente', 'Pagado', 'Cancelado'];
@@ -48,6 +45,17 @@ export class CajaVistaComponent {  // Clase del componente
       p.codigo.toLowerCase().includes(this.filtro.toLowerCase())
     );
   }
+
+  getPedidosPendiente(){
+    this.orderService.obtenerPedidosPorEstado('PENDIENTE',0,10).subscribe({
+      next: (data) => {
+        this.pedidosPendientes = data;
+      },
+      error: (err) => console.error('Error al obtener pedidos:', err)
+    }); 
+  }
+
+
 
   abrirDialogo(pedido: Pedido): void { //metodo para abrir el metodo con el detalle de pedido
     this.dialog.open(DetallePedidoDialogComponent, {
