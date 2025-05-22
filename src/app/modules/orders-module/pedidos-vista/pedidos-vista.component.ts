@@ -1,16 +1,13 @@
-
-
 import { Component } from '@angular/core';
 import { InventarioServiceService } from '../../inventory-module/services/inventario-service.service';
 import { CategoriaService } from '../../inventory-module/services/categoria.service';
 
-  @Component({
-    selector: 'app-pedidos-vista',
-    templateUrl: './pedidos-vista.component.html',
-    styleUrls: ['./pedidos-vista.component.css']
-  })
-  export class PedidosVistaComponent {
-
+@Component({
+  selector: 'app-pedidos-vista',
+  templateUrl: './pedidos-vista.component.html',
+  styleUrls: ['./pedidos-vista.component.css']
+})
+export class PedidosVistaComponent {
 
   /* =======================
      Productos disponibles
@@ -49,7 +46,6 @@ import { CategoriaService } from '../../inventory-module/services/categoria.serv
       imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDUlo9wibjLp10nBwM2EiJGfiKTdItEamrAQ&s'
     }
   ];
->>>>>>> e2e67b8874c22859efb4b711166fec8f1b3ab271
 
   */
 
@@ -66,18 +62,6 @@ import { CategoriaService } from '../../inventory-module/services/categoria.serv
   carrito: { producto: any; cantidad: number }[] = [];
   nombreCliente: string = '';
 
-
-  constructor ( private serviceProducto: InventarioServiceService) {
-
-  
-  }
-
-
-  getProductos() {
-    
-  }
-
-
   /* =======================
      Filtros de productos
      ======================= */
@@ -86,6 +70,11 @@ import { CategoriaService } from '../../inventory-module/services/categoria.serv
   constructor(private inventarioService: InventarioServiceService, private categoriaService: CategoriaService){
 
   }
+
+
+  categoriasMock: string[] = ['Todos', 'Tortas', 'Pasteles', 'Galletas', 'Cupcakes', 'Helados'];
+
+
 
 
   ngOnInit(): void {
@@ -138,7 +127,7 @@ import { CategoriaService } from '../../inventory-module/services/categoria.serv
      Carrito: operaciones
      ======================= */
   agregarAlCarrito(producto: any) {
-    const itemExistente = this.carrito.find(item => item.producto.nombre === producto.nombre);
+    const itemExistente = this.carrito.find(item => item.producto.name === producto.name);
     if (itemExistente) {
       itemExistente.cantidad += 1;
     } else {
@@ -169,13 +158,13 @@ import { CategoriaService } from '../../inventory-module/services/categoria.serv
      ======================= */
   subtotalCarrito(): number {
     return this.carrito.reduce(
-      (total, item) => total + item.producto.precio * item.cantidad,
+      (total, item) => total + item.producto.price * item.cantidad,
       0
     );
   }
 
   impuestosCarrito(): number {
-    const tasaImpuestos = 0.10; // 10 %
+    const tasaImpuestos = 0; // 10 %
     return this.subtotalCarrito() * tasaImpuestos;
   }
 
@@ -199,7 +188,7 @@ import { CategoriaService } from '../../inventory-module/services/categoria.serv
       return;
     }
 
-    alert(`¡Gracias por tu compra, ${this.nombreCliente}!`);
+    alert(`¡Pedido confirmado , ${this.nombreCliente}!`);
     this.vaciarCarrito();
     this.nombreCliente = '';
     this.mostrarModal = false;

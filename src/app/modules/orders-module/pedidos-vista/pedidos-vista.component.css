@@ -162,9 +162,7 @@ h2 {
 
 /* Modal general */
 .modal {
-  display: block;
-  opacity: 0;
-  pointer-events: none;
+  display: none; /* Oculto completamente por defecto */
   position: fixed;
   z-index: 999;
   left: 0;
@@ -176,6 +174,7 @@ h2 {
 }
 
 .modal.show {
+  display: block; /* Solo aparece cuando se activa */
   opacity: 1;
   pointer-events: auto;
 }

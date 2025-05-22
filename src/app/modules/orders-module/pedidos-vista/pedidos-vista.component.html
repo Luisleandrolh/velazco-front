@@ -55,7 +55,7 @@
 
       <div *ngIf="carrito.length > 0; else carritoVacio">
         <div *ngFor="let item of carrito" class="d-flex align-items-center mb-3 border-bottom pb-2">
-          <img [src]="item.producto.imagen" alt="Producto" width="50" height="50" class="me-3" />
+          <img src="https://st4.depositphotos.com/10614052/25239/i/450/depositphotos_252391082-stock-photo-sweet-chocolate-cake-on-wooden.jpg" alt="Producto" width="50" height="50" class="me-3" />
           <div class="flex-grow-1">
             <strong>{{ item.producto.name }}</strong>
             <div class="text-muted">{{ item.producto.price | currency:'S/. ' }}</div>
