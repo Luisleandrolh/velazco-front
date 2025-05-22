@@ -2,7 +2,8 @@ import { Component } from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
 import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pedido-dialog.component';
 
-export interface Pedido {
+
+export interface Pedido {   // Define una interfaz para los pedidos
   codigo: string;
   cliente: string;
   total: number;
@@ -16,11 +17,11 @@ export interface Pedido {
   templateUrl: './caja-vista.component.html',
   styleUrls: ['./caja-vista.component.css']
 })
-export class CajaVistaComponent {
-  filtro = '';
-  tabIndex = 0;
+export class CajaVistaComponent {  // Clase del componente
+  filtro = ''; // Cadena para almacenar el filtro de búsqueda
+  tabIndex = 0; // Índice de la pestaña activa (0 = Pendiente, 1 = Pagado, 2 = Cancelado, 3 = Todos)
 
-  pedidos: Pedido[] = [
+  pedidos: Pedido[] = [ // Lista de pedidos simulada
     { codigo: 'PED-1023', cliente: 'María González', total: 49.49, fecha: '23/04/2023', hora: '14:30', estado: 'Pendiente' },
     { codigo: 'PED-1022', cliente: 'Carlos Rodríguez', total: 35.75, fecha: '23/04/2023', hora: '12:15', estado: 'Pagado' },
     { codigo: 'PED-1021', cliente: 'Luis Pérez', total: 62.30, fecha: '22/04/2023', hora: '17:45', estado: 'Cancelado' },
@@ -36,42 +37,43 @@ export class CajaVistaComponent {
     { codigo: 'PED-1011', cliente: 'Rosa Delgado', total: 33.90, fecha: '17/04/2023', hora: '15:00', estado: 'Cancelado' }
   ];
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog) { } // Inyección del servicio MatDialog para abrir modales
+
 
   getPedidosFiltrados(): Pedido[] {
     const estados = ['Pendiente', 'Pagado', 'Cancelado'];
-    const estadoFiltro = this.tabIndex === 3 ? estados : [estados[this.tabIndex]];
-    return this.pedidos.filter(p =>
-      estadoFiltro.includes(p.estado) &&
+    const estadoFiltro = this.tabIndex === 3 ? estados : [estados[this.tabIndex]]; // Si está en "Todos", muestra todos; si no, filtra por el estado de la pestaña
+    return this.pedidos.filter(p => //devuelve la lista de pedidos filtrados
+      estadoFiltro.includes(p.estado) && //con el estado que se selecciono
       p.codigo.toLowerCase().includes(this.filtro.toLowerCase())
     );
   }
 
-  abrirDialogo(pedido: Pedido): void {
+  abrirDialogo(pedido: Pedido): void { //metodo para abrir el metodo con el detalle de pedido
     this.dialog.open(DetallePedidoDialogComponent, {
       width: '400px',
       data: pedido
     });
   }
 
-  imprimirBoleta(pedido: Pedido): void {
+  imprimirBoleta(pedido: Pedido): void { // Simula la impresión de una boleta (alerta)
     console.log('Imprimiendo boleta para pedido:', pedido);
-    const detalle = `
+    const detalle = ` 
       Pedido: ${pedido.codigo}\n
       Cliente: ${pedido.cliente}\n
       Total: $${pedido.total.toFixed(2)}\n
       Fecha: ${pedido.fecha} ${pedido.hora}
-    `;
+    `;  // Crea un texto con los datos del pedido
     alert(detalle);
   }
 
-  pagarPedido(pedido: Pedido): void {
-    pedido.estado = 'Pagado';
+  pagarPedido(pedido: Pedido): void { // Método para marcar un pedido como pagado
+    pedido.estado = 'Pagado'; // Cambia el estado
     console.log(`Pedido ${pedido.codigo} marcado como Pagado.`);
   }
 
-  cancelarPedido(pedido: Pedido): void {
-    pedido.estado = 'Cancelado';
+  cancelarPedido(pedido: Pedido): void { // Método para marcar un pedido como cancelado
+    pedido.estado = 'Cancelado'; // Cambia el estado
     console.log(`Pedido ${pedido.codigo} marcado como Cancelado.`);
   }
 }

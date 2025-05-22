@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Detalles del Pedido</h2>
 
 <mat-dialog-content class="mat-typography">
-  <p><strong>Código:</strong> {{ pedido.codigo }}</p>
+  <p><strong>Código:</strong> {{ pedido.codigo }}</p> <!-- Muestra el código del pedido -->
   <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
   <p><strong>Total:</strong> ${{ pedido.total.toFixed(2) }}</p>
   <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
@@ -11,7 +11,8 @@
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="cerrar()">Cerrar</button>
-  <button *ngIf="pedido.estado === 'Pagado'" mat-flat-button color="primary" (click)="imprimir()">
+  <button *ngIf="pedido.estado === 'Pagado'" mat-flat-button color="primary" (click)="imprimir()"> 
+    <!-- Solo muestra este botón si el pedido está pagado -->
     Imprimir Boleta
-  </button>
+  </button><!-- Botón para imprimir la boleta -->
 </mat-dialog-actions>

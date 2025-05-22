@@ -1,31 +1,32 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core'; // Importa decorador y función para inyectar datos en el constructor
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'; // Importa constantes para acceder a los datos del diálogo
 
-export interface Pedido {
-  codigo: string;
-  cliente: string;
-  total: number;
-  fecha: string;
-  hora: string;
-  estado: string;
+export interface Pedido { // Interfaz que representa la estructura de un pedido
+  codigo: string; // Código del pedido
+  cliente: string; // Cliente que hizo el pedido
+  total: number; // Total a pagar
+  fecha: string; // Fecha del pedido
+  hora: string; // Hora del pedido
+  estado: string; // Estado actual del pedido (Pendiente, Pagado, Cancelado)
 }
 
 @Component({
-  selector: 'app-detalle-pedido-dialog',
-  templateUrl: './detalle-pedido-dialog.component.html',
-  styleUrls: ['./detalle-pedido-dialog.component.css']
+  selector: 'app-detalle-pedido-dialog', // Nombre del componente
+  templateUrl: './detalle-pedido-dialog.component.html', // Ruta del HTML asociado
+  styleUrls: ['./detalle-pedido-dialog.component.css'] // Ruta del CSS asociado
 })
 export class DetallePedidoDialogComponent {
+
   constructor(
-    public dialogRef: MatDialogRef<DetallePedidoDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public pedido: Pedido
+    public dialogRef: MatDialogRef<DetallePedidoDialogComponent>, // Referencia al diálogo actual para poder cerrarlo
+    @Inject(MAT_DIALOG_DATA) public pedido: Pedido // Inyecta los datos pasados al diálogo (el pedido)
   ) {}
 
-  cerrar(): void {
-    this.dialogRef.close();
+  cerrar(): void { // Método que cierra el diálogo
+    this.dialogRef.close(); // Cierra el modal (equivale a cerrar el popup)
   }
 
-  imprimir(): void {
-    window.print(); // O lógica personalizada
+  imprimir(): void { // Método que simula la impresión
+    window.print(); // Abre el diálogo de impresión del navegador
   }
 }
