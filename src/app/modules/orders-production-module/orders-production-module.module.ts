@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { OrdersProductionModuleRoutingModule } from './orders-production-module-routing.module';
 import { OrdenesproduccionComponent } from './ordenesproduccion/ordenesproduccion.component';
+import { FormsModule } from '@angular/forms';
+
 
 
 @NgModule({
@@ -13,7 +15,9 @@ import { OrdenesproduccionComponent } from './ordenesproduccion/ordenesproduccio
   ],
   imports: [
     CommonModule,
-    OrdersProductionModuleRoutingModule
+    OrdersProductionModuleRoutingModule,
+    FormsModule
+
   ]
 })
 export class OrdersProductionModuleModule { }

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PedidosVistaComponent } from './pedidos-vista/pedidos-vista.component';
 
-const routes: Routes = [
+const routes: Routes = [ //arreglo de rutas
     {
           path: 'pedidos',
           component: PedidosVistaComponent,
@@ -10,8 +10,8 @@ const routes: Routes = [
       
 ];
 
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
+@NgModule({ //submodulo de rutas
+  imports: [RouterModule.forChild(routes)], //indica las rutas hijas del modulo
   exports: [RouterModule]
 })
 export class OrdersModuleRoutingModule { }
