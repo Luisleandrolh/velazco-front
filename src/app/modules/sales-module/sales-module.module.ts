@@ -13,11 +13,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { DetallePedidoDialogComponent } from './caja-vista/detalle-pedido-dialog/detalle-pedido-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { FiltroPedidoPipe } from './pipe/filtro-pedido.pipe'; // ajusta ruta según ubicación real
 
 @NgModule({
   declarations: [
     CajaVistaComponent,
-    DetallePedidoDialogComponent
+    DetallePedidoDialogComponent,
+     FiltroPedidoPipe,
   ],
   imports: [
     CommonModule,
@@ -32,7 +34,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatIconModule,
     MatButtonModule,
     MatChipsModule,
-    MatDialogModule
+    MatDialogModule,
+    
    
   ]
 })

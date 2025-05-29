@@ -10,50 +10,46 @@
   </div>
 
   <div class="text-end mb-2">
-    <button mat-stroked-button color="primary">
+    <button mat-stroked-button color="primary" (click)="cargarPedidosPorEstado()">
       <mat-icon>filter_alt</mat-icon>
       Filtrar
     </button>
   </div>
 
-
   <!-- clasificar pedidos -->
-  <mat-tab-group [(selectedIndex)]="tabIndex" class="tabs">
+  <mat-tab-group [selectedIndex]="tabIndex" (selectedIndexChange)="onTabChange($event)" class="tabs">
     <mat-tab label="Pendientes"></mat-tab>
     <mat-tab label="Pagados"></mat-tab>
     <mat-tab label="Cancelados"></mat-tab>
     <mat-tab label="Todos"></mat-tab>
   </mat-tab-group>
 
-
   <div class="mt-4">
-    <h2 *ngIf="tabIndex === 0" class="subtitulo">Pedidos Pendientes de Pago</h2>
+    <h2 class="subtitulo">
+      {{ tabIndex === 0 ? 'Pedidos Pendientes de Pago' : 
+         tabIndex === 1 ? 'Pedidos Pagados' :
+         tabIndex === 2 ? 'Pedidos Cancelados' : 'Todos los Pedidos' }}
+    </h2>
     <p class="text-muted" *ngIf="tabIndex === 0">Gestione los pagos de los pedidos realizados en tienda</p>
 
-    <mat-card *ngFor="let pedido of pedidosPendientes" class="pedido-card">
-      <!-- Itera sobre los pedidos filtrados según el texto de búsqueda y el tab seleccionado. -->
-
+    <mat-card *ngFor="let pedido of pedidosPendientes | filtroPedido:filtro" class="pedido-card">
       <mat-card-content class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
-          <h3 class="codigo">{{ pedido.id }}</h3>
-          <p class="cliente">{{ pedido.clienteName }}</p>
-
-      <!-- Muestra el código del pedido, el nombre del cliente, y un chip que indica el estado con estilos diferentes. -->
+          <h3 class="codigo">{{ pedido.codigo }}</h3>
+          <p class="cliente">{{ pedido.cliente }}</p>
 
           <mat-chip [ngClass]="{
-              'chip-pendiente': pedido.status === 'PENDIENTE',
-              'chip-pagado': pedido.status === 'Pagado',
-              'chip-cancelado': pedido.status === 'Cancelado'
+              'chip-pendiente': pedido.estado === 'Pendiente',
+              'chip-pagado': pedido.estado === 'Pagado',
+              'chip-cancelado': pedido.estado === 'Cancelado'
             }" selected>
-            {{ pedido.status }}
+            {{ pedido.estado }}
           </mat-chip>
         </div>
 
         <div class="text-end">
           <h3 class="monto">${{ pedido.total.toFixed(2) }}</h3> 
           <p class="fecha">{{ pedido.fecha }} - {{ pedido.hora }}</p>
-
-         
 
           <button *ngIf="pedido.estado === 'Pendiente'" mat-stroked-button class="btn-pagar me-2"
             (click)="pagarPedido(pedido)">

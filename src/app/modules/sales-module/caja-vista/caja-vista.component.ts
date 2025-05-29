@@ -3,8 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pedido-dialog.component';
 import { OrdersModuleService } from "../../orders-module/services/orders-module.service";
 
-
-export interface Pedido {   // Define una interfaz para los pedidos
+export interface Pedido {
   codigo: string;
   cliente: string;
   total: number;
@@ -18,70 +17,103 @@ export interface Pedido {   // Define una interfaz para los pedidos
   templateUrl: './caja-vista.component.html',
   styleUrls: ['./caja-vista.component.css']
 })
-export class CajaVistaComponent {  // Clase del componente
-  filtro = ''; // Cadena para almacenar el filtro de búsqueda
-  tabIndex = 0; // Índice de la pestaña activa (0 = Pendiente, 1 = Pagado, 2 = Cancelado, 3 = Todos)
+export class CajaVistaComponent {
+  filtro = '';
+  tabIndex = 0;
 
-  pedidos: Pedido[] = [ // Lista de pedidos simulada
-    ];
+  pedidosPendientes: Pedido[] = [];
 
-
-
-  pedidosPendientes: any = [];
-
-  constructor(private dialog: MatDialog, private orderService: OrdersModuleService) { } // Inyección del servicio MatDialog para abrir modales
-
+  constructor(private dialog: MatDialog, private orderService: OrdersModuleService) { }
 
   ngOnInit(): void {
-    this.getPedidosPendiente();
-    
+    this.cargarPedidosPorEstado();
   }
 
-  getPedidosFiltrados(): Pedido[] {
-    const estados = ['Pendiente', 'Pagado', 'Cancelado'];
-    const estadoFiltro = this.tabIndex === 3 ? estados : [estados[this.tabIndex]]; // Si está en "Todos", muestra todos; si no, filtra por el estado de la pestaña
-    return this.pedidos.filter(p => //devuelve la lista de pedidos filtrados
-      estadoFiltro.includes(p.estado) && //con el estado que se selecciono
-      p.codigo.toLowerCase().includes(this.filtro.toLowerCase())
-    );
-  }
+cargarPedidosPorEstado() {
+  const estadosMap = ['PENDIENTE', 'PAGADO', 'CANCELADO'];
 
-  getPedidosPendiente(){
-    this.orderService.obtenerPedidosPorEstado('PENDIENTE',0,10).subscribe({
+  if (this.tabIndex === 3) {
+    this.obtenerTodosPedidos();
+  } else {
+    this.orderService.obtenerPedidosPorEstado(estadosMap[this.tabIndex], 0, 10).subscribe({
       next: (data) => {
-        this.pedidosPendientes = data;
+        this.pedidosPendientes = data.content.map((pedido: any) => ({
+          codigo: pedido.id.toString(),
+          cliente: pedido.clientName,
+          total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.price || 0) * (det.quantity || 0)), 0) || 0,
+          fecha: new Date(pedido.date).toLocaleDateString(),
+          hora: new Date(pedido.date).toLocaleTimeString(),
+          estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
+                  pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado'
+        }));
       },
       error: (err) => console.error('Error al obtener pedidos:', err)
-    }); 
+    });
+  }
+}
+
+  obtenerTodosPedidos() {
+    // Ejemplo simple: hacer 3 llamadas y concatenar resultados, o ajustar según API
+    const estados = ['PENDIENTE', 'PAGADO', 'CANCELADO'];
+    const pedidosAcumulados: Pedido[] = [];
+    let llamadasCompletadas = 0;
+
+    estados.forEach(estado => {
+      this.orderService.obtenerPedidosPorEstado(estado, 0, 10).subscribe({
+        next: (data) => {
+          const pedidosMapeados = data.content.map((pedido: any) => ({
+            codigo: pedido.id.toString(),
+            cliente: pedido.clientName,
+            total: pedido.details?.reduce((acc: any, det: any) => acc + ((det.price || 0) * (det.quantity || 0)), 0) || 0,
+            fecha: new Date(pedido.date).toLocaleDateString(),
+            hora: new Date(pedido.date).toLocaleTimeString(),
+            estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
+              pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado'
+          }));
+
+          pedidosAcumulados.push(...pedidosMapeados);
+          llamadasCompletadas++;
+          if (llamadasCompletadas === estados.length) {
+            this.pedidosPendientes = pedidosAcumulados;
+          }
+        },
+        error: (err) => console.error('Error al obtener pedidos:', err)
+      });
+    });
   }
 
+  // Escuchar cambios de tab para recargar pedidos
+  onTabChange(index: number) {
+    this.tabIndex = index;
+    this.cargarPedidosPorEstado();
+  }
 
-
-  abrirDialogo(pedido: Pedido): void { //metodo para abrir el metodo con el detalle de pedido
+  abrirDialogo(pedido: Pedido): void {
     this.dialog.open(DetallePedidoDialogComponent, {
       width: '400px',
       data: pedido
     });
   }
 
-  imprimirBoleta(pedido: Pedido): void { // Simula la impresión de una boleta (alerta)
-    console.log('Imprimiendo boleta para pedido:', pedido);
+  imprimirBoleta(pedido: Pedido): void {
     const detalle = ` 
       Pedido: ${pedido.codigo}\n
       Cliente: ${pedido.cliente}\n
       Total: $${pedido.total.toFixed(2)}\n
       Fecha: ${pedido.fecha} ${pedido.hora}
-    `;  // Crea un texto con los datos del pedido
+    `;
     alert(detalle);
   }
 
-  pagarPedido(pedido: Pedido): void { // Método para marcar un pedido como pagado
-    pedido.estado = 'Pagado'; // Cambia el estado
+  pagarPedido(pedido: Pedido): void {
+    // Aquí podrías llamar al backend para actualizar estado
+    pedido.estado = 'Pagado';
     console.log(`Pedido ${pedido.codigo} marcado como Pagado.`);
   }
 
-  cancelarPedido(pedido: Pedido): void { // Método para marcar un pedido como cancelado
-    pedido.estado = 'Cancelado'; // Cambia el estado
+  cancelarPedido(pedido: Pedido): void {
+    // Aquí podrías llamar al backend para actualizar estado
+    pedido.estado = 'Cancelado';
     console.log(`Pedido ${pedido.codigo} marcado como Cancelado.`);
   }
 }
