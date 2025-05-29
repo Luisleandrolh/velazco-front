@@ -10,6 +10,16 @@ export interface Pedido {
   fecha: string;
   hora: string;
   estado: 'Pendiente' | 'Pagado' | 'Cancelado';
+  details?: DetallePedido[];
+}
+
+export interface DetallePedido {
+  quantity: number;
+  unitPrice: number;
+  product: {
+    id: number;
+    name: string;
+  };
 }
 
 @Component({
@@ -40,12 +50,17 @@ cargarPedidosPorEstado() {
         this.pedidosPendientes = data.content.map((pedido: any) => ({
           codigo: pedido.id.toString(),
           cliente: pedido.clientName,
-          total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.price || 0) * (det.quantity || 0)), 0) || 0,
+          total: pedido.details?.reduce(
+            (acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)),
+            0
+          ) || 0,
           fecha: new Date(pedido.date).toLocaleDateString(),
           hora: new Date(pedido.date).toLocaleTimeString(),
           estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
-                  pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado'
+                  pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
+          details: pedido.details || [] // ← NECESARIO
         }));
+        
       },
       error: (err) => console.error('Error al obtener pedidos:', err)
     });
@@ -64,11 +79,15 @@ cargarPedidosPorEstado() {
           const pedidosMapeados = data.content.map((pedido: any) => ({
             codigo: pedido.id.toString(),
             cliente: pedido.clientName,
-            total: pedido.details?.reduce((acc: any, det: any) => acc + ((det.price || 0) * (det.quantity || 0)), 0) || 0,
+            total: pedido.details?.reduce(
+              (acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)),
+              0
+            ) || 0,
             fecha: new Date(pedido.date).toLocaleDateString(),
             hora: new Date(pedido.date).toLocaleTimeString(),
             estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
-              pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado'
+                    pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
+            details: pedido.details || [] // ← NECESARIO
           }));
 
           pedidosAcumulados.push(...pedidosMapeados);
@@ -105,10 +124,19 @@ cargarPedidosPorEstado() {
     alert(detalle);
   }
 
+  calcularTotal(pedido: any){
+    let acum = 0;
+    for(let detalle of pedido.details){
+      acum += detalle.unitPrice * detalle.quantity;
+    }
+    return acum;
+  }
+
   pagarPedido(pedido: Pedido): void {
     // Aquí podrías llamar al backend para actualizar estado
     pedido.estado = 'Pagado';
     console.log(`Pedido ${pedido.codigo} marcado como Pagado.`);
+    console.log(this.pedidosPendientes);
   }
 
   cancelarPedido(pedido: Pedido): void {

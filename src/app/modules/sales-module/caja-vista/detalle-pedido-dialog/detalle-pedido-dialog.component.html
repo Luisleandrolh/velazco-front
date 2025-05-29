@@ -1,18 +1,42 @@
 <h2 mat-dialog-title>Detalles del Pedido</h2>
 
 <mat-dialog-content class="mat-typography">
-  <p><strong>Código:</strong> {{ pedido.codigo }}</p> <!-- Muestra el código del pedido -->
+  <p><strong>Código:</strong> {{ pedido.codigo }}</p>
   <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
   <p><strong>Total:</strong> ${{ pedido.total.toFixed(2) }}</p>
   <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
   <p><strong>Hora:</strong> {{ pedido.hora }}</p>
   <p><strong>Estado:</strong> {{ pedido.estado }}</p>
+
+  <div *ngIf="pedido.details && pedido.details.length > 0" class="detalles">
+    <h3>Detalles del Pedido</h3>
+    <table class="detalles-tabla">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pedido.details">
+          <td>{{ item.product.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.unitPrice.toFixed(2) }}</td>
+          <td>${{ (item.unitPrice * item.quantity).toFixed(2) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="!pedido.details?.length">
+    <p><em>No hay detalles disponibles para este pedido.</em></p>
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="cerrar()">Cerrar</button>
-  <button *ngIf="pedido.estado === 'Pagado'" mat-flat-button color="primary" (click)="imprimir()"> 
-    <!-- Solo muestra este botón si el pedido está pagado -->
+  <button *ngIf="pedido.estado === 'Pagado'" mat-flat-button color="primary" (click)="imprimir()">
     Imprimir Boleta
-  </button><!-- Botón para imprimir la boleta -->
+  </button>
 </mat-dialog-actions>

@@ -8,6 +8,16 @@ export interface Pedido { // Interfaz que representa la estructura de un pedido
   fecha: string; // Fecha del pedido
   hora: string; // Hora del pedido
   estado: string; // Estado actual del pedido (Pendiente, Pagado, Cancelado)
+  details?: PedidoDetalle[];
+
+}
+
+export interface PedidoDetalle {
+  product: {
+    name: string;
+  };
+  quantity: number;
+  unitPrice: number;
 }
 
 @Component({

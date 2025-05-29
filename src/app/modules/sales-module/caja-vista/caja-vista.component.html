@@ -48,7 +48,7 @@
         </div>
 
         <div class="text-end">
-          <h3 class="monto">${{ pedido.total.toFixed(2) }}</h3> 
+          <h3 class="monto">${{ calcularTotal(pedido).toFixed(2) }}</h3> 
           <p class="fecha">{{ pedido.fecha }} - {{ pedido.hora }}</p>
 
           <button *ngIf="pedido.estado === 'Pendiente'" mat-stroked-button class="btn-pagar me-2"
