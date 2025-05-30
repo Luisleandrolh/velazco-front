@@ -3,36 +3,43 @@ import { InventarioServiceService } from '../../inventory-module/services/invent
 import { CategoriaService } from '../../inventory-module/services/categoria.service';
 import { OrdersModuleService } from '../services/orders-module.service';
 
+
+interface Producto {
+  id: number;
+  name: string;
+  category: { name: string };
+  image: string;
+  stock: number;
+  unidadMedida: string;
+  price: number;
+  active: boolean;
+}
+
 @Component({
   selector: 'app-pedidos-vista',
   templateUrl: './pedidos-vista.component.html',
   styleUrls: ['./pedidos-vista.component.css']
 })
+
+
+
 export class PedidosVistaComponent {
 
-  /* =======================
-     Productos disponibles
-     ======================= */
+
 
   productos: any = [];
   categorias: any = [];
  
-  /* =======================
-     Estado de la vista
-     ======================= */
+
   textoBusqueda: string = '';
   categoriaSeleccionada: string = 'Todos';
   mostrarModal: boolean = false;
 
-  /* =======================
-     Carrito y cliente
-     ======================= */
+
   carrito: { producto: any; cantidad: number }[] = [];
   nombreCliente: string = '';
 
-  /* =======================
-     Filtros de productos
-     ======================= */
+
 
 
   constructor(private inventarioService: InventarioServiceService, private categoriaService: CategoriaService, private pedidosService: OrdersModuleService){
@@ -43,6 +50,21 @@ export class PedidosVistaComponent {
   categoriasMock: string[] = ['Todos', 'Tortas', 'Pasteles', 'Galletas', 'Cupcakes', 'Helados'];
 
 
+private backendBaseUrl = 'https://velazco-backend-develop.up.railway.app';
+
+
+private mapProducto(p: any): Producto {
+  return {
+    id: p.id,
+    name: p.name || p.nombre || '',
+    category: { name: p.category?.name || p.categoria?.name || '' },
+    image: p.image ? this.backendBaseUrl + p.image : '',
+    stock: p.stock || 0,
+    unidadMedida: p.unidadMedida || 'unidades',
+    price: p.price || p.precio || 0,
+    active: p.active ?? true
+  };
+}
 
 
   ngOnInit(): void {
@@ -52,14 +74,15 @@ export class PedidosVistaComponent {
 
   }
 
-  cargarProductos() {
-    this.inventarioService.obtenerProductosActivos().subscribe({
-      next: (data) => {
-        this.productos = data;
-      },
-      error: (err) => console.error('Error al obtener productos:', err)
-    });
-  }
+cargarProductos() {
+  this.inventarioService.obtenerProductosActivos().subscribe({
+    next: (data) => {
+      this.productos = data.map((p: any) => this.mapProducto(p));
+    },
+    error: (err) => console.error('Error al obtener productos:', err)
+  });
+}
+
 
   cargarCategorias() {
     this.categoriaService.obtenerCategorias().subscribe({
@@ -91,9 +114,7 @@ export class PedidosVistaComponent {
     this.categoriaSeleccionada = categoria;
   }
 
-  /* =======================
-     Carrito: operaciones
-     ======================= */
+
   agregarAlCarrito(producto: any) {
     const itemExistente = this.carrito.find(item => item.producto.name === producto.name);
     if (itemExistente) {
@@ -121,9 +142,6 @@ export class PedidosVistaComponent {
     this.carrito = [];
   }
 
-  /* =======================
-     Cálculos monetarios
-     ======================= */
   subtotalCarrito(): number {
     return this.carrito.reduce(
       (total, item) => total + item.producto.price * item.cantidad,
@@ -140,16 +158,12 @@ export class PedidosVistaComponent {
     return this.subtotalCarrito() + this.impuestosCarrito();
   }
 
-  /* =======================
-     Utilidades
-     ======================= */
+
   obtenerCantidadTotal(): number {
     return this.carrito.reduce((acc, item) => acc + item.cantidad, 0);
   }
 
-  /* =======================
-     Finalizar compra
-     ======================= */
+
      finalizarCompra() {
 
       if (!this.nombreCliente.trim()) {

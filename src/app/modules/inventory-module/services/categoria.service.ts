@@ -12,7 +12,7 @@ export class CategoriaService {
   private apiUrl: string = `${this.dominio}/api/categories`;
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   obtenerCategorias(): Observable<any> {
     return this.http.get(this.apiUrl).pipe(
@@ -20,7 +20,7 @@ export class CategoriaService {
     );
   }
 
-   agregarCategoria(categoria: any): Observable<any> {
+  agregarCategoria(categoria: any): Observable<any> {
     return this.http.post(this.apiUrl, categoria).pipe(
       catchError(this.handleError)
     );
@@ -33,25 +33,18 @@ export class CategoriaService {
     );
   }
 
-  
+
   eliminarCategoria(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
 
-    
-
 
   }
 
-  
-
-
-
-  //un error generico para todos
   private handleError(error: HttpErrorResponse) {
-      console.error('Error en la petición:', error);
-      return throwError(() => new Error('Hubo un problema con la solicitud. Inténtelo de nuevo más tarde.'));
+    console.error('Error en la petición:', error);
+    return throwError(() => new Error('Hubo un problema con la solicitud. Inténtelo de nuevo más tarde.'));
   }
 
 
