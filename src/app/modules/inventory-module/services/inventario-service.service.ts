@@ -49,7 +49,6 @@ eliminarProducto(id: number): Observable<any> {
   );
 }
 
-
 //PATCH; Actualizar estado del producto.
 
 actualizarEstadoActivo(id: number, activo: boolean): Observable<any> {

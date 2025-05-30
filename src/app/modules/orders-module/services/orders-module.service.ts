@@ -6,7 +6,10 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class OrdersModuleService {
+ 
 private dominio: string = environment.baseUrlApi;
   private apiUrl: string = `${this.dominio}/api/orders`;
 
@@ -36,6 +39,18 @@ private dominio: string = environment.baseUrlApi;
       catchError(this.handleError)
     );
   }
+
+
+ confirmarVenta(pedidoId: string, datosPago: any): Observable<any> {
+  return this.http.post(`${this.apiUrl}/${pedidoId}/confirm-sale`, datosPago).pipe(
+    catchError(this.handleError)
+  );
+}
+cancelarVenta(pedidoId: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/${pedidoId}/cancel-sale`, {}).pipe(
+    catchError(this.handleError)
+  );
+}
 
 
   private handleError(error: HttpErrorResponse) {

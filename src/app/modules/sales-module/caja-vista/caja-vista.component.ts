@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
 import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pedido-dialog.component';
 import { OrdersModuleService } from "../../orders-module/services/orders-module.service";
+import Swal from 'sweetalert2';
 
 export interface Pedido {
   codigo: string;
@@ -33,42 +34,43 @@ export class CajaVistaComponent {
 
   pedidosPendientes: Pedido[] = [];
 
-  constructor(private dialog: MatDialog, private orderService: OrdersModuleService) { }
+  constructor(
+    private dialog: MatDialog,
+    private orderService: OrdersModuleService,
+  ) { }
 
   ngOnInit(): void {
     this.cargarPedidosPorEstado();
   }
 
-cargarPedidosPorEstado() {
-  const estadosMap = ['PENDIENTE', 'PAGADO', 'CANCELADO'];
+  cargarPedidosPorEstado() {
+    const estadosMap = ['PENDIENTE', 'PAGADO', 'CANCELADO'];
 
-  if (this.tabIndex === 3) {
-    this.obtenerTodosPedidos();
-  } else {
-    this.orderService.obtenerPedidosPorEstado(estadosMap[this.tabIndex], 0, 10).subscribe({
-      next: (data) => {
-        this.pedidosPendientes = data.content.map((pedido: any) => ({
-          codigo: pedido.id.toString(),
-          cliente: pedido.clientName,
-          total: pedido.details?.reduce(
-            (acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)),
-            0
-          ) || 0,
-          fecha: new Date(pedido.date).toLocaleDateString(),
-          hora: new Date(pedido.date).toLocaleTimeString(),
-          estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
-                  pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
-          details: pedido.details || [] // ← NECESARIO
-        }));
-        
-      },
-      error: (err) => console.error('Error al obtener pedidos:', err)
-    });
+    if (this.tabIndex === 3) {
+      this.obtenerTodosPedidos();
+    } else {
+      this.orderService.obtenerPedidosPorEstado(estadosMap[this.tabIndex], 0, 10).subscribe({
+        next: (data) => {
+          this.pedidosPendientes = data.content.map((pedido: any) => ({
+            codigo: pedido.id.toString(),
+            cliente: pedido.clientName,
+            total: pedido.details?.reduce(
+              (acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)),
+              0
+            ) || 0,
+            fecha: new Date(pedido.date).toLocaleDateString(),
+            hora: new Date(pedido.date).toLocaleTimeString(),
+            estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
+              pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
+            details: pedido.details || [] // Necesario para mostrar detalles
+          }));
+        },
+        error: (err) => console.error('Error al obtener pedidos:', err)
+      });
+    }
   }
-}
 
   obtenerTodosPedidos() {
-    // Ejemplo simple: hacer 3 llamadas y concatenar resultados, o ajustar según API
     const estados = ['PENDIENTE', 'PAGADO', 'CANCELADO'];
     const pedidosAcumulados: Pedido[] = [];
     let llamadasCompletadas = 0;
@@ -86,8 +88,8 @@ cargarPedidosPorEstado() {
             fecha: new Date(pedido.date).toLocaleDateString(),
             hora: new Date(pedido.date).toLocaleTimeString(),
             estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
-                    pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
-            details: pedido.details || [] // ← NECESARIO
+              pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
+            details: pedido.details || []
           }));
 
           pedidosAcumulados.push(...pedidosMapeados);
@@ -101,7 +103,6 @@ cargarPedidosPorEstado() {
     });
   }
 
-  // Escuchar cambios de tab para recargar pedidos
   onTabChange(index: number) {
     this.tabIndex = index;
     this.cargarPedidosPorEstado();
@@ -124,24 +125,85 @@ cargarPedidosPorEstado() {
     alert(detalle);
   }
 
-  calcularTotal(pedido: any){
+  calcularTotal(pedido: any) {
     let acum = 0;
-    for(let detalle of pedido.details){
+    for (let detalle of pedido.details) {
       acum += detalle.unitPrice * detalle.quantity;
     }
     return acum;
   }
 
-  pagarPedido(pedido: Pedido): void {
-    // Aquí podrías llamar al backend para actualizar estado
-    pedido.estado = 'Pagado';
-    console.log(`Pedido ${pedido.codigo} marcado como Pagado.`);
-    console.log(this.pedidosPendientes);
-  }
+pagarPedido(pedido: Pedido): void {
+  const datosPago = {
+    paymentMethod: 'efectivo',
+    totalAmount: pedido.total,
+    cashier: {
+      id: 1,
+      name: ''
+    }
+  };
 
-  cancelarPedido(pedido: Pedido): void {
-    // Aquí podrías llamar al backend para actualizar estado
-    pedido.estado = 'Cancelado';
-    console.log(`Pedido ${pedido.codigo} marcado como Cancelado.`);
-  }
+  this.orderService.confirmarVenta(pedido.codigo, datosPago).subscribe({
+    next: (response: any) => {
+      pedido.estado = 'Pagado';
+      this.mostrarAlerta(`Pedido ${pedido.codigo} marcado como Pagado.`);
+      this.cargarPedidosPorEstado();
+    },
+    error: (err: any) => {
+      console.error(`Error al pagar pedido ${pedido.codigo}:`, err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al procesar el pago. Intenta nuevamente.',
+        confirmButtonText: 'Aceptar'
+      });
+    }
+  });
+}
+
+
+
+
+ cancelarPedido(pedido: Pedido): void {
+  Swal.fire({
+    title: `¿Cancelar el pedido ${pedido.codigo}?`,
+    text: "Esta acción no se puede deshacer.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cancelar',
+    cancelButtonText: 'No, mantener'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.orderService.cancelarVenta(pedido.codigo).subscribe({
+        next: () => {
+          pedido.estado = 'Cancelado';
+          this.mostrarAlerta(`Pedido ${pedido.codigo} cancelado correctamente.`);
+          this.cargarPedidosPorEstado();
+        },
+        error: (err) => {
+          console.error(`Error al cancelar pedido ${pedido.codigo}:`, err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo cancelar el pedido. Intenta nuevamente.',
+            confirmButtonText: 'Aceptar'
+          });
+        }
+      });
+    }
+  });
+}
+
+
+mostrarAlerta(mensaje: string) {
+  Swal.fire({
+    icon: 'success',
+    title: '¡Éxito!',
+    text: mensaje,
+    confirmButtonText: 'Aceptar',
+    timer: 3000,
+    timerProgressBar: true,
+  });
+}
+
 }

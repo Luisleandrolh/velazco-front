@@ -12,7 +12,7 @@ import { PedidosVistaComponent } from './pedidos-vista/pedidos-vista.component';
   imports: [
     CommonModule,
     OrdersModuleRoutingModule,
-    FormsModule,
+    FormsModule, 
 
 
  

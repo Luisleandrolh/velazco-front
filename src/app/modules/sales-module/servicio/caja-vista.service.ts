@@ -12,15 +12,15 @@ export interface Pedido {
     id: number;
     name: string;
   };
-  details: any[]; // Puedes tipar mejor según estructura de detalles
+  details: any[]; // Mejor tipar según estructura real
 }
 
 export interface RespuestaPedidos {
-  content: Pedido[];    // asumo que la API devuelve paginación estilo Spring Data
+  content: Pedido[];
   totalElements: number;
   totalPages: number;
   size: number;
-  number: number;       // página actual
+  number: number;
 }
 
 @Injectable({
@@ -30,7 +30,7 @@ export class OrdersModuleService {
   private dominio: string = environment.baseUrlApi;
   private apiUrl: string = `${this.dominio}/api/orders`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   obtenerPedidosPorEstado(
     estado: string, 
@@ -47,6 +47,8 @@ export class OrdersModuleService {
       catchError(this.handleError)
     );
   }
+
+ 
 
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la petición:', error);
