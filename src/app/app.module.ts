@@ -23,7 +23,8 @@ import { JwtInterceptor } from './core/auth/interceptor/jwt.interceptor';
   declarations: [
     AppComponent,
     PageNotFoundComponent,
-    PageUnauthorizedComponent,
+    PageUnauthorizedComponent,   
+
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

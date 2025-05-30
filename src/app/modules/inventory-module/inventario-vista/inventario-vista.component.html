@@ -6,89 +6,76 @@
     </button>
   </div>
 
-  
-<div class="header-container categoria-header">
-  <h2>Categorías</h2>
-  <button class="add-button" (click)="abrirModalCategoria()">
-    <span>+</span> Agregar Categoria
-  </button>
-</div>
+  <div class="header-container categoria-header">
+    <h2>Categorías</h2>
+    <button class="add-button" (click)="abrirModalCategoria()">
+      <span>+</span> Agregar Categoria
+    </button>
+  </div>
 
-<!-- Modal de Categorías -->
-<div class="modal-overlay" *ngIf="mostrarModalCategoria">
-  <div class="modal-container">
-    <div class="modal-header">
-      <h3>Gestión de Categorías</h3>
-      <button class="close-btn" (click)="cerrarModalCategoria()">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <!-- Formulario para agregar o editar categoría -->
-      <div class="form-group">
-        <label>{{ categoriaEnEdicion !== null ? 'Editar Categoría' : 'Nueva Categoría' }}</label>
-        <input type="text" [(ngModel)]="nuevaCategoria" placeholder="" class="categoria-input" /> <br> <br>
-        <button class="save-btn"
-                *ngIf="categoriaEnEdicion === null"
-                (click)="agregarNuevaCategoria()"
-                [disabled]="!nuevaCategoria">
-          Guardar
-        </button>
-        <button class="save-btn"
-                *ngIf="categoriaEnEdicion !== null"
-                (click)="actualizarCategoria()"
-                [disabled]="!nuevaCategoria">
-          Actualizar
-        </button>
-        <button class="cancel-btn"
-                *ngIf="categoriaEnEdicion !== null"
-                (click)="cancelarEdicion()">
-          Cancelar
-        </button>
+  <!-- Modal de Categorías -->
+  <div class="modal-overlay" *ngIf="mostrarModalCategoria">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Gestión de Categorías</h3>
+        <button class="close-btn" (click)="cerrarModalCategoria()">&times;</button>
       </div>
 
-      <!-- Lista de Categorías -->
-      <div class="categoria-lista-container">
-        <h4>Listado de Categorías</h4>
-        <ul class="categoria-lista">
-          <li *ngFor="let cat of categorias; let i = index" class="categoria-item">
-            {{ cat.name }}
-            <div>
-              <button class="edit-button" (click)="editarCategoria(i)">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="delete-button" (click)="eliminarCategoria(cat)">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </li>
-        </ul>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>{{ categoriaEnEdicion !== null ? 'Editar Categoría' : 'Nueva Categoría' }}</label>
+          <input type="text" [(ngModel)]="nuevaCategoria" placeholder="" class="categoria-input" />
+          <br /><br />
+          <button class="save-btn" *ngIf="categoriaEnEdicion === null" (click)="agregarNuevaCategoria()"
+            [disabled]="!nuevaCategoria">
+            Guardar
+          </button>
+          <button class="save-btn" *ngIf="categoriaEnEdicion !== null" (click)="actualizarCategoria()"
+            [disabled]="!nuevaCategoria">
+            Actualizar
+          </button>
+          <button class="cancel-btn" *ngIf="categoriaEnEdicion !== null" (click)="cancelarEdicion()">
+            Cancelar
+          </button>
+        </div>
+
+        <div class="categoria-lista-container">
+          <h4>Listado de Categorías</h4>
+          <ul class="categoria-lista">
+            <li *ngFor="let cat of categorias; let i = index" class="categoria-item">
+              {{ cat.name }}
+              <div>
+                <button class="edit-button" (click)="editarCategoria(i)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="delete-button" (click)="eliminarCategoria(cat)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-
-
-  
-  
   <div class="search-container">
-    <input type="text" 
-           placeholder="Buscar productos..." 
-           [(ngModel)]="searchTerm"
-           class="search-input">
+    <input type="text" placeholder="Buscar productos..." [(ngModel)]="searchTerm" class="search-input" />
   </div>
-  
+
   <div class="header-section">
     <h2>Productos</h2>
     <p class="subtitle">Gestiona el inventario de productos de la pasteleria</p>
   </div>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <div class="table-container">
     <table class="table table-hover align-middle">
       <thead class="table-light">
         <tr>
           <th>ID</th>
+          <th>Imagen</th>
           <th>Nombre</th>
           <th>Categoría</th>
           <th>Stock</th>
@@ -100,18 +87,22 @@
       <tbody>
         <tr *ngFor="let producto of filteredProducts">
           <td>{{ producto.id }}</td>
+          <td>
+            <img [src]="producto.image" (error)="producto.image = ''" alt="Imagen" width="50" height="50"
+              *ngIf="producto.image; else sinImagen" />
+            <ng-template #sinImagen><span style="color: #888;">Sin imagen</span></ng-template>
+          </td>
           <td><strong>{{ producto.name }}</strong></td>
           <td>{{ producto.category.name }}</td>
           <td>{{ producto.stock }} {{ producto.unidadMedida }}</td>
-          <td>{{ producto.price | currency:'PEN ':'symbol':'1.2-2' }}</td>
+          <td>{{ producto.price | currency: 'PEN ' : 'symbol' : '1.2-2' }}</td>
           <td>
             <span class="status" [ngClass]="{
-              'activo': producto.active,
-              'inactivo': !producto.active
-            }">
+                activo: producto.active,
+                inactivo: !producto.active
+              }">
               {{ producto.active ? 'Activo' : 'Inactivo' }}
             </span>
-            
           </td>
           <td class="actions">
             <button (click)="abrirModalEdicion(producto)" class="action-btn edit" title="Editar">
@@ -120,13 +111,12 @@
             <button (click)="eliminarProducto(producto.id)" class="action-btn delete" title="Eliminar">
               <i class="fas fa-trash"></i>
             </button>
-         <button (click)="toggleEstado(producto)" class="action-btn status" title="Cambiar Estado">
-           <i class="fas" [ngClass]="{
-               'fa-toggle-on': producto.active,
-               'fa-toggle-off': !producto.active
-              }"></i>
-         </button>
-
+            <button (click)="toggleEstado(producto)" class="action-btn status" title="Cambiar Estado">
+              <i class="fas" [ngClass]="{
+                  'fa-toggle-on': producto.active,
+                  'fa-toggle-off': !producto.active
+                }"></i>
+            </button>
           </td>
         </tr>
       </tbody>
@@ -134,80 +124,101 @@
   </div>
 
   <!-- Modal para agregar/editar producto -->
-<div class="modal-overlay" *ngIf="showModal">
-  <div class="modal-container" [class.editing]="isEditing">
-    <div class="modal-header">
-      <h3>{{ isEditing ? 'Editar Producto' : 'Agregar Nuevo Producto' }}</h3>
-      <button class="close-btn" (click)="cerrarModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <p>Complete los detalles del producto</p>
-      
-      <div class="form-group">
-        <label>Nombre del Producto <span class="required">*</span></label>
-        <input type="text" [(ngModel)]="productoActual.name" placeholder="" required
-               [class.invalid]="intentoGuardar && !productoActual.name">
-        <span class="error-message" *ngIf="intentoGuardar && !productoActual.name">
-          Este campo es obligatorio
-        </span>
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-container" [class.editing]="isEditing">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar Producto' : 'Agregar Nuevo Producto' }}</h3>
+        <button class="close-btn" (click)="cerrarModal()">&times;</button>
       </div>
-      
-      <div class="form-group">
-        <label>Categoría <span class="required">*</span></label>
-        <select [(ngModel)]="productoActual.categoryId" required
-                [class.invalid]="intentoGuardar && !productoActual.categoryId">
-          <option value="" disabled selected>Seleccionar categoría</option>
-          <option *ngFor="let cat of categorias" [value]="cat.id">{{cat.name}}</option>
-        </select>
-        <span class="error-message" *ngIf="intentoGuardar && !productoActual.categoryId">
-          Debe seleccionar una categoría
-        </span>
-      </div>
-      
-      <div class="form-group">
-        <label>Stock Inicial <span class="required">*</span></label>
-        <div class="stock-input-container">
-          <input type="number" [(ngModel)]="productoActual.stock" placeholder="" required
-                 min="0" [class.invalid]="intentoGuardar && (productoActual.stock === null || productoActual.stock === undefined || productoActual.stock < 0)">
+      <div class="modal-body">
+        <p>Complete los detalles del producto</p>
+
+        <div class="form-group">
+          <label>Imagen <span class="required">*</span></label>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+          <span class="error-message" *ngIf="intentoGuardar && !selectedFile">
+            Debe seleccionar una imagen
+          </span>
+
+          <!-- Vista previa en tiempo real -->
+          <div *ngIf="selectedFile" style="margin-top: 10px;">
+            <strong>Vista previa:</strong><br />
+            <img [src]="selectedFile | filePreview" alt="Vista previa" width="100" height="100"
+              style="border: 1px solid #ccc; padding: 4px" />
+
+          </div>
+
+          <div *ngIf="!selectedFile && productoActual.image" style="margin-top: 10px;">
+            <strong>Imagen actual:</strong><br />
+            <img [src]="productoActual.image" alt="Imagen actual" width="100" height="100"
+              style="border: 1px solid #ccc; padding: 4px" />
+          </div>
         </div>
-        <span class="error-message" *ngIf="intentoGuardar && (productoActual.stock === null || productoActual.stock === undefined)">
-          Este campo es obligatorio
-        </span>
-        <span class="error-message" *ngIf="intentoGuardar && productoActual.stock < 0">
-          El stock no puede ser negativo
-        </span>
+
+        <div class="form-group">
+          <label>Nombre del Producto <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="productoActual.name" placeholder="" required
+            [class.invalid]="intentoGuardar && !productoActual.name" />
+          <span class="error-message" *ngIf="intentoGuardar && !productoActual.name">Este campo es obligatorio</span>
+        </div>
+
+        <div class="form-group">
+          <label>Categoría <span class="required">*</span></label>
+          <select [(ngModel)]="productoActual.categoryId" required
+            [class.invalid]="intentoGuardar && !productoActual.categoryId">
+            <option value="" disabled selected>Seleccionar categoría</option>
+            <option *ngFor="let cat of categorias" [value]="cat.id">{{ cat.name }}</option>
+          </select>
+          <span class="error-message" *ngIf="intentoGuardar && !productoActual.categoryId">Debe seleccionar una
+            categoría</span>
+        </div>
+
+        <div class="form-group">
+          <label>Stock Inicial <span class="required">*</span></label>
+          <div class="stock-input-container">
+            <input type="number" [(ngModel)]="productoActual.stock" placeholder="" required min="0" [class.invalid]="
+                intentoGuardar &&
+                (productoActual.stock === null || productoActual.stock === undefined || productoActual.stock < 0)
+              " />
+          </div>
+          <span class="error-message"
+            *ngIf="intentoGuardar && (productoActual.stock === null || productoActual.stock === undefined)">Este campo
+            es obligatorio</span>
+          <span class="error-message" *ngIf="intentoGuardar && productoActual.stock < 0">El stock no puede ser
+            negativo</span>
+        </div>
+
+        <div class="form-group">
+          <label>Precio <span class="required">*</span></label>
+          <input type="number" step="0.01" [(ngModel)]="productoActual.price" placeholder="" required min="0"
+            [class.invalid]="
+              intentoGuardar &&
+              (productoActual.price === null || productoActual.price === undefined || productoActual.price <= 0)
+            " />
+          <span class="error-message"
+            *ngIf="intentoGuardar && (productoActual.price === null || productoActual.price === undefined)">
+            Este campo es obligatorio
+          </span>
+          <span class="error-message" *ngIf="intentoGuardar && productoActual.price <= 0">El precio debe ser mayor a
+            cero</span>
+        </div>
+
+        <div class="form-group">
+          <label>Estado <span class="required">*</span></label>
+          <select [(ngModel)]="productoActual.active" required
+            [class.invalid]="intentoGuardar && productoActual.active === null">
+            <option value=true>Activo</option>
+            <option value=false>Inactivo</option>
+          </select>
+          <span class="error-message" *ngIf="intentoGuardar && productoActual.active === null">Debe seleccionar un
+            estado</span>
+        </div>
       </div>
-      
-      <div class="form-group">
-        <label>Precio <span class="required">*</span></label>
-        <input type="number" step="0.01" [(ngModel)]="productoActual.price" placeholder="" required
-               min="0" [class.invalid]="intentoGuardar && (productoActual.price === null || productoActual.price === undefined || productoActual.price <= 0)">
-        <span class="error-message" *ngIf="intentoGuardar && (productoActual.price === null || productoActual.price === undefined)">
-          Este campo es obligatorio
-        </span>
-        <span class="error-message" *ngIf="intentoGuardar && productoActual.price <= 0">
-          El precio debe ser mayor a cero
-        </span>
+
+      <div class="modal-footer">
+        <button class="cancel-btn" (click)="cerrarModal()">Cancelar</button>
+        <button class="save-btn" (click)="validarYGuardar()">{{ isEditing ? 'Actualizar' : 'Guardar' }}</button>
       </div>
-      
-      <div class="form-group">
-        <label>Estado <span class="required">*</span></label>
-        <select [(ngModel)]="productoActual.active" required
-                [class.invalid]="intentoGuardar && productoActual.active === null">
-          <option value=true>Activo</option>
-          <option value=false>Inactivo</option>
-        </select>
-        <span class="error-message" *ngIf="intentoGuardar && productoActual.active === null">
-          Debe seleccionar un estado
-        </span>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="cancel-btn" (click)="cerrarModal()">Cancelar</button>
-      <button class="save-btn" (click)="validarYGuardar()">
-        {{ isEditing ? 'Actualizar' : 'Guardar' }}
-      </button>
     </div>
   </div>
-</div>
 </div>
