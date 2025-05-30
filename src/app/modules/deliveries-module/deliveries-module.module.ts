@@ -18,4 +18,3 @@ import { EntregasVistaComponent } from './entregas-vista/entregas-vista.componen
 export class DeliveriesModuleModule { }
 
 
-//------------------------------------------------------------------------------------------------

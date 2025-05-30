@@ -1,1 +1,163 @@
-<p>users works!</p>
+<div class="users-container">
+  <!-- Vista principal de lista de usuarios -->
+  <div *ngIf="currentView === 'list'" class="users-list-view">
+    <h1>Usuarios y Roles</h1>
+    
+    <div class="search-bar">
+      <input 
+        type="text" 
+        placeholder="Buscar usuarios..." 
+        [(ngModel)]="searchQuery"
+        class="search-input"
+      >
+    </div>
+    
+    <div class="subtitle">
+      <h2>Lista de Usuarios</h2>
+      <p>Gestione los usuarios y sus roles en el sistema</p>
+    </div>
+    
+    <button (click)="showCreateView()" class="create-user-btn">
+    + Nuevo Usuario
+    </button>
+    
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Contraseña</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>
+            <div class="user-avatar">{{ getInitials(user.name) }}</div>
+            {{ user.name }}
+          </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ user.password }}</td>
+          <td>
+            <button (click)="showUserDetails(user)" class="action-btn">
+              Ver Detalles
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Vista de creación de usuario (modal) -->
+  <div *ngIf="showModal && currentView === 'create'" class="modal-overlay">
+    <div class="modal-content">
+      <h1>Crear Nuevo Usuario</h1>
+      
+      
+      <div class="form-section">
+        <h2>Nombre Completo</h2>
+        <input 
+          type="text" 
+          placeholder="Ej: Juan Pérez" 
+          [(ngModel)]="newUser.name"
+          class="form-input"
+          required
+        >
+      </div>
+      
+      <div class="form-section">
+        <h2>Correo Electrónico</h2>
+        <input 
+          type="email" 
+          placeholder="Ej: juan@velazcopasteleria.com" 
+          [(ngModel)]="newUser.email"
+          class="form-input"
+          required
+        >
+      </div>
+      
+      <div class="form-section">
+        <h2>Contraseña</h2>
+        <div class="password-input-container">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            placeholder="Ingrese una contraseña segura" 
+            [(ngModel)]="newUser.password"
+            class="form-input"
+            required
+          >
+          <button (click)="togglePasswordVisibility()" class="password-toggle-btn">
+            {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h2>Rol</h2>
+        <select [(ngModel)]="newUser.role" class="form-select">
+          <option value="Producción">Producción</option>
+          <option value="Administrador">Administrador</option>
+          <option value="Cajero">Cajero</option>
+          <option value="Entregas">Entregas</option>
+        </select>
+      </div>
+      
+      <div class="form-section">
+        <h2>Teléfono</h2>
+        <input 
+          type="tel" 
+          placeholder="Ej: 555-123-4567" 
+          [(ngModel)]="newUser.phone"
+          class="form-input"
+        >
+      </div>
+      
+      <div class="modal-actions">
+        <button (click)="closeModal()" class="cancel-btn">Cancelar</button>
+        <button (click)="createUser()" class="create-btn">Crear Usuario</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Vista de detalles de usuario (modal) -->
+  <div *ngIf="showModal && currentView === 'details' && selectedUser" class="modal-overlay">
+    <div class="modal-content">
+      <h1>Detalles del Usuario</h1>
+      <p>Información y permisos del usuario en el sistema</p>
+      
+      <div class="user-details-grid">
+        <div class="detail-header">Información</div>
+        <div class="detail-header">Datos</div>
+        
+        <div class="detail-label">Nombre Completo</div>
+        <div class="detail-value">{{ selectedUser.name }}</div>
+        
+        <div class="detail-label">Correo Electrónico</div>
+        <div class="detail-value">{{ selectedUser.email }}</div>
+        
+        <div class="detail-label">Contraseña</div>
+        <div class="detail-value">
+          {{ selectedUser.password }}
+          <button (click)="togglePasswordVisibility()" class="password-toggle-btn">
+            {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </div>
+        
+        <div class="detail-label">Rol</div>
+        <div class="detail-value">{{ selectedUser.role }}</div>
+        
+        <div class="detail-label">Cargo</div>
+        <div class="detail-value">{{ selectedUser.position }}</div>
+        
+        <div class="detail-label">Teléfono</div>
+        <div class="detail-value">{{ selectedUser.phone }}</div>
+      </div>
+      
+      <div class="modal-actions">
+        <button (click)="closeModal()" class="cancel-btn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

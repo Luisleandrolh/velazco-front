@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { UsersModuleRoutingModule } from './users-module-routing.module';
 import { UsersComponent } from './users/users.component';
@@ -11,6 +12,7 @@ import { UsersComponent } from './users/users.component';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     UsersModuleRoutingModule
   ]
 })
