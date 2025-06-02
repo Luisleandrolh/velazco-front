@@ -46,12 +46,13 @@ private dominio: string = environment.baseUrlApi;
     catchError(this.handleError)
   );
 }
+
+
 cancelarVenta(pedidoId: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/${pedidoId}/cancel-sale`, {}).pipe(
+  return this.http.put(`${this.apiUrl}/${pedidoId}/cancel`, {}).pipe(
     catchError(this.handleError)
   );
 }
-
 
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la petición:', error);

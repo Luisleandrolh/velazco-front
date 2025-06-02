@@ -161,10 +161,7 @@ pagarPedido(pedido: Pedido): void {
   });
 }
 
-
-
-
- cancelarPedido(pedido: Pedido): void {
+cancelarPedido(pedido: Pedido): void {
   Swal.fire({
     title: `¿Cancelar el pedido ${pedido.codigo}?`,
     text: "Esta acción no se puede deshacer.",

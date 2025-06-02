@@ -73,7 +73,6 @@ export class InventarioVistaComponent {
 
   abrirModalEdicion(producto: Producto): void {
     this.isEditing = true;
-    // Copiar producto para edición
     this.productoActual = {
       id: producto.id,
       name: producto.name,
