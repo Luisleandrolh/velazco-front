@@ -3,12 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrdersModuleRoutingModule } from './orders-module-routing.module';
 import { PedidosVistaComponent } from './pedidos-vista/pedidos-vista.component';
-
-
-
-import { ToastModule } from 'primeng/toast';
-import { CardModule } from 'primeng/card';
-import { DialogModule } from 'primeng/dialog';
+// modulos de PrimeNG 
+import { ToastModule } from 'primeng/toast';  
+import { CardModule } from 'primeng/card'; 
+import { DialogModule } from 'primeng/dialog'; 
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -28,17 +26,17 @@ import { MessageService } from 'primeng/api';
   OrdersModuleRoutingModule,
   FormsModule,
   ToastModule,
-  CardModule,
-  DialogModule,
-  BadgeModule,
-  ButtonModule,
+  CardModule, 
+  DialogModule, 
+  BadgeModule, 
+  ButtonModule, 
   DividerModule
 
 
  
     
   ],
-  providers: [MessageService]  // <---- Aquí
+  providers: [MessageService]  
 })
 
 export class OrdersModuleModule { }
