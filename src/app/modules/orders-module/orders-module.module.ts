@@ -5,18 +5,40 @@ import { OrdersModuleRoutingModule } from './orders-module-routing.module';
 import { PedidosVistaComponent } from './pedidos-vista/pedidos-vista.component';
 
 
+
+import { ToastModule } from 'primeng/toast';
+import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
+import { BadgeModule } from 'primeng/badge';
+import { ButtonModule } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
+
+import { MessageService } from 'primeng/api';
+
+
+
+
+
 @NgModule({
   declarations: [
     PedidosVistaComponent
   ],
   imports: [
     CommonModule,
-    OrdersModuleRoutingModule,
-    FormsModule, 
+  OrdersModuleRoutingModule,
+  FormsModule,
+  ToastModule,
+  CardModule,
+  DialogModule,
+  BadgeModule,
+  ButtonModule,
+  DividerModule
 
 
  
     
-  ]
+  ],
+  providers: [MessageService]  // <---- Aquí
 })
+
 export class OrdersModuleModule { }
