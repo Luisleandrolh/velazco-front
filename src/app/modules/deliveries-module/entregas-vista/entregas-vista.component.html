@@ -1,87 +1,85 @@
 <!-- ============ ENCABEZADO ============-->
-<div class="header-section">
-  <h1 class="title-E">Entregas</h1>
+<div class="encabezado-entregas">
+  <h1 class="titulo-entregas">Entregas</h1>
 
   <!-- ===== Buscador y filtros ===== -->
-  <div class="action-row">
+  <div class="fila-acciones">
     <!-- Buscador -->
-    <div class="search-box">
+    <div class="buscador">
       <i class="bi bi-search"></i>
       <input
         type="text"
         placeholder="Buscar por código o cliente..."
         [(ngModel)]="searchTerm"
-        (input)="searchOrders()"
-      />
+        (input)="searchOrders()" />
     </div>
 
     <!-- Filtro avanzado (botón) -->
-    <div class="filter-box" (click)="toggleFilterMenu()">
+    <div class="filtro-avanzado" (click)="toggleFilterMenu()">
       <i class="bi bi-funnel"></i>
       <span>Filtros avanzados</span>
-      <span class="filter-badge" *ngIf="hasActiveFilters()"></span>
+      <span class="filtro-activo" *ngIf="hasActiveFilters()"></span>
     </div>
 
     <!-- Menú de filtros -->
-    <div class="filter-menu" *ngIf="showFilterMenu">
-      <button class="close-btn" (click)="toggleFilterMenu()">×</button>
-      
+    <div class="menu-filtros" *ngIf="showFilterMenu">
+      <button class="btn-cerrar" (click)="toggleFilterMenu()">×</button>
     </div>
   </div>
 
   <!-- ===== Pestañas ===== -->
-  <div class="full-width-tabs">
+  <div class="pestanas-entregas">
     <div
-      class="tab-button"
-      [class.active]="activeTab === 'pendientes'"
+      class="pestana"
+      [class.activa]="activeTab === 'pendientes'"
       (click)="switchTab('pendientes')">
       Pendientes de Entrega
     </div>
     <div
-      class="tab-button"
-      [class.active]="activeTab === 'entregados'"
+      class="pestana"
+      [class.activa]="activeTab === 'entregados'"
       (click)="switchTab('entregados')">
       Entregados
     </div>
   </div>
 </div>
 
-<!-- TAB: PENDIENTES DE ENTREGA  (estado PAGADO)-->
-<div *ngIf="activeTab === 'pendientes'" class="tab-content">
+<!-- TAB: PENDIENTES DE ENTREGA -->
+<div *ngIf="activeTab === 'pendientes'" class="contenido-pestana">
   <h3>Pedidos Pendientes de Entrega</h3>
-  <p class="subtitle">Pedidos pagados listos para ser entregados</p>
+  <p class="subtitulo">Pedidos pagados listos para ser entregados</p>
 
-  <div class="three-column-grid">
+  <div class="grid-tres-columnas">
     <!-- Cabeceras -->
-    <div class="column-header">Información del Pedido</div>
-    <div class="column-header">Productos</div>
-    <div class="column-header px-4">Acciones</div>
+    <div class="cabecera-columna">Información del Pedido</div>
+    <div class="cabecera-columna">Productos</div>
+    <div class="cabecera-columna px-4">Acciones</div>
 
     <!-- Filas -->
     <ng-container *ngFor="let order of filteredOrders">
       <!-- Columna 1 -->
-      <div class="column-cell">
-        <div class="order-id">{{ order.id }}</div>
-        <div class="order-status paid">{{ order.status }}</div>
-        <div class="customer-info">{{ order.customer.name }}</div>
-        <div class="order-date">{{ order.date }}</div>
+      <div class="celda-columna">
+        <div class="id-pedido">{{ order.id }}</div>
+        <div class="estado-pedido pagado">{{ order.status }}</div>
+        <div class="info-cliente">{{ order.customer.name }}</div>
+        <div class="fecha-pedido">{{ order.date }}</div>
       </div>
 
       <!-- Columna 2 -->
-      <div class="column-cell">
-        <div class="products-list">
+      <div class="celda-columna">
+        <div class="lista-productos">
           <div *ngFor="let product of order.products">
             {{ product.quantity }}x {{ product.name }}
           </div>
         </div>
-        <div class="order-total">
+        <div class="total-pedido">
           Total: S/. {{ order.total | number:'1.2-2' }}
         </div>
       </div>
 
       <!-- Columna 3 -->
-      <div class="column-cell action-cell">
-        <button class="details-button" (click)="openOrderDetails(order.id)">
+      <div class="celda-columna celda-acciones">
+        <button class="btn-detalles" (click)="openOrderDetails(order.id)">
           Ver Detalles
         </button>
       </div>
@@ -89,48 +87,49 @@
   </div>
 </div>
 
-
-<div *ngIf="activeTab === 'entregados'" class="tab-content">
+<!-- TAB: ENTREGADOS -->
+<div *ngIf="activeTab === 'entregados'" class="contenido-pestana">
   <h3>Pedidos Entregados</h3>
-  <p class="subtitle">Historial de pedidos entregados</p>
+  <p class="subtitulo">Historial de pedidos entregados</p>
 
-  <div class="delivered-orders-container">
+  <div class="contenedor-entregados">
     <div
-      class="delivered-order-card"
+      class="tarjeta-entregado"
       *ngFor="let order of filteredOrders">
-      <div class="order-header">
-        <span class="order-code">PED-{{ order.id }}</span>
-        <span class="status-badge delivered">Entregado</span>
+      <div class="encabezado-tarjeta">
+        <span class="codigo-pedido">PED-{{ order.id }}</span>
+        <span class="etiqueta-estado entregado">Entregado</span>
       </div>
 
-      <div class="order-details-grid">
-        <div class="detail-label">Cliente:</div>
-        <div class="detail-value">{{ order.customer.name }}</div>
+      <div class="grid-detalles">
+        <div class="etiqueta-detalle">Cliente:</div>
+        <div class="valor-detalle">{{ order.customer.name }}</div>
 
-        <div class="detail-label">Productos:</div>
-        <div class="detail-value">
+        <div class="etiqueta-detalle">Productos:</div>
+        <div class="valor-detalle">
           <ng-container *ngFor="let p of order.products; let last = last">
             {{ p.quantity }}x {{ p.name }}<span *ngIf="!last">, </span>
           </ng-container>
         </div>
 
-        <div class="detail-label">Fecha pedido:</div>
-        <div class="detail-value">{{ order.date }}</div>
+        <div class="etiqueta-detalle">Fecha pedido:</div>
+        <div class="valor-detalle">{{ order.date }}</div>
 
-        <div class="detail-label">Total:</div>
-        <div class="detail-value highlight">
+        <div class="etiqueta-detalle">Total:</div>
+        <div class="valor-detalle destacado">
           S/. {{ order.total | number:'1.2-2' }}
         </div>
       </div>
 
-      <div class="order-actions">
-        <button class="details-button" (click)="openOrderDetails(order.id)">
+      <div class="acciones-pedido">
+        <button class="btn-detalles" (click)="openOrderDetails(order.id)">
           Ver Detalles
         </button>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- MODAL 1: DETALLES DEL PEDIDO (con botón Confirmar)-->
 <div class="modal-overlay" *ngIf="showOrderDetails">
