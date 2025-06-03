@@ -5,6 +5,8 @@ import { InventarioVistaComponent } from './inventario-vista/inventario-vista.co
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FilePreviewPipe } from '..//inventory-module/inventario-vista/file-preview.pipe' // ajusta la ruta
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { FilePreviewPipe } from '..//inventory-module/inventario-vista/file-prev
     InventoryModuleRoutingModule,
     FormsModule,
     NgIf,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TableModule,
+    ButtonModule
 
   ]
 })
