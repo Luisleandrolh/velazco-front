@@ -1,392 +1,212 @@
-<!-- 
-  ==============================================
-  SECCIÓN PRINCIPAL DEL CONTENEDOR DE ENTREGAS
-  ==============================================
--->
-<div class="entregas-container">
+<!-- ============ ENCABEZADO ============-->
+<div class="header-section">
+  <h1 class="title-E">Entregas</h1>
 
-  <!-- 
-    ==============================
-    SECCIÓN DE CABECERA
-    ==============================
-    Contiene el título y los controles de búsqueda/filtrado
-  -->
-  <div class="header-section">
-    <h1 class="title-E">Entregas</h1>
-
-    <!-- Fila de acciones con buscador y filtros -->
-    <div class="action-row">
-      <!-- Caja de búsqueda -->
-      <div class="search-box">
-        <span><i class="bi bi-search"></i></span>
-        <input type="text" placeholder="Buscar por código o cliente..." [(ngModel)]="searchTerm"
-          (input)="searchOrders()">
-      </div>
-
-
-      <!-- FILTROS AVANZADOS -->
-
-
-      <div class="filter-box" (click)="toggleFilterMenu()">
-        <span><i class="bi bi-funnel"></i></span>
-        <span>Filtros avanzados</span>
-        <!-- Indicador de filtros activos -->
-        <span class="filter-badge" *ngIf="hasActiveFilters()">
-        </span>
-      </div>
-
-      <!-- Menú desplegable -->
-      <div class="filter-menu" *ngIf="showFilterMenu">
-        <button class="close-btn" (click)="showFilterMenu = false">
-          <i class="bi bi-x"></i>
-        </button>
-
-        <!-- Filtro por Rango de Fechas -->
-        <div class="filter-section">
-          <h4><i class="bi bi-calendar"></i> Rango de Fechas</h4>
-          <div class="date-inputs">
-            <input type="date" [(ngModel)]="filters.startDate" placeholder="Desde">
-            <input type="date" [(ngModel)]="filters.endDate" placeholder="Hasta">
-          </div>
-        </div>
-
-        <!-- Filtro por Monto Total -->
-        <div class="filter-section">
-          <h4><i class="bi bi-cash-stack"></i> Monto Total</h4>
-          <select [(ngModel)]="filters.amountRange">
-            <option value="">Todos</option>
-            <option value="0-50">S/. 0 - 50</option>
-            <option value="50-100">S/. 50 - 100</option>
-            <option value="100+">Mayor a S/. 100</option>
-          </select>
-        </div>
-
-        <!-- Filtro por Método de Pago -->
-        <div class="filter-section">
-          <h4><i class="bi bi-credit-card"></i> Método de Pago</h4>
-          <div class="payment-methods">
-            <label *ngFor="let method of paymentMethods">
-              <input type="checkbox" [(ngModel)]="method.selected">
-              {{ method.name }}
-            </label>
-          </div>
-        </div>
-
-        <!-- Botones de Acción -->
-        <div class="filter-actions">
-          <button class="btn-clear" (click)="clearFilters()">Limpiar</button>
-          <button class="btn-apply" (click)="applyFilters()">Aplicar</button>
-        </div>
-      </div>
+  <!-- ===== Buscador y filtros ===== -->
+  <div class="action-row">
+    <!-- Buscador -->
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input
+        type="text"
+        placeholder="Buscar por código o cliente..."
+        [(ngModel)]="searchTerm"
+        (input)="searchOrders()"
+      />
     </div>
 
-    <!-- 
-    ==============================
-    SECCIÓN DE PESTAÑAS
-    ==============================
-    Permite cambiar entre las diferentes vistas de pedidos
-  -->
-    <div class="full-width-tabs">
-      <div class="tab-button" [class.active]="activeTab === 'pendientes'" (click)="switchTab('pendientes')">
-        Pendientes de Entrega
-      </div>
-      <div class="tab-button" [class.active]="activeTab === 'entregados'" (click)="switchTab('entregados')">
-        Entregados
-      </div>
-      <div class="tab-button" [class.active]="activeTab === 'todos'" (click)="switchTab('todos')">
-        Todos
-      </div>
+    <!-- Filtro avanzado (botón) -->
+    <div class="filter-box" (click)="toggleFilterMenu()">
+      <i class="bi bi-funnel"></i>
+      <span>Filtros avanzados</span>
+      <span class="filter-badge" *ngIf="hasActiveFilters()"></span>
     </div>
 
-    <!-- 
-    ==============================
-    SECCIÓN DE CONTENIDO
-    ==============================
-    Muestra el contenido según la pestaña activa
-  -->
-    <div class="content-section">
-
-      <!-- 
-      ===================================
-      CONTENIDO PARA PESTAÑA "PENDIENTES"
-      ===================================
-      Muestra los pedidos pagados listos para entregar
-    -->
-      <!-- Actualiza la sección de pedidos pendientes para usar filteredOrders -->
-      <div *ngIf="activeTab === 'pendientes'" class="tab-content">
-        <h3>Pedidos Pendientes de Entrega</h3>
-        <p class="subtitle">Pedidos pagados listos para ser entregados</p>
-
-        <!-- Grid de 3 columnas para mostrar los pedidos -->
-        <div class="three-column-grid">
-          <!-- Encabezados de columnas -->
-          <div class="column-header">Información del Pedido</div>
-          <div class="column-header">Productos</div>
-          <div class="column-header px-4">Acciones</div>
-
-          <!-- Filas de pedidos filtrados -->
-          <ng-container *ngFor="let order of filteredOrders">
-            <div class="column-cell">
-              <div class="order-id">{{order.id}}</div>
-              <div class="order-status paid">{{order.status}}</div>
-              <div class="customer-info">{{order.customer.name}}</div>
-              <div class="order-date">{{order.date}}</div>
-            </div>
-            <div class="column-cell">
-              <div class="products-list">
-                <div *ngFor="let product of order.products">
-                  {{product.quantity}}x {{product.name}}
-                </div>
-              </div>
-              <div class="order-total">Total: S/. {{order.total.toFixed(2)}}</div>
-            </div>
-            <div class="column-cell action-cell">
-              <button class="details-button" (click)="openOrderDetails(order.id)">Ver Detalles</button>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-
-
-      <!-- 
-      =================================
-      CONTENIDO PARA PESTAÑA "ENTREGADOS"
-      =================================
-      Muestra el historial de pedidos ya entregados
-    -->
-      <div *ngIf="activeTab === 'entregados'" class="tab-content">
-        <h3>Pedidos Entregados</h3>
-        <p class="subtitle">Historial de pedidos entregados</p>
-
-        <!-- Contenedor de tarjetas de pedidos entregados -->
-        <div class="delivered-orders-container">
-
-          <!-- 
-          ========================
-          TARJETA PEDIDO ENTREGADO 1
-          ========================
-        -->
-          <div class="delivered-order-card">
-            <div class="order-header">
-              <span class="order-code">PED-1015</span>
-              <span class="status-badge delivered">Entregado</span>
-            </div>
-
-            <!-- Grid de detalles del pedido -->
-            <div class="order-details-grid">
-              <div class="detail-label">Cliente:</div>
-              <div class="detail-value">Carmen Rodríguez</div>
-
-              <div class="detail-label">Productos:</div>
-              <div class="detail-value">1x Torta de Chocolate, 6x Cupcakes</div>
-
-              <div class="detail-label">Fecha pedido:</div>
-              <div class="detail-value">21/04/2023 - 17:45</div>
-
-              <div class="detail-label">Total:</div>
-              <div class="detail-value highlight">S/. 45.49</div>
-
-              <div class="detail-label">Entrega:</div>
-              <div class="detail-value highlight">21/04/2023 - 18:30</div>
-            </div>
-
-            <!-- Acciones del pedido -->
-            <div class="order-actions">
-              <button class="details-button">
-                <i class="material-icons"></i> Ver Detalles
-              </button>
-            </div>
-          </div>
-
-          <!-- 
-          ========================
-          TARJETA PEDIDO ENTREGADO 2
-          ========================
-        -->
-          <div class="delivered-order-card">
-            <div class="order-header">
-              <span class="order-code">PED-1014</span>
-              <span class="status-badge delivered">Entregado</span>
-            </div>
-
-            <!-- Grid de detalles del pedido -->
-            <div class="order-details-grid">
-              <div class="detail-label">Cliente:</div>
-              <div class="detail-value">Javier Méndez</div>
-
-              <div class="detail-label">Productos:</div>
-              <div class="detail-value">2x Cheesecake, 8x Galletas</div>
-
-              <div class="detail-label">Fecha pedido:</div>
-              <div class="detail-value">21/04/2023 - 15:20</div>
-
-              <div class="detail-label">Total:</div>
-              <div class="detail-value highlight">S/. 69.00</div>
-
-              <div class="detail-label">Entrega:</div>
-              <div class="detail-value highlight">21/04/2023 - 16:15</div>
-            </div>
-
-            <!-- Acciones del pedido -->
-            <div class="order-actions">
-              <button class="details-button">
-                <i class="material-icons"></i> Ver Detalles
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 
-      ==============================
-      CONTENIDO PARA PESTAÑA "TODOS"
-      ==============================
-      Vista placeholder para todos los pedidos
-    -->
-      <div *ngIf="activeTab === 'todos'" class="tab-content">
-        <h3>Todos los Pedidos</h3>
-        <p class="subtitle">Historial completo de pedidos</p>
-        <p>Seleccione esta pestaña para ver todos los pedidos.</p>
-      </div>
-    </div>
-    <!-- Añade esto al final de tu archivo HTML, después del content-section -->
-
-    <!-- Modal de Detalles de Entrega -->
-    <div *ngIf="showOrderDetails" class="delivery-details-modal">
-      <div class="delivery-details-container">
-        <!-- Encabezado del modal -->
-        <div class="details-header">
-          <h2>Detalles de Entrega - {{selectedOrder.id}}</h2>
-          <button class="close-button" (click)="closeDetails()">×</button>
-        </div>
-
-        <p class="delivery-status">Pedido {{selectedOrder.status.toLowerCase()}} listo para ser entregado al cliente.
-        </p>
-
-        <!-- Sección de información del cliente -->
-        <div class="details-section">
-          <h3>Información del Cliente</h3>
-          <div class="customer-info">
-            <div class="info-row">
-              <span class="info-label">Nombre:</span>
-              <span class="info-value">{{selectedOrder.customer.name}}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Teléfono:</span>
-              <span class="info-value">{{selectedOrder.customer.phone}}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Email:</span>
-              <span class="info-value">{{selectedOrder.customer.email}}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sección de información del pedido -->
-        <div class="details-section">
-          <h3>Información del Pedido</h3>
-          <div class="order-info">
-            <div class="info-row">
-              <span class="info-label">Fecha:</span>
-              <span class="info-value">{{selectedOrder.date}}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Método de Pago:</span>
-              <span class="info-value">{{selectedOrder.paymentMethod}}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Total:</span>
-              <span class="info-value highlight">S/. {{selectedOrder.total.toFixed(2)}}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sección de productos -->
-        <div class="details-section">
-          <h3>Productos</h3>
-          <table class="products-table">
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let product of selectedOrder.products">
-                <td>{{product.name}}</td>
-                <td>{{product.quantity}}</td>
-                <td>S/. {{product.price.toFixed(2)}}</td>
-                <td>S/. {{(product.quantity * product.price).toFixed(2)}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Sección de notas de entrega -->
-        <div class="details-section">
-          <h3>Notas de Entrega</h3>
-          <div class="delivery-notes">
-            <p>{{selectedOrder.notes}}</p>
-          </div>
-        </div>
-
-        <!-- Botón de acción -->
-        <div class="action-button-container">
-          <button class="mark-delivered-button" (click)="prepareDeliveryConfirmation()">
-            Marcar como Entregado
-          </button>
-        </div>
-      </div>
+    <!-- Menú de filtros -->
+    <div class="filter-menu" *ngIf="showFilterMenu">
+      <button class="close-btn" (click)="toggleFilterMenu()">×</button>
+      <!-- Aquí deberías poner los controles de filtros -->
+      <!-- Por ejemplo: fechas, monto, métodos de pago -->
+      <!-- ... -->
     </div>
   </div>
 
-  <!-- Modal de Confirmación de Entrega -->
-  <div *ngIf="showDeliveryConfirmation" class="delivery-confirmation-modal">
-    <div class="delivery-confirmation-container">
-      <div class="confirmation-header">
-        <h2>¡Entrega Confirmada!</h2>
-        <button class="close-button" (click)="cancelDeliveryConfirmation()">×</button>
+  <!-- ===== Pestañas ===== -->
+  <div class="full-width-tabs">
+    <div
+      class="tab-button"
+      [class.active]="activeTab === 'pendientes'"
+      (click)="switchTab('pendientes')">
+      Pendientes de Entrega
+    </div>
+    <div
+      class="tab-button"
+      [class.active]="activeTab === 'entregados'"
+      (click)="switchTab('entregados')">
+      Entregados
+    </div>
+    <!-- Se eliminó el botón 'Todos' -->
+  </div>
+</div>
+
+<!-- =========================================
+     TAB: PENDIENTES DE ENTREGA  (estado PAGADO)
+     =========================================-->
+<div *ngIf="activeTab === 'pendientes'" class="tab-content">
+  <h3>Pedidos Pendientes de Entrega</h3>
+  <p class="subtitle">Pedidos pagados listos para ser entregados</p>
+
+  <div class="three-column-grid">
+    <!-- Cabeceras -->
+    <div class="column-header">Información del Pedido</div>
+    <div class="column-header">Productos</div>
+    <div class="column-header px-4">Acciones</div>
+
+    <!-- Filas -->
+    <ng-container *ngFor="let order of filteredOrders">
+      <!-- Columna 1 -->
+      <div class="column-cell">
+        <div class="order-id">{{ order.id }}</div>
+        <div class="order-status paid">{{ order.status }}</div>
+        <div class="customer-info">{{ order.customer.name }}</div>
+        <div class="order-date">{{ order.date }}</div>
       </div>
 
-      <div class="confirmation-content">
-        <div class="confirmation-icon">
-          <i class="material-icons">check_circle</i>
+      <!-- Columna 2 -->
+      <div class="column-cell">
+        <div class="products-list">
+          <div *ngFor="let product of order.products">
+            {{ product.quantity }}x {{ product.name }}
+          </div>
+        </div>
+        <div class="order-total">
+          Total: S/. {{ order.total | number:'1.2-2' }}
+        </div>
+      </div>
+
+      <!-- Columna 3 -->
+      <div class="column-cell action-cell">
+        <button class="details-button" (click)="openOrderDetails(order.id)">
+          Ver Detalles
+        </button>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- =========================
+     TAB: ENTREGADOS (historial)
+     =========================-->
+<div *ngIf="activeTab === 'entregados'" class="tab-content">
+  <h3>Pedidos Entregados</h3>
+  <p class="subtitle">Historial de pedidos entregados</p>
+
+  <div class="delivered-orders-container">
+    <div
+      class="delivered-order-card"
+      *ngFor="let order of filteredOrders">
+      <div class="order-header">
+        <span class="order-code">PED-{{ order.id }}</span>
+        <span class="status-badge delivered">Entregado</span>
+      </div>
+
+      <div class="order-details-grid">
+        <div class="detail-label">Cliente:</div>
+        <div class="detail-value">{{ order.customer.name }}</div>
+
+        <div class="detail-label">Productos:</div>
+        <div class="detail-value">
+          <ng-container *ngFor="let p of order.products; let last = last">
+            {{ p.quantity }}x {{ p.name }}<span *ngIf="!last">, </span>
+          </ng-container>
         </div>
 
-        <p class="confirmation-message">
-          El pedido <strong>{{selectedOrder.id}}</strong> para {{selectedOrder.customer.name}}
-          ha sido marcado como entregado.
-        </p>
+        <div class="detail-label">Fecha pedido:</div>
+        <div class="detail-value">{{ order.date }}</div>
 
-        <div class="delivery-time">
-          <i class="material-icons">access_time</i>
-          <span>Fecha y hora de entrega: {{deliveryDateTime}}</span>
+        <div class="detail-label">Total:</div>
+        <div class="detail-value highlight">
+          S/. {{ order.total | number:'1.2-2' }}
         </div>
+      </div>
 
-        <div class="notes-section">
-          <h3>Notas adicionales</h3>
-          <textarea class="notes-textarea" [value]="selectedOrder.notes" (input)="updateNotes($event)"
-            placeholder="Añadir notas..."></textarea>
-        </div>
-
-        <div class="confirmation-actions">
-          <button class="btn secondary" (click)="cancelDeliveryConfirmation()">
-            Cerrar
-          </button>
-          <button class="btn primary" (click)="confirmDelivery()">
-            <i class="material-icons">done_all</i>
-            Confirmar
-          </button>
-        </div>
+      <div class="order-actions">
+        <button class="details-button" (click)="openOrderDetails(order.id)">
+          Ver Detalles
+        </button>
       </div>
     </div>
+  </div>
+</div>
 
+<!-- =====================================================
+     MODAL 1: DETALLES DEL PEDIDO (con botón Confirmar)
+     =====================================================-->
+<div class="modal-overlay" *ngIf="showOrderDetails">
+  <div class="modal-box">
+    <!-- Cabecera -->
+    <div class="modal-header">
+      <h2>Detalles del Pedido {{ selectedOrder.id }}</h2>
+      <button class="close-btn" (click)="closeDetails()">×</button>
+    </div>
 
+    <!-- Cuerpo -->
+    <div class="modal-body">
+      <p><strong>Cliente:</strong> {{ selectedOrder.customer.name }}</p>
+      <p><strong>Fecha:</strong> {{ selectedOrder.date }}</p>
+      <p><strong>Total:</strong> S/. {{ selectedOrder.total | number:'1.2-2' }}</p>
 
+      <!-- Lista de productos -->
+      <h4>Productos:</h4>
+      <ul class="product-list">
+        <li *ngFor="let p of selectedOrder.products">
+          {{ p.quantity }}x {{ p.name }} – S/. {{ p.price | number:'1.2-2' }}
+        </li>
+      </ul>
+    </div>
 
+    <!-- Pie -->
+    <div class="modal-footer">
+      <button class="secondary-btn" (click)="closeDetails()">Cerrar</button>
 
+      <!-- Botón aparece solo si está en estado Pagado -->
+      <button
+        class="primary-btn"
+        *ngIf="selectedOrder.status === 'Pagado'"
+        (click)="prepareDeliveryConfirmation()">
+        Confirmar Entrega
+      </button>
+    </div>
+  </div>
+</div>
 
+<!-- =========================================================
+     MODAL 2: CONFIRMACIÓN DE ENTREGA (acción final de envío)
+     =========================================================-->
+<div class="modal-overlay" *ngIf="showDeliveryConfirmation">
+  <div class="modal-box">
+    <!-- Cabecera -->
+    <div class="modal-header">
+      <h2>Confirmar Entrega</h2>
+      <button class="close-btn" (click)="cancelDeliveryConfirmation()">×</button>
+    </div>
 
-    <!-------------------------------------------------------------------------------->
+    <!-- Cuerpo -->
+    <div class="modal-body">
+      <p>¿Deseas marcar este pedido como <strong>ENTREGADO</strong>?</p>
+      <p><strong>Código:</strong> {{ selectedOrder.id }}</p>
+      <p><strong>Cliente:</strong> {{ selectedOrder.customer.name }}</p>
+      <p><strong>Fecha y hora de entrega:</strong> {{ deliveryDateTime }}</p>
+    </div>
+
+    <!-- Pie -->
+    <div class="modal-footer">
+      <button class="secondary-btn" (click)="cancelDeliveryConfirmation()">
+        Cancelar
+      </button>
+      <button class="primary-btn" (click)="confirmDelivery()">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>
