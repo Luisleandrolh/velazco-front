@@ -31,7 +31,7 @@ export class EntregasVistaComponent implements OnInit {
   paymentMethods = [
     { name: 'Efectivo', selected: false },
     { name: 'Tarjeta', selected: false },
-    { name: 'Yape / Plin', selected: false },
+    { name: 'Yape/Plin', selected: false },
   ];
 
   pendientes: DeliveryOrder[] = [];
