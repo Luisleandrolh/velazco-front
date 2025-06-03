@@ -23,7 +23,7 @@ interface OrderDeliveryPayload {
   providedIn: 'root'
 })
 export class DeliveriesModuleService {
-  private baseUrl = 'https://velazco-backend-develop.up.railway.app/api/orders'; //api base URL
+  private baseUrl = 'https://velazco-backend-develop.up.railway.app/api/orders';
 
   constructor(private http: HttpClient) {}
 
@@ -34,6 +34,6 @@ export class DeliveriesModuleService {
 
   confirmDelivery(id: number, body: OrderDeliveryPayload): Observable<any> {
     const url = `${this.baseUrl}/${id}/confirm-dispatch`;
-    return this.http.post(url, body);  // <-- Cambio aquí, ahora es POST
+    return this.http.post(url, body);  
   }
 }
