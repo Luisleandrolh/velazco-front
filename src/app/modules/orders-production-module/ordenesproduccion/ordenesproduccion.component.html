@@ -1,124 +1,227 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<div class="container">
+  <h2>Órdenes de Producción</h2>
+  <!-- Encabezado mejorado -->
+  <div class="header-container">
+    <div class="search-section">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" placeholder="Buscar órdenes..." [(ngModel)]="searchTerm" />
+      </span>
+    </div>
 
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="fw-bold">Órdenes de Producción</h2>
-    <!-- Botón para abrir el modal -->
-<!-- Botón para abrir modal -->
-<button class="btn btn-dark mb-3" (click)="modalAbierto = true">+ Nueva Orden</button>
+    <div class="date-filter-section">
+      <p-calendar [(ngModel)]="filterDate" [showIcon]="true" dateFormat="dd/mm/yy" 
+                 placeholder="Seleccionar fecha" [showButtonBar]="true"></p-calendar>
+    </div>
 
+    <div class="new-order-section">
+      <button pButton pRipple type="button" icon="pi pi-plus" label="Nueva Orden" 
+              class="new-order-btn" (click)="showModal()"></button>
+    </div>
   </div>
 
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <input type="text" class="form-control" placeholder="Buscar órdenes..." [(ngModel)]="searchTerm" />
-    </div>
-    <div class="col-md-4">
-      <input type="date" class="form-control" [(ngModel)]="filterDate" />
-    </div>
-  </div>
+  <p-tabView>
+    <p-tabPanel header="Nuevas Órdenes">
+      <p-card header="Órdenes de Producción" subheader="Cree y gestione órdenes de producción para la pastelería">
+        <p-table [value]="getOrdenesFiltradas()" [paginator]="true" [rows]="5" [responsive]="true">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Id</th>
+      <th>Responsable</th>
+      <th>Productos</th>
+      <th>Fecha Creación</th>
+      <th>Fecha Requerida</th>
+      <th class="text-right">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-orden>
+    <tr>
+      <td>{{ orden.id }}</td>
+      <td>{{ orden.responsable || 'Sin asignar' }}</td>
+      <td>
+        <span *ngFor="let producto of orden.productos; let last = last">
+          {{ producto.nombre }} ({{ producto.cantidad }})<span *ngIf="!last">, </span>
+        </span>
+      </td>
+      <td>{{ orden.fechaCreacion | date: 'dd/MM/yyyy' }}</td>
+      <td>{{ orden.fechaRequerida | date: 'dd/MM/yyyy' }}</td>
+      <td class="text-right">
+        <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-plain mr-2" (click)="editarOrden(orden)"></button>
+        <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-plain p-button-danger" (click)="eliminarOrden(orden.id)"></button>
+      </td>
+      
+    </tr>
+  </ng-template>
+</p-table>
+      </p-card>
+    </p-tabPanel>
+  </p-tabView>
 
-  <ul class="nav nav-tabs mb-3">
-    <li class="nav-item">
-      <a class="nav-link active" href="#">Nuevas Órdenes</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Historial</a>
-    </li>
-  </ul>
-
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title fw-bold">Órdenes de Producción</h5>
-      <p class="card-text">Cree y gestione órdenes de producción para la pastelería</p>
-
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Fecha Creación</th>
-              <th>Fecha Requerida</th>
-              <th>Productos</th>
-              <th class="text-end">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let orden of getOrdenesFiltradas()">
-              <td>{{ orden.id }}</td>
-              <td>{{ orden.fechaCreacion | date: 'dd/MM/yyyy' }}</td>
-              <td>{{ orden.fechaRequerida | date: 'dd/MM/yyyy' }}</td>
-              <td>
-                <span *ngFor="let producto of orden.productos; let last = last">
-                  {{ producto.nombre }} ({{ producto.cantidad }})<span *ngIf="!last">, </span>
-                </span>
-              </td>
-              <td class="text-end">
-                <button class="btn btn-outline-primary btn-sm me-2" (click)="verDetalles(orden)">
-                  <i class="fas fa-eye"></i>
-                </button>
-                <button class="btn btn-outline-secondary btn-sm me-2" (click)="editarOrden(orden)">
-                  <i class="fas fa-pen"></i>
-                </button>
-                <button class="btn btn-outline-danger btn-sm" (click)="eliminarOrden(orden.id)">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+  <p-dialog header="Crear Nueva Orden" [(visible)]="modalAbierto" [modal]="true" 
+          [style]="{width: '650px'}" [breakpoints]="{'960px': '75vw', '640px': '90vw'}" 
+          [draggable]="false" [resizable]="false" [closable]="true" [closeOnEscape]="true">
+  
+  <div class="modal-content">
+    <!-- Sección de información básica -->
+    <div class="grid gap-3 mb-5">
+      <div class="col-12 md:col-6">
+        <label class="input-label">Fecha Requerida</label>
+        <p-calendar [(ngModel)]="nuevaOrden.fechaRequerida" [showIcon]="true" dateFormat="dd/mm/yy" 
+                   [showButtonBar]="true" [minDate]="minDate" inputStyleClass="w-full"
+                   placeholder="Seleccione fecha"></p-calendar>
+      </div>
+      
+      <div class="col-12 md:col-6">
+        <label class="input-label">Responsable</label>
+        <p-dropdown [(ngModel)]="nuevaOrden.responsable" [options]="responsables" 
+                   placeholder="Asignar responsable" [filter]="true" appendTo="body"
+                   class="w-full" inputStyleClass="w-full">
+          <ng-template let-item pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-user"></i>
+              <span>{{item}}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
       </div>
     </div>
-  </div>
 
-  <div *ngIf="modalAbierto" class="modal-backdrop-custom">
-  <div class="modal-dialog modal-lg modal-content p-3">
-    <div class="modal-header">
-      <h5 class="modal-title">Crear Nueva Orden de Producción</h5>
-      <button type="button" class="btn-close" (click)="cerrarModal()"></button>
-    </div>
+    <!-- Sección de productos - Diseño tipo tarjeta -->
+    <div class="products-section">
+      <label class="section-title">Productos</label>
+      <p-messages severity="info" *ngIf="nuevaOrden.productos.length === 0">
+        <ng-template pTemplate>
+          <i class="pi pi-info-circle"></i>
+          <div class="ml-2">Agregue al menos un producto</div>
+        </ng-template>
+      </p-messages>
 
-    <div class="modal-body">
-      <div class="row mb-3">
-        <div class="col">
-          <label>Fecha Requerida</label>
-          <input type="date" class="form-control" [(ngModel)]="nuevaOrden.fechaRequerida" />
-        </div>
-        <div class="col">
-          <label>Responsable</label>
-          <select class="form-select" [(ngModel)]="nuevaOrden.responsable">
-            <option *ngFor="let r of responsables" [value]="r">{{ r }}</option>
-          </select>
+      <div class="product-cards">
+        <div *ngFor="let producto of nuevaOrden.productos; let i = index" class="product-card">
+          <div class="product-card-content">
+            <div class="product-select">
+              <p-dropdown [(ngModel)]="producto.nombre" [options]="productosDisponibles" 
+                         placeholder="Producto" [showClear]="true" appendTo="body"
+                         class="w-full" [filter]="true">
+                <ng-template let-item pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-box"></i>
+                    <span>{{item}}</span>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+            
+            <div class="product-quantity">
+              <label>Cantidad</label>
+              <p-inputNumber [(ngModel)]="producto.cantidad" [min]="1" mode="decimal" 
+                           [showButtons]="true" inputId="cantidad-{{i}}"></p-inputNumber>
+            </div>
+            
+            <button pButton pRipple type="button" icon="pi pi-trash" 
+                    class="p-button-rounded p-button-text p-button-danger product-remove"
+                    (click)="eliminarProducto(i)"></button>
+          </div>
         </div>
       </div>
 
-      <label class="form-label">Productos</label>
-      <div *ngFor="let producto of nuevaOrden.productos; let i = index" class="row g-2 align-items-center mb-2">
-        <div class="col-6">
-          <select class="form-select" [(ngModel)]="producto.nombre">
-            <option *ngFor="let p of productosDisponibles" [value]="p">{{ p }}</option>
-          </select>
-        </div>
-        <div class="col-4">
-          <input type="number" min="1" class="form-control" [(ngModel)]="producto.cantidad" />
-        </div>
-        <div class="col-2 text-end">
-          <button class="btn btn-outline-danger" (click)="eliminarProducto(i)">
-            <i class="bi bi-trash"></i>
-          </button>
+      <button pButton pRipple type="button" icon="pi pi-plus" label="Añadir producto" 
+              class="p-button-outlined add-product-btn" (click)="agregarProducto()"></button>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-between w-full">
+      <button pButton pRipple type="button" label="Cancelar" 
+              class="p-button-outlined cancel-btn" (click)="cerrarModal()"></button>
+      <button pButton pRipple type="button" label="Crear orden" icon="pi pi-check" 
+              class="create-btn" (click)="crearOrden()" 
+              [disabled]="!esFormularioValido()"></button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog header="Editar Orden" [(visible)]="modalEdicionAbierto" [modal]="true" 
+          [style]="{width: '650px'}" [breakpoints]="{'960px': '75vw', '640px': '90vw'}" 
+          [draggable]="false" [resizable]="false" [closable]="true" [closeOnEscape]="true">
+  
+  <div class="modal-content">
+    <!-- Sección de información básica -->
+    <div class="grid gap-3 mb-5">
+      <div class="col-12 md:col-6">
+        <label class="input-label">Fecha Requerida</label>
+        <p-calendar [(ngModel)]="ordenEditada.fechaRequerida" [showIcon]="true" dateFormat="dd/mm/yy" 
+                   [showButtonBar]="true" [minDate]="minDate" inputStyleClass="w-full"
+                   placeholder="Seleccione fecha"></p-calendar>
+      </div>
+      
+      <div class="col-12 md:col-6">
+        <label class="input-label">Responsable</label>
+        <p-dropdown [(ngModel)]="ordenEditada.responsable" [options]="responsables" 
+                   placeholder="Asignar responsable" [filter]="true" appendTo="body"
+                   class="w-full" inputStyleClass="w-full">
+          <ng-template let-item pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-user"></i>
+              <span>{{item}}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+
+    <!-- Sección de productos - Diseño tipo tarjeta -->
+    <div class="products-section">
+      <label class="section-title">Productos</label>
+      <p-messages severity="info" *ngIf="ordenEditada.productos.length === 0">
+        <ng-template pTemplate>
+          <i class="pi pi-info-circle"></i>
+          <div class="ml-2">Agregue al menos un producto</div>
+        </ng-template>
+      </p-messages>
+
+      <div class="product-cards">
+        <div *ngFor="let producto of ordenEditada.productos; let i = index" class="product-card">
+          <div class="product-card-content">
+            <div class="product-select">
+              <p-dropdown [(ngModel)]="producto.nombre" [options]="productosDisponibles" 
+                         placeholder="Producto" [showClear]="true" appendTo="body"
+                         class="w-full" [filter]="true">
+                <ng-template let-item pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-box"></i>
+                    <span>{{item}}</span>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+            
+            <div class="product-quantity">
+              <label>Cantidad</label>
+              <p-inputNumber [(ngModel)]="producto.cantidad" [min]="1" mode="decimal" 
+                           [showButtons]="true" inputId="cantidad-edit-{{i}}"></p-inputNumber>
+            </div>
+            
+            <button pButton pRipple type="button" icon="pi pi-trash" 
+                    class="p-button-rounded p-button-text p-button-danger product-remove"
+                    (click)="eliminarProductoEdicion(i)"></button>
+          </div>
         </div>
       </div>
 
-      <button class="btn btn-outline-secondary" (click)="agregarProducto()">
-        <i class="bi bi-plus"></i> Añadir Producto
-      </button>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-outline-secondary" (click)="cerrarModal()">Cancelar</button>
-      <button class="btn btn-dark" (click)="crearOrden()">Crear Orden</button>
+      <button pButton pRipple type="button" icon="pi pi-plus" label="Añadir producto" 
+              class="p-button-outlined add-product-btn" (click)="agregarProductoEdicion()"></button>
     </div>
   </div>
-</div>
 
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-between w-full">
+      <button pButton pRipple type="button" label="Cancelar" 
+              class="p-button-outlined cancel-btn" (click)="cerrarModalEdicion()"></button>
+      <button pButton pRipple type="button" label="Guardar cambios" icon="pi pi-check" 
+              class="create-btn" (click)="guardarCambios()" 
+              [disabled]="!esFormularioEdicionValido()"></button>
+    </div>
+  </ng-template>
+</p-dialog>
 </div>

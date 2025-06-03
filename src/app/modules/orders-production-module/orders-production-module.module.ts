@@ -5,6 +5,18 @@ import { OrdersProductionModuleRoutingModule } from './orders-production-module-
 import { OrdenesproduccionComponent } from './ordenesproduccion/ordenesproduccion.component';
 import { FormsModule } from '@angular/forms';
 
+// PrimeNG Modules
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { TabViewModule } from 'primeng/tabview';
+import { CardModule } from 'primeng/card';
+import { MessagesModule } from 'primeng/messages';
 
 
 @NgModule({
@@ -16,8 +28,18 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     OrdersProductionModuleRoutingModule,
-    FormsModule
-
+    FormsModule,
+    ButtonModule,
+    RippleModule,
+    TableModule,
+    DialogModule,
+    DropdownModule,
+    CalendarModule,
+    InputTextModule,
+    InputNumberModule,
+    TabViewModule,
+    CardModule,
+    MessagesModule
   ]
 })
 export class OrdersProductionModuleModule { }
