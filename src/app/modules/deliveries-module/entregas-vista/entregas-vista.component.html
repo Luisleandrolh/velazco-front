@@ -25,9 +25,7 @@
     <!-- Menú de filtros -->
     <div class="filter-menu" *ngIf="showFilterMenu">
       <button class="close-btn" (click)="toggleFilterMenu()">×</button>
-      <!-- Aquí deberías poner los controles de filtros -->
-      <!-- Por ejemplo: fechas, monto, métodos de pago -->
-      <!-- ... -->
+      
     </div>
   </div>
 
@@ -49,9 +47,7 @@
   </div>
 </div>
 
-<!-- =========================================
-     TAB: PENDIENTES DE ENTREGA  (estado PAGADO)
-     =========================================-->
+<!-- TAB: PENDIENTES DE ENTREGA  (estado PAGADO)-->
 <div *ngIf="activeTab === 'pendientes'" class="tab-content">
   <h3>Pedidos Pendientes de Entrega</h3>
   <p class="subtitle">Pedidos pagados listos para ser entregados</p>
@@ -94,9 +90,7 @@
   </div>
 </div>
 
-<!-- =========================
-     TAB: ENTREGADOS (historial)
-     =========================-->
+
 <div *ngIf="activeTab === 'entregados'" class="tab-content">
   <h3>Pedidos Entregados</h3>
   <p class="subtitle">Historial de pedidos entregados</p>
@@ -139,9 +133,7 @@
   </div>
 </div>
 
-<!-- =====================================================
-     MODAL 1: DETALLES DEL PEDIDO (con botón Confirmar)
-     =====================================================-->
+<!-- MODAL 1: DETALLES DEL PEDIDO (con botón Confirmar)-->
 <div class="modal-overlay" *ngIf="showOrderDetails">
   <div class="modal-box">
     <!-- Cabecera -->
@@ -180,9 +172,7 @@
   </div>
 </div>
 
-<!-- =========================================================
-     MODAL 2: CONFIRMACIÓN DE ENTREGA (acción final de envío)
-     =========================================================-->
+<!-- MODAL 2: CONFIRMACIÓN DE ENTREGA (acción final de envío)-->
 <div class="modal-overlay" *ngIf="showDeliveryConfirmation">
   <div class="modal-box">
     <!-- Cabecera -->
