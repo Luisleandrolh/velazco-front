@@ -22,6 +22,12 @@ export interface DeliveryOrder {
 })
 export class EntregasVistaComponent implements OnInit {
   activeTab: 'pendientes' | 'entregados' = 'pendientes';
+  activeTabItem: any;
+  tabItems = [
+    { label: 'Pendientes de Entrega', id: 'pendientes' },
+    { label: 'Entregados', id: 'entregados' }
+  ];
+
   showFilterMenu = false;
   showOrderDetails = false;
   showDeliveryConfirmation = false;
@@ -48,7 +54,23 @@ export class EntregasVistaComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarPedidos();
+    this.activeTabItem = this.tabItems[0];
   }
+
+  onTabChange(item: any): void {
+  this.activeTab = item.id;
+  this.searchTerm = '';
+  
+  if (this.hasActiveFilters()) {
+    this.applyFilters(); // aplica los filtros existentes
+  } else {
+    this.filteredOrders =
+      this.activeTab === 'pendientes' ? [...this.pendientes] :
+      this.activeTab === 'entregados' ? [...this.entregados] :
+      [];
+  }
+}
+
 
   private cargarPedidos(): void {
     this.deliveryService.obtenerPedidosPorEstado('PAGADO', 0, 50).subscribe({
@@ -94,21 +116,9 @@ export class EntregasVistaComponent implements OnInit {
     }));
   }
 
-  switchTab(tab: 'pendientes' | 'entregados'): void {
-    this.activeTab = tab;
-    this.searchTerm = '';
-    this.filteredOrders =
-      tab === 'pendientes' ? [...this.pendientes] :
-      tab === 'entregados' ? [...this.entregados] :
-      [];
-  }
-
   searchOrders(): void {
     const term = this.searchTerm.toLowerCase();
-    const origen =
-      this.activeTab === 'pendientes' ? this.pendientes :
-      this.activeTab === 'entregados' ? this.entregados :
-      [];
+    const origen = this.activeTab === 'pendientes' ? this.pendientes : this.entregados;
 
     this.filteredOrders = origen.filter(o =>
       o.id.toLowerCase().includes(term) ||
@@ -117,22 +127,29 @@ export class EntregasVistaComponent implements OnInit {
   }
 
   openOrderDetails(orderId: string): void {
-    this.selectedOrder =
-      (this.activeTab === 'pendientes' ? this.pendientes : this.entregados)
-      .find(o => o.id === orderId)!;
+  const found = (this.activeTab === 'pendientes' ? this.pendientes : this.entregados)
+    .find(o => o.id === orderId);
 
-    this.showOrderDetails = true;
+  if (!found) {
+    console.warn('Pedido no encontrado:', orderId);
+    return;
   }
+
+  this.selectedOrder = found;
+  this.showOrderDetails = true;
+}
+
 
   closeDetails(): void {
     this.showOrderDetails = false;
   }
 
   prepareDeliveryConfirmation(): void {
-    this.showOrderDetails = false;
-    this.deliveryDateTime = new Date().toISOString();
-    this.showDeliveryConfirmation = true;
-  }
+  if (!this.selectedOrder) return;
+  this.showOrderDetails = false;
+  this.deliveryDateTime = new Date().toLocaleString('es-PE');
+  this.showDeliveryConfirmation = true;
+}
 
   cancelDeliveryConfirmation(): void {
     this.showDeliveryConfirmation = false;
@@ -155,8 +172,6 @@ export class EntregasVistaComponent implements OnInit {
         }
       }
     };
-
-    console.log('Payload final:', deliveryPayload);
 
     this.deliveryService.confirmDelivery(this.selectedOrder.idNumber, deliveryPayload).subscribe({
       next: () => {

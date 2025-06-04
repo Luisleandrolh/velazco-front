@@ -17,6 +17,9 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DeliveriesModuleRoutingModule } from './deliveries-module-routing.module';
 import { EntregasVistaComponent } from './entregas-vista/entregas-vista.component';
 
+import { TabMenuModule } from 'primeng/tabmenu';
+
+
 @NgModule({
   declarations: [
     EntregasVistaComponent
@@ -37,6 +40,7 @@ import { EntregasVistaComponent } from './entregas-vista/entregas-vista.componen
     CardModule,
     TagModule,
     ToastModule,
+    TabMenuModule,
     InputTextareaModule
   ]
 })
