@@ -1,200 +1,176 @@
-<!-- ============ ENCABEZADO ============-->
-<div class="encabezado-entregas">
-  <h1 class="titulo-entregas">Entregas</h1>
+<div class="entregas-container p-4">
+  <!-- Header con título y búsqueda -->
+  <div class="header p-d-flex p-jc-between p-ai-center p-mb-4">
+    <h1 class="titulo">Entregas</h1>
 
-  <!-- ===== Buscador y filtros ===== -->
-  <div class="fila-acciones">
-    <!-- Buscador -->
-    <div class="buscador">
-      <i class="bi bi-search"></i>
-      <input
-        type="text"
-        placeholder="Buscar por código o cliente..."
-        [(ngModel)]="searchTerm"
-        (input)="searchOrders()" />
-    </div>
+    <div class="busqueda-filtros p-d-flex p-ai-center">
+      <span class="p-input-icon-left" style="width: 16rem;">
+        <i class="pi pi-search"></i>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="searchTerm"
+          (input)="searchOrders()"
+          placeholder="Buscar por código o cliente..."
+          style="width: 100%;"
+        />
+      </span>
 
-    <!-- Filtro avanzado (botón) -->
-    <div class="filtro-avanzado" (click)="toggleFilterMenu()">
-      <i class="bi bi-funnel"></i>
-      <span>Filtros avanzados</span>
-      <span class="filtro-activo" *ngIf="hasActiveFilters()"></span>
-    </div>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-filter"
+        label="Filtros avanzados"
+        class="p-button-outlined p-ml-2"
+        (click)="toggleFilterMenu()"
+      ></button>
 
-    <!-- Menú de filtros -->
-    <div class="menu-filtros" *ngIf="showFilterMenu">
-      <button class="btn-cerrar" (click)="toggleFilterMenu()">×</button>
-    </div>
-  </div>
-
-  <!-- ===== Pestañas ===== -->
-  <div class="pestanas-entregas">
-    <div
-      class="pestana"
-      [class.activa]="activeTab === 'pendientes'"
-      (click)="switchTab('pendientes')">
-      Pendientes de Entrega
-    </div>
-    <div
-      class="pestana"
-      [class.activa]="activeTab === 'entregados'"
-      (click)="switchTab('entregados')">
-      Entregados
+      <i
+        *ngIf="hasActiveFilters()"
+        class="pi pi-circle-fill p-ml-2"
+        style="color: green; font-size: 1rem;"
+        aria-label="Filtros activos"
+      ></i>
     </div>
   </div>
-</div>
 
-<!-- TAB: PENDIENTES DE ENTREGA -->
-<div *ngIf="activeTab === 'pendientes'" class="contenido-pestana">
-  <h3>Pedidos Pendientes de Entrega</h3>
-  <p class="subtitulo">Pedidos pagados listos para ser entregados</p>
+  <p-tabMenu
+    [model]="tabItems"
+    [(activeItem)]="activeTabItem"
+    (activeItemChange)="onTabChange($event)"
+  ></p-tabMenu>
 
-  <div class="grid-tres-columnas">
-    <!-- Cabeceras -->
-    <div class="cabecera-columna">Información del Pedido</div>
-    <div class="cabecera-columna">Productos</div>
-    <div class="cabecera-columna px-4">Acciones</div>
+  <div class="contenido p-mt-4">
+    <!-- Tabla Pendientes -->
+    <ng-container *ngIf="activeTab === 'pendientes'">
+      <h3 class="subtitulo p-mb-2">Pedidos Pendientes de Entrega</h3>
+      <p class="descripcion p-mb-4">Pedidos pagados listos para ser entregados</p>
 
-    <!-- Filas -->
-    <ng-container *ngFor="let order of filteredOrders">
-      <!-- Columna 1 -->
-      <div class="celda-columna">
-        <div class="id-pedido">{{ order.id }}</div>
-        <div class="estado-pedido pagado">{{ order.status }}</div>
-        <div class="info-cliente">{{ order.customer.name }}</div>
-        <div class="fecha-pedido">{{ order.date }}</div>
-      </div>
+      <p-table [value]="filteredOrders" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Pedido</th>
+            <th>Productos</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+          <tr>
+            <td>
+              <div class="font-semibold">#{{ order.id }}</div>
+              <div class="estado-pendiente">{{ order.status }}</div>
+              <div>{{ order.customer.name }}</div>
+              <div class="fecha">{{ order.date }}</div>
+            </td>
+            <td>
+              <div *ngFor="let p of order.products">
+                {{ p.quantity }}x {{ p.name }}
+              </div>
+              <div class="font-semibold p-mt-1">Total: S/. {{ order.total | number: '1.2-2' }}</div>
+            </td>
+            <td>
+              <button pButton label="Ver Detalles" icon="pi pi-eye" (click)="openOrderDetails(order.id)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-container>
 
-      <!-- Columna 2 -->
-      <div class="celda-columna">
-        <div class="lista-productos">
-          <div *ngFor="let product of order.products">
-            {{ product.quantity }}x {{ product.name }}
-          </div>
+    <!-- Lista Entregados -->
+    <ng-container *ngIf="activeTab === 'entregados'">
+      <h3 class="subtitulo p-mb-2">Pedidos Entregados</h3>
+      <p class="descripcion p-mb-4">Historial de pedidos entregados</p>
+
+      <div class="p-grid p-nogutter p-align-start">
+        <div
+          *ngFor="let order of filteredOrders"
+          class="p-col-12 p-md-6 p-lg-4 p-p-2"
+        >
+          <p-card class="shadow-card">
+            <ng-template pTemplate="header">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                <span class="font-semibold">PED-{{ order.id }}</span>
+                <span class="estado-entregado">Entregado</span>
+              </div>
+            </ng-template>
+            <div class="detalle-pedido">
+              <div><strong>Cliente:</strong> {{ order.customer.name }}</div>
+              <div><strong>Productos:</strong>
+                <ng-container *ngFor="let p of order.products; let last = last">
+                  {{ p.quantity }}x {{ p.name }}<span *ngIf="!last">, </span>
+                </ng-container>
+              </div>
+              <div><strong>Fecha:</strong> {{ order.date }}</div>
+              <div><strong>Total:</strong> S/. {{ order.total | number:'1.2-2' }}</div>
+            </div>
+            <ng-template pTemplate="footer">
+              <button
+                pButton
+                label="Ver Detalles"
+                icon="pi pi-eye"
+                (click)="openOrderDetails(order.id)"
+              ></button>
+            </ng-template>
+          </p-card>
         </div>
-        <div class="total-pedido">
-          Total: S/. {{ order.total | number:'1.2-2' }}
-        </div>
-      </div>
-
-      <!-- Columna 3 -->
-      <div class="celda-columna celda-acciones">
-        <button class="btn-detalles" (click)="openOrderDetails(order.id)">
-          Ver Detalles
-        </button>
       </div>
     </ng-container>
   </div>
-</div>
 
-<!-- TAB: ENTREGADOS -->
-<div *ngIf="activeTab === 'entregados'" class="contenido-pestana">
-  <h3>Pedidos Entregados</h3>
-  <p class="subtitulo">Historial de pedidos entregados</p>
-
-  <div class="contenedor-entregados">
-    <div
-      class="tarjeta-entregado"
-      *ngFor="let order of filteredOrders">
-      <div class="encabezado-tarjeta">
-        <span class="codigo-pedido">PED-{{ order.id }}</span>
-        <span class="etiqueta-estado entregado">Entregado</span>
-      </div>
-
-      <div class="grid-detalles">
-        <div class="etiqueta-detalle">Cliente:</div>
-        <div class="valor-detalle">{{ order.customer.name }}</div>
-
-        <div class="etiqueta-detalle">Productos:</div>
-        <div class="valor-detalle">
-          <ng-container *ngFor="let p of order.products; let last = last">
-            {{ p.quantity }}x {{ p.name }}<span *ngIf="!last">, </span>
-          </ng-container>
-        </div>
-
-        <div class="etiqueta-detalle">Fecha pedido:</div>
-        <div class="valor-detalle">{{ order.date }}</div>
-
-        <div class="etiqueta-detalle">Total:</div>
-        <div class="valor-detalle destacado">
-          S/. {{ order.total | number:'1.2-2' }}
-        </div>
-      </div>
-
-      <div class="acciones-pedido">
-        <button class="btn-detalles" (click)="openOrderDetails(order.id)">
-          Ver Detalles
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- MODAL 1: DETALLES DEL PEDIDO (con botón Confirmar)-->
-<div class="modal-overlay" *ngIf="showOrderDetails">
-  <div class="modal-box">
-    <!-- Cabecera -->
-    <div class="modal-header">
-      <h2>Detalles del Pedido {{ selectedOrder.id }}</h2>
-      <button class="close-btn" (click)="closeDetails()">×</button>
-    </div>
-
-    <!-- Cuerpo -->
-    <div class="modal-body">
+  <!-- Diálogo de detalles -->
+  <p-dialog
+    header="Detalles del Pedido"
+    [(visible)]="showOrderDetails"
+    [modal]="true"
+    [style]="{ width: '30rem' }"
+    (onHide)="closeDetails()"
+  >
+    <div *ngIf="selectedOrder">
       <p><strong>Cliente:</strong> {{ selectedOrder.customer.name }}</p>
       <p><strong>Fecha:</strong> {{ selectedOrder.date }}</p>
       <p><strong>Total:</strong> S/. {{ selectedOrder.total | number:'1.2-2' }}</p>
 
-      <!-- Lista de productos -->
-      <h4>Productos:</h4>
-      <ul class="product-list">
+      <h4 class="p-mt-3">Productos:</h4>
+      <ul>
         <li *ngFor="let p of selectedOrder.products">
           {{ p.quantity }}x {{ p.name }} – S/. {{ p.price | number:'1.2-2' }}
         </li>
       </ul>
     </div>
 
-    <!-- Pie -->
-    <div class="modal-footer">
-      <button class="secondary-btn" (click)="closeDetails()">Cerrar</button>
-
-      <!-- Botón aparece solo si está en estado Pagado -->
+    <ng-template pTemplate="footer">
+      <button pButton label="Cerrar" class="p-button-text" (click)="closeDetails()"></button>
       <button
-        class="primary-btn"
-        *ngIf="selectedOrder.status === 'Pagado'"
-        (click)="prepareDeliveryConfirmation()">
-        Confirmar Entrega
-      </button>
-    </div>
+        *ngIf="selectedOrder?.status === 'Pagado'"
+        pButton
+        label="Confirmar Entrega"
+        icon="pi pi-check"
+        class="p-button-success"
+        (click)="prepareDeliveryConfirmation()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Diálogo de confirmación -->
+  <!-- Diálogo de confirmación -->
+<p-dialog
+  header="Confirmar Entrega"
+  [(visible)]="showDeliveryConfirmation"
+  [modal]="true"
+  [style]="{ width: '25rem' }"
+  (onHide)="cancelDeliveryConfirmation()"
+>
+  <div class="p-text-center" *ngIf="selectedOrder">
+    <p>¿Deseas marcar este pedido como <strong>ENTREGADO</strong>?</p>
+    <p><strong>Código:</strong> {{ selectedOrder.id }}</p>
+    <p><strong>Cliente:</strong> {{ selectedOrder.customer.name }}</p>
+    <p><strong>Fecha y hora de entrega:</strong> {{ deliveryDateTime }}</p>
   </div>
-</div>
 
-<!-- MODAL 2: CONFIRMACIÓN DE ENTREGA (acción final de envío)-->
-<div class="modal-overlay" *ngIf="showDeliveryConfirmation">
-  <div class="modal-box">
-    <!-- Cabecera -->
-    <div class="modal-header">
-      <h2>Confirmar Entrega</h2>
-      <button class="close-btn" (click)="cancelDeliveryConfirmation()">×</button>
-    </div>
 
-    <!-- Cuerpo -->
-    <div class="modal-body">
-      <p>¿Deseas marcar este pedido como <strong>ENTREGADO</strong>?</p>
-      <p><strong>Código:</strong> {{ selectedOrder.id }}</p>
-      <p><strong>Cliente:</strong> {{ selectedOrder.customer.name }}</p>
-      <p><strong>Fecha y hora de entrega:</strong> {{ deliveryDateTime }}</p>
-    </div>
-
-    <!-- Pie -->
-    <div class="modal-footer">
-      <button class="secondary-btn" (click)="cancelDeliveryConfirmation()">
-        Cancelar
-      </button>
-      <button class="primary-btn" (click)="confirmDelivery()">
-        Confirmar
-      </button>
-    </div>
-  </div>
+    <ng-template pTemplate="footer">
+      <button pButton label="Cancelar" class="p-button-text" (click)="cancelDeliveryConfirmation()"></button>
+      <button pButton label="Confirmar" class="p-button-success" (click)="confirmDelivery()"></button>
+    </ng-template>
+  </p-dialog>
 </div>

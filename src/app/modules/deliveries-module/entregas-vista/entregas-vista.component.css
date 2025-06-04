@@ -1,342 +1,131 @@
-/* ENCABEZADO */
-.encabezado-entregas {
-  padding: 1rem;
-  background-color: #f8f9fa;
+.entregas-container {
+  padding: 1rem; /* ya tienes p-4 de PrimeNG, pero si quieres un extra */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Header */
+.header {
+  /* p-d-flex p-jc-between p-ai-center ya hacen flex */
   border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
 }
 
-.titulo-entregas {
+.titulo {
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 700;
+  color: #222;
 }
 
-/* FILA DE ACCIONES */
-.fila-acciones {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin: 1rem 0;
-  align-items: center;
+/* Contenedor búsqueda y filtros */
+.busqueda-filtros {
+  gap: 0.5rem;
 }
 
-.buscador {
-  display: flex;
-  align-items: center;
+/* Icono de búsqueda */
+.p-input-icon-left > i.pi {
+  color: #888;
+  font-size: 1.2rem;
+}
+
+/* Input búsqueda */
+.p-input-icon-left input {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
   border: 1px solid #ccc;
-  padding: 0.5rem;
-  border-radius: 6px;
-  background-color: #fff;
+  border-radius: 0.25rem;
+  transition: border-color 0.3s ease;
 }
 
-.buscador input {
-  border: none;
+.p-input-icon-left input:focus {
   outline: none;
-  margin-left: 0.5rem;
-  width: 200px;
+  border-color: #007ad9;
+  box-shadow: 0 0 5px rgba(0, 122, 217, 0.5);
 }
 
-.filtro-avanzado {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  background-color: #e9ecef;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
+/* Icono de filtros activos */
+.pi-circle-fill {
+  vertical-align: middle;
 }
 
-.filtro-avanzado:hover {
-  background-color: #d6d8db;
-}
-
-.filtro-avanzado i {
-  margin-right: 0.5rem;
-}
-
-.filtro-activo {
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  border-radius: 50%;
-  margin-left: 0.5rem;
-}
-
-.menu-filtros {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #f1f1f1;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-/* PESTAÑAS */
-.pestanas-entregas {
-  display: flex;
-  border-bottom: 2px solid #ccc;
-  margin-top: 1rem;
-}
-
-.pestana {
-  padding: 0.75rem 1.5rem;
-  cursor: pointer;
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.pestana:hover {
-  background-color: #f0f0f0;
-}
-
-.pestana.activa {
-  border-color: #007bff;
-  font-weight: bold;
-  color: #007bff;
-}
-
-/* CONTENIDO PESTAÑA */
-.contenido-pestana {
-  padding: 1rem;
-}
-
+/* Subtítulos y descripciones */
 .subtitulo {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.descripcion {
+  font-size: 0.9rem;
   color: #666;
 }
 
-/* GRILLA PENDIENTES */
-.grid-tres-columnas {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
+/* Tabla pendientes */
+.font-semibold {
+  font-weight: 600;
 }
 
-.cabecera-columna {
-  font-weight: bold;
-  background-color: #f1f1f1;
-  padding: 0.5rem;
+.estado-pendiente {
+  color: #f39c12; /* naranja */
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
-.celda-columna {
-  padding: 0.5rem;
-  border-bottom: 1px solid #ddd;
+.fecha {
+  font-size: 0.8rem;
+  color: #999;
 }
 
-.estado-pedido.pagado {
-  color: green;
-  font-weight: bold;
-}
-
-.total-pedido {
-  margin-top: 0.5rem;
-  font-weight: bold;
-}
-
-/* BOTONES */
-.btn-detalles,
-.btn-secundario,
-.btn-primario {
-  font-size: 0.9rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.btn-detalles {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-detalles:hover {
-  background-color: #0056b3;
-}
-
-.btn-secundario {
-  background-color: #ccc;
-}
-
-.btn-secundario:hover {
-  background-color: #b3b3b3;
-}
-
-.btn-primario {
-  background-color: #28a745;
-  color: white;
-}
-
-.btn-primario:hover {
-  background-color: #218838;
-}
-
-/* ENTREGADOS */
-.contenedor-entregados {
+/* Cards entregados */
+.shadow-card {
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+  border-radius: 0.3rem;
+  padding: 1rem;
+  background: #fff;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.tarjeta-entregado {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.encabezado-tarjeta {
-  display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
-  align-items: center;
 }
 
-.codigo-pedido {
-  font-weight: bold;
-}
-
-.etiqueta-estado.entregado {
-  background-color: green;
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+.estado-entregado {
+  color: #27ae60; /* verde */
+  font-weight: 600;
   font-size: 0.85rem;
 }
 
-.grid-detalles {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 0.25rem 1rem;
-  margin-top: 0.5rem;
+/* Detalle pedido dentro de card */
+.detalle-pedido {
+  font-size: 0.9rem;
+  color: #444;
+  margin: 0.5rem 0 1rem 0;
 }
 
-.etiqueta-detalle {
-  font-weight: bold;
+/* Detalles del diálogo */
+.p-dialog .p-mt-3 {
+  margin-top: 1rem !important;
 }
 
-.valor-detalle.destacado {
-  font-weight: bold;
-  color: #007bff;
-}
-
-.acciones-pedido {
-  margin-top: 1rem;
-  text-align: right;
-}
-
-
-/* ========== MODALES ========== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.32);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1500;
-}
-
-.modal-box {
-  background: white;
-  border-radius: 12px;
-  width: 380px;
-  max-width: 90vw;
-  padding: 20px 28px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-weight: 700;
-  font-size: 1.4rem;
-  color: #1f2937;
-}
-
-.modal-header .close-btn {
-  font-size: 1.8rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #6b7280;
-  transition: color 0.2s;
-}
-
-.modal-header .close-btn:hover {
-  color: #ef4444;
-}
-
-.modal-body p {
-  margin: 6px 0;
-  font-size: 1rem;
-  color: #374151;
-}
-
-.product-list {
-  padding-left: 20px;
-  margin: 8px 0;
-  color: #4b5563;
-  font-size: 0.95rem;
-  list-style-type: disc;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 14px;
-  margin-top: 8px;
-}
-
-.primary-btn {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.primary-btn:hover {
-  background-color: #2563eb;
-}
-
-.secondary-btn {
-  background-color: #e5e7eb;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 6px;
+/* Botones */
+.p-button {
   font-weight: 600;
-  cursor: pointer;
-  color: #374151;
-  transition: background-color 0.3s;
+  border-radius: 0.3rem;
 }
 
-.secondary-btn:hover {
-  background-color: #d1d5db;
+/* Para textos en diálogos */
+.p-text-center {
+  text-align: center;
 }
 
-/* ========== RESPONSIVE ========= */
-@media (max-width: 720px) {
-  .three-column-grid {
-    grid-template-columns: 1fr;
+/* Responsive */
+@media (max-width: 768px) {
+  .titulo {
+    font-size: 1.5rem;
   }
-  .action-row {
-    flex-direction: column;
-    align-items: stretch;
+  .subtitulo {
+    font-size: 1.1rem;
   }
-  .filter-menu {
-    right: 12px;
-    width: 90vw;
+  .descripcion {
+    font-size: 0.85rem;
   }
 }
