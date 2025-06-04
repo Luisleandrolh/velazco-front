@@ -176,16 +176,21 @@ actualizarProducto(): void {
 }
 
   eliminarProducto(id: number): void {
-    if (confirm('¿Está seguro de eliminar este producto?')) {
-      this.serviceProducto.eliminarProducto(id).subscribe({
-        next: () => {
-          this.productos = this.productos.filter(p => p.id !== id);
-          this.mostrarAlerta('Producto eliminado correctamente');
-        },
-        error: (err: any) => console.error('Error al eliminar producto', err)
-      });
-    }
+  if (confirm('¿Está seguro de eliminar este producto?')) {
+    this.serviceProducto.eliminarProducto(id).subscribe({
+      next: () => {
+        this.productos = this.productos.filter(p => p.id !== id);
+        this.mostrarAlerta('Producto eliminado correctamente');
+      },
+      error: (err: any) => {
+        console.error('Error al eliminar producto', err);
+        alert('No se puede eliminar un producto que tiene órdenes o detalles de producción asociados');
+      }
+    });
   }
+}
+
+
 
   toggleEstado(producto: Producto): void {
     const nuevoEstado = !producto.active;
