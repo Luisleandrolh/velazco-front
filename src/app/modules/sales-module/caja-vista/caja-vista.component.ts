@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { MatDialog } from '@angular/material/dialog';
-import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pedido-dialog.component';
+import { MatDialog } from '@angular/material/dialog'; //importa la clase MatDialog para abrir los modales
+import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pedido-dialog.component'; //importa el componenten que seria el modal
 import { OrdersModuleService } from "../../orders-module/services/orders-module.service";
 import Swal from 'sweetalert2';
 
@@ -54,14 +54,10 @@ export class CajaVistaComponent {
           this.pedidosPendientes = data.content.map((pedido: any) => ({
             codigo: pedido.id.toString(),
             cliente: pedido.clientName,
-            total: pedido.details?.reduce(
-              (acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)),
-              0
-            ) || 0,
+            total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)), 0 ) || 0,
             fecha: new Date(pedido.date).toLocaleDateString(),
             hora: new Date(pedido.date).toLocaleTimeString(),
-            estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
-              pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
+            estado: pedido.status === 'PENDIENTE' ? 'Pendiente' : pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
             details: pedido.details || [] // Necesario para mostrar detalles
           }));
         },
@@ -81,10 +77,7 @@ export class CajaVistaComponent {
           const pedidosMapeados = data.content.map((pedido: any) => ({
             codigo: pedido.id.toString(),
             cliente: pedido.clientName,
-            total: pedido.details?.reduce(
-              (acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)),
-              0
-            ) || 0,
+            total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)), 0 ) || 0,
             fecha: new Date(pedido.date).toLocaleDateString(),
             hora: new Date(pedido.date).toLocaleTimeString(),
             estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
@@ -134,17 +127,17 @@ export class CajaVistaComponent {
   }
 
 pagarPedido(pedido: Pedido): void {
-  const datosPago = {
-    paymentMethod: 'efectivo',
+  const datosPago = { //se crea los datos del objeto pago
+    paymentMethod: 'efectivo', //metodo de pago
     totalAmount: pedido.total,
-    cashier: {
+    cashier: { //datos del cajero
       id: 1,
       name: ''
     }
   };
 
-  this.orderService.confirmarVenta(pedido.codigo, datosPago).subscribe({
-    next: (response: any) => {
+  this.orderService.confirmarVenta(pedido.codigo, datosPago).subscribe({ //llama al backend usando el metodo de confirmarventa
+    next: (response: any) => { //retorna un observable (rpta del backend)
       pedido.estado = 'Pagado';
       this.mostrarAlerta(`Pedido ${pedido.codigo} marcado como Pagado.`);
       this.cargarPedidosPorEstado();
@@ -187,7 +180,7 @@ cancelarPedido(pedido: Pedido): void {
           });
         }
       });
-    }
+    } 
   });
 }
 

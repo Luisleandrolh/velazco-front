@@ -11,7 +11,7 @@ interface Producto {
   stock: number;
   unidadMedida: string;
   price: number;
-  active: boolean;
+  active: boolean; 
 }
 
 @Component({
