@@ -1,12 +1,12 @@
+/* Contenedor principal */
 .entregas-container {
-  padding: 1rem; /* ya tienes p-4 de PrimeNG, pero si quieres un extra */
+  padding: 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
 }
 
 /* Header */
 .header {
-  /* p-d-flex p-jc-between p-ai-center ya hacen flex */
   border-bottom: 1px solid #ddd;
   padding-bottom: 1rem;
 }
@@ -17,104 +17,183 @@
   color: #222;
 }
 
-/* Contenedor búsqueda y filtros */
+/* Búsqueda y filtros */
 .busqueda-filtros {
-  gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-/* Icono de búsqueda */
 .p-input-icon-left > i.pi {
-  color: #888;
-  font-size: 1.2rem;
+  color:#007ad9;
+  font-size: 1rem;
 }
 
-/* Input búsqueda */
 .p-input-icon-left input {
-  padding: 0.5rem 0.75rem;
+  padding: 0.3rem 1.8rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #fff;
   border-radius: 0.25rem;
   transition: border-color 0.3s ease;
+  width: 100%;
 }
 
 .p-input-icon-left input:focus {
   outline: none;
-  border-color: #007ad9;
-  box-shadow: 0 0 5px rgba(0, 122, 217, 0.5);
+  border-color: #00a6d9;
+  box-shadow: 0 0 5px rgb(2, 103, 255);
 }
 
-/* Icono de filtros activos */
 .pi-circle-fill {
   vertical-align: middle;
+  color: #007ad9;
+  font-size: 0.75rem;
 }
 
-/* Subtítulos y descripciones */
+/* Textos */
 .subtitulo {
-  font-size: 1.25rem;
+  font-size: 1.25em;
   font-weight: 600;
-  color: #2c3e50;
-}
-
-.descripcion {
-  font-size: 0.9rem;
   color: #666;
 }
 
-/* Tabla pendientes */
 .font-semibold {
-  font-weight: 600;
+  font-weight: bold;
+  color: #000;
 }
 
 .estado-pendiente {
-  color: #f39c12; /* naranja */
+  color: #ff8800;
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  margin: 0.25rem 0;
 }
 
 .fecha {
   font-size: 0.8rem;
-  color: #999;
+  color: #888;
 }
 
-/* Cards entregados */
+
 .shadow-card {
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
-  border-radius: 0.3rem;
-  padding: 1rem;
-  background: #fff;
-  height: 100%;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 2px rgba(54, 54, 54, 0.377);
+  background-color: #fff;
   display: flex;
   flex-direction: column;
+  transition: box-shadow 0.3s ease;
+}
+
+.shadow-card:hover {
+  box-shadow: 0 0 2px rgb(0, 38, 255), 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.pedido-id {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #0000009a;
 }
 
 .estado-entregado {
-  color: #27ae60; /* verde */
+  color: #fff;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
+  background-color: #00c251;
+  padding: 0.25rem 0.6rem;
+  border-radius: 1rem;
 }
 
-/* Detalle pedido dentro de card */
 .detalle-pedido {
-  font-size: 0.9rem;
-  color: #444;
-  margin: 0.5rem 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
 }
 
-/* Detalles del diálogo */
-.p-dialog .p-mt-3 {
-  margin-top: 1rem !important;
+.linea {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.etiqueta {
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 80px;
+}
+
+.valor {
+  color: #555;
+}
+
+.total .valor {
+  font-weight: 700;
+  color: #000;
+}
+
+
+/* Elimina todos los box-shadow de PrimeNG */
+::ng-deep .p-card,
+::ng-deep .p-input-icon-right input {
+  box-shadow: none !important;
+}
+
+::ng-deep .p-datatable thead th {
+  padding: 0.5rem 1rem !important;
+  line-height: 1rem !important;
+  font-size: 1rem !important;
+  height: auto !important;
+  vertical-align: middle !important;
+  text-align: center;
+}
+
+::ng-deep .p-card {
+  height: 180px !important;
+  padding: 0 !important;
+  border-radius: 0.5rem !important;
+  background-color: #fff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .p-card-header {
+  padding: 0 2rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  background-color: transparent !important;
+  flex-shrink: 0 !important;
+}
+
+::ng-deep .p-card-content {
+  padding: 0 1rem !important;
+  font-size: 0.95rem !important;
+  color: #333 !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+}
+
+::ng-deep .p-card-footer {
+  padding: 1rem !important;
+  background-color: transparent !important;
+  flex-shrink: 0 !important;
 }
 
 /* Botones */
 .p-button {
-  font-weight: 600;
+  font-weight: 500;
   border-radius: 0.3rem;
+  min-height: 2.05rem;
+  padding: 0.1rem 0.9rem;
 }
 
-/* Para textos en diálogos */
-.p-text-center {
-  text-align: center;
+.contenido {
+  margin-top: 1.5rem;
 }
 
 /* Responsive */
@@ -122,10 +201,21 @@
   .titulo {
     font-size: 1.5rem;
   }
+
   .subtitulo {
     font-size: 1.1rem;
   }
+
   .descripcion {
     font-size: 0.85rem;
+  }
+
+  .busqueda-filtros {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .p-dialog {
+    width: 90vw !important;
   }
 }
