@@ -28,7 +28,6 @@ export class EntregasVistaComponent implements OnInit {
     { label: 'Entregados', id: 'entregados' }
   ];
 
-  showFilterMenu = false;
   showOrderDetails = false;
   showDeliveryConfirmation = false;
 
@@ -186,10 +185,6 @@ export class EntregasVistaComponent implements OnInit {
     });
   }
 
-  toggleFilterMenu() {
-    this.showFilterMenu = !this.showFilterMenu;
-  }
-
   hasActiveFilters(): boolean {
     return !!this.filters.startDate || !!this.filters.endDate ||
            !!this.filters.amountRange ||
@@ -231,6 +226,5 @@ export class EntregasVistaComponent implements OnInit {
     }
 
     this.filteredOrders = lista;
-    this.showFilterMenu = false;
   }
 }
