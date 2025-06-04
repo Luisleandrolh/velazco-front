@@ -1,18 +1,256 @@
-.modal-backdrop-custom {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1050;
+/* Estilos personalizados */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-.modal-dialog {
+.font-bold {
+  font-weight: 700;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Ajustes para los botones de acción */
+.p-button.p-button-text.p-button-plain {
+  color: #6c757d;
+}
+
+.p-button.p-button-text.p-button-plain:hover {
+  background: rgba(108, 117, 125, 0.04);
+}
+
+/* Mejoras para el modal */
+.p-dialog .p-dialog-content {
+  padding: 1.5rem;
+}
+
+/* Ajustes para los elementos del formulario */
+.p-dropdown, .p-calendar, .p-inputtext {
+  width: 100%;
+}
+
+/* Espaciado entre elementos del formulario */
+.p-field {
+  margin-bottom: 1.5rem;
+}
+
+/* Estilo para la tabla */
+.p-datatable .p-datatable-thead > tr > th {
+  background: #f8f9fa;
+  font-weight: 600;
+}
+
+/* Ajustes para tarjetas */
+.p-card {
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px 0 rgba(0,0,0,0.14), 0 1px 3px 0 rgba(0,0,0,0.12);
+  border-radius: 6px;
+}
+
+.p-card .p-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.p-card .p-card-subtitle {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+/* Estilos generales del modal */
+:host ::ng-deep .p-dialog {
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Estilos de formulario */
+.input-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+  padding: 0.5rem 0;
+}
+
+/* Sección de productos */
+.products-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0px;
+}
+
+.product-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.product-card {
   background: white;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.product-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.product-card-content {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.product-quantity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 120px;
+}
+
+.product-quantity label {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.product-remove {
+  margin-left: 0.5rem;
+}
+
+/* Botones */
+.add-product-btn {
+  width: 100%;
+  border-style: dashed !important;
+  border-color: #d1d5db !important;
+  color: #4b5563 !important;
+}
+
+.add-product-btn:hover {
+  border-color: #9ca3af !important;
+  background: #f9fafb !important;
+}
+
+.cancel-btn {
+  color: #6b7280 !important;
+  border-color: #e5e7eb !important;
+}
+
+.create-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  border: none !important;
+}
+
+.create-btn:disabled {
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+}
+
+/* Efectos modernos */
+:host ::ng-deep .p-inputtext, 
+:host ::ng-deep .p-dropdown, 
+:host ::ng-deep .p-calendar {
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+}
+
+:host ::ng-deep .p-inputtext:enabled:hover, 
+:host ::ng-deep .p-dropdown:not(.p-disabled):hover, 
+:host ::ng-deep .p-calendar:not(.p-disabled):hover {
+  border-color: #d1d5db;
+}
+
+:host ::ng-deep .p-inputtext:enabled:focus, 
+:host ::ng-deep .p-dropdown:not(.p-disabled).p-focus, 
+:host ::ng-deep .p-calendar:not(.p-disabled).p-focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.header-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.date-filter-section {
+  width: 220px;
+}
+
+.new-order-section {
+  margin-left: auto;
+}
+
+.new-order-btn {
+  background-color: #6366f1;
+  border-color: #6366f1;
+}
+
+.new-order-btn:hover {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+  }
+  
+  .search-section,
+  .date-filter-section {
+    width: 100%;
+  }
+  
+  .new-order-section {
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .new-order-btn {
+    width: 100%;
+  }
 }

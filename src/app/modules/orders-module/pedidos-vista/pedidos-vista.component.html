@@ -1,133 +1,224 @@
-<!-- En tu index.html -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-<div class="container">
+<div class="pedidos-container">
+  <!-- Toast para notificaciones -->
+  <p-toast></p-toast>
 
   <!-- Encabezado con título, búsqueda y carrito -->
   <div class="header-container">
     <div class="left-section">
-      <h2>Pedidos en Tienda</h2>
-      <input
-        type="text"
-        placeholder="Buscar productos..."
-        class="search-input"
-        [(ngModel)]="textoBusqueda"
-      />
+      <h2 class="pedidos-title">Pedidos en Tienda</h2>
+      <div class="p-inputgroup search-container">
+  <span class="p-inputgroup-addon">
+    <i class="pi pi-search"></i>
+  </span>
+  <input
+    type="text"
+    pInputText
+    placeholder="Buscar productos..."
+    [(ngModel)]="textoBusqueda"
+    class="search-input"
+  />
+</div>
     </div>
 
     <div class="right-section">
-      <button class="carrito-btn" (click)="mostrarModal = true">
-        <i class="bi bi-cart"></i>
-        <span>Carrito</span>
-        <span class="badge">{{ obtenerCantidadTotal() }}</span>
+      <button 
+        pButton 
+        pRipple
+        type="button"
+        (click)="mostrarModal = true"
+        class="p-button-outlined p-button-secondary carrito-btn"
+      >
+        <i class="pi pi-shopping-cart mr-2"></i>
+        Carrito
+        <p-badge 
+          *ngIf="obtenerCantidadTotal() > 0"
+          [value]="obtenerCantidadTotal().toString()" 
+          severity="danger"
+          class="ml-2"
+        ></p-badge>
       </button>
     </div>
   </div>
 
-  <!-- Botones de filtro -->
+  <!-- Botones de filtro de categorías -->
   <div class="filter-buttons">
     <button
       *ngFor="let cat of categorias"
+      pButton
+      type="button"
+      [label]="cat"
+      [class.p-button-primary]="categoriaSeleccionada === cat"
+      [class.p-button-outlined]="categoriaSeleccionada !== cat"
+      class="p-button-sm filter-btn"
       (click)="cambiarCategoria(cat)"
-      [class.active]="categoriaSeleccionada === cat"
-    >
-      {{ cat }}
-    </button>
+    ></button>
   </div>
 
   <!-- Productos -->
   <div class="product-grid">
-    <div class="product-card" *ngFor="let producto of productosFiltrados">
-      <img
-        [src]="producto.image || 'https://via.placeholder.com/150?text=Sin+Imagen'"
-        alt="{{ producto.name }}"
-        width="150"
-        height="150"
-      />
-      <h4>{{ producto.name }}</h4>
-      <p><strong>Categoria: </strong>{{ producto.category.name }}</p>
-      <div class="price">{{ producto.price | currency:'S/. ' }}</div>
-      <button class="add-btn" (click)="agregarAlCarrito(producto)">Agregar</button>
-    </div>
+    <p-card 
+      *ngFor="let producto of productosFiltrados" 
+      class="product-card"
+      [style]="{'height': '100%'}"
+    >
+      <ng-template pTemplate="header">
+        <div class="product-image-container">
+          <img
+            [src]="producto.image || 'https://via.placeholder.com/200x150?text=Sin+Imagen'"
+            [alt]="producto.name"
+            class="product-image"
+          />
+        </div>
+      </ng-template>
+      
+      <div class="product-info">
+        <h4 class="product-name">{{ producto.name }}</h4>
+        <p class="product-category">
+          <strong>Categoría: </strong>{{ producto.category.name }}
+        </p>
+        <div class="product-price">{{ producto.price | currency:'S/. ' }}</div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button 
+          pButton 
+          pRipple
+          type="button"
+          label="Agregar"
+          icon="pi pi-plus"
+          (click)="agregarAlCarrito(producto)"
+          class="p-button w-full"
+        ></button>
+      </ng-template>
+    </p-card>
   </div>
 
   <!-- Modal del carrito -->
-  <div class="modal" [class.show]="mostrarModal">
-    <div class="modal-content p-4">
-      <span class="close" (click)="mostrarModal = false">&times;</span>
-      <h4>Carrito de Pedido</h4>
-      <p class="text-muted">Revise los productos antes de confirmar el pedido.</p>
+  <p-dialog 
+    [(visible)]="mostrarModal" 
+    [modal]="true" 
+    [style]="{width: '500px'}"
+    [draggable]="false"
+    [resizable]="false"
+    header="Carrito de Pedido"
+    styleClass="carrito-dialog"
+  >
+    <p class="dialog-subtitle">Revise los productos antes de confirmar el pedido</p>
 
-      <div *ngIf="carrito.length > 0; else carritoVacio">
-        <div
-          *ngFor="let item of carrito"
-          class="d-flex align-items-center mb-3 border-bottom pb-2"
+    <div *ngIf="carrito.length > 0; else carritoVacio" class="carrito-content">
+      <!-- Items del carrito -->
+      <div class="carrito-items">
+        <div 
+          *ngFor="let item of carrito; let last = last" 
+          class="carrito-item"
         >
-          <img
-            [src]="item.producto.image || 'https://via.placeholder.com/50?text=Sin+Imagen'"
-            alt="{{ item.producto.name }}"
-            width="50"
-            height="50"
-            class="me-3"
-          />
-          <div class="flex-grow-1">
-            <strong>{{ item.producto.name }}</strong>
-            <div class="text-muted">{{ item.producto.price | currency:'S/. ' }}</div>
+          <div class="item-info">
+            <img
+              [src]="item.producto.image || 'https://via.placeholder.com/60x60?text=Sin+Imagen'"
+              [alt]="item.producto.name"
+              class="item-image"
+            />
+            <div class="item-details">
+              <strong class="item-name">{{ item.producto.name }}</strong>
+              <div class="item-price">{{ item.producto.price | currency:'S/. ' }}</div>
+            </div>
           </div>
-          <div class="d-flex align-items-center">
-            <button
-              class="btn btn-outline-secondary btn-sm"
-              (click)="cambiarCantidad(item, -1)"
-            >−</button>
-            <span class="mx-2">{{ item.cantidad }}</span>
-            <button
-              class="btn btn-outline-secondary btn-sm"
-              (click)="cambiarCantidad(item, 1)"
-            >+</button>
+          
+          <div class="item-controls">
+            <div class="quantity-controls">
+              <button 
+                pButton 
+                pRipple
+                type="button"
+                icon="pi pi-minus"
+                (click)="cambiarCantidad(item, -1)"
+                class="p-button-outlined p-button-secondary p-button-sm"
+              ></button>
+              <span class="quantity">{{ item.cantidad }}</span>
+              <button 
+                pButton 
+                pRipple
+                type="button"
+                icon="pi pi-plus"
+                (click)="cambiarCantidad(item, 1)"
+                class="p-button-outlined p-button-secondary p-button-sm"
+              ></button>
+            </div>
+            <button 
+              pButton 
+              pRipple
+              type="button"
+              icon="pi pi-trash"
+              (click)="quitarDelCarrito(item)"
+              class="p-button-text p-button-danger p-button-sm"
+            ></button>
           </div>
-          <button
-            class="btn btn-link text-danger ms-2"
-            (click)="quitarDelCarrito(item)"
-          >
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-
-        <div class="mt-4">
-          <div class="d-flex justify-content-between">
-            <span>Subtotal</span>
-            <strong>{{ subtotalCarrito() | currency:'S/. ' }}</strong>
-          </div>
-          <div class="d-flex justify-content-between">
-            <span>Impuestos</span>
-            <strong>{{ impuestosCarrito() | currency:'S/. ' }}</strong>
-          </div>
-          <div class="d-flex justify-content-between border-top pt-2 mt-2">
-            <span>Total</span>
-            <strong>{{ totalCarrito() | currency:'S/. ' }}</strong>
-          </div>
-        </div>
-
-        <div class="form-group mt-3">
-          <label for="cliente">Nombre del Cliente</label>
-          <input
-            type="text"
-            class="form-control"
-            id="cliente"
-            [(ngModel)]="nombreCliente"
-            placeholder="Ingrese el nombre del cliente"
-          />
-        </div>
-
-        <div class="d-flex justify-content-end mt-3">
-          <button class="btn btn-outline-secondary me-2" (click)="mostrarModal = false">Cancelar</button>
-          <button class="btn btn-dark" (click)="finalizarCompra()">Confirmar Pedido</button>
+          
+          <p-divider *ngIf="!last"></p-divider>
         </div>
       </div>
 
-      <ng-template #carritoVacio>
-        <p>El carrito está vacío.</p>
-      </ng-template>
+      <!-- Resumen de totales -->
+      <div class="totales-container">
+        <p-divider></p-divider>
+        <div class="total-row">
+          <span>Subtotal</span>
+          <strong>{{ subtotalCarrito() | currency:'S/. ' }}</strong>
+        </div>
+        <div class="total-row">
+          <span>Impuestos</span>
+          <strong>{{ impuestosCarrito() | currency:'S/. ' }}</strong>
+        </div>
+        <p-divider></p-divider>
+        <div class="total-row total-final">
+          <span>Total</span>
+          <strong>{{ totalCarrito() | currency:'S/. ' }}</strong>
+        </div>
+      </div>
+
+      <!-- Campo cliente -->
+      <div class="cliente-container">
+        <label for="cliente" class="cliente-label">Nombre del Cliente</label>
+        <input
+          type="text"
+          pInputText
+          id="cliente"
+          [(ngModel)]="nombreCliente"
+          placeholder="Ingrese el nombre del cliente"
+          class="w-full"
+        />
+      </div>
     </div>
-  </div>
+
+    <ng-template #carritoVacio>
+      <div class="carrito-vacio">
+        <i class="pi pi-shopping-cart carrito-vacio-icon"></i>
+        <p>El carrito está vacío.</p>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <div class="dialog-footer">
+        <button 
+          pButton 
+          pRipple
+          type="button"
+          label="Cancelar" 
+          icon="pi pi-times"
+          (click)="mostrarModal = false"
+          class="p-button-outlined p-button-secondary"
+        ></button>
+        <button 
+          pButton 
+          pRipple
+          type="button"
+          label="Confirmar Pedido" 
+          icon="pi pi-check"
+          (click)="finalizarCompra()"
+          class="p-button"
+          [disabled]="carrito.length === 0 || !nombreCliente.trim()"
+        ></button>
+      </div>
+    </ng-template>
+  </p-dialog>
 </div>
