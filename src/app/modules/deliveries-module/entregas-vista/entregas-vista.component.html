@@ -6,45 +6,20 @@
     <div class="busqueda-filtros p-d-flex p-ai-center">
       <span class="p-input-icon-left" style="width: 16rem;">
         <i class="pi pi-search"></i>
-        <input
-          type="text"
-          pInputText
-          [(ngModel)]="searchTerm"
-          (input)="searchOrders()"
-          placeholder="Buscar por código o cliente..."
-          style="width: 100%;"
-        />
+        <input type="text" pInputText [(ngModel)]="searchTerm" (input)="searchOrders()"
+          placeholder="Buscar por código o cliente..." style="width: 100%;" />
       </span>
 
-      <button
-        pButton
-        type="button"
-        icon="pi pi-filter"
-        label="Filtros avanzados"
-        class="p-button-outlined p-ml-2"
-        (click)="toggleFilterMenu()"
-      ></button>
-
-      <i
-        *ngIf="hasActiveFilters()"
-        class="pi pi-circle-fill p-ml-2"
-        style="color: green; font-size: 1rem;"
-        aria-label="Filtros activos"
-      ></i>
+      <i *ngIf="hasActiveFilters()" class="pi pi-circle-fill p-ml-2" aria-label="Filtros activos"></i>
     </div>
   </div>
 
-  <p-tabMenu
-    [model]="tabItems"
-    [(activeItem)]="activeTabItem"
-    (activeItemChange)="onTabChange($event)"
-  ></p-tabMenu>
+  <p-tabMenu [model]="tabItems" [(activeItem)]="activeTabItem" (activeItemChange)="onTabChange($event)"></p-tabMenu>
 
   <div class="contenido p-mt-4">
     <!-- Tabla Pendientes -->
     <ng-container *ngIf="activeTab === 'pendientes'">
-      <h3 class="subtitulo p-mb-2">Pedidos Pendientes de Entrega</h3>
-      <p class="descripcion p-mb-4">Pedidos pagados listos para ser entregados</p>
+
 
       <p-table [value]="filteredOrders" responsiveLayout="scroll">
         <ng-template pTemplate="header">
@@ -78,53 +53,52 @@
 
     <!-- Lista Entregados -->
     <ng-container *ngIf="activeTab === 'entregados'">
-      <h3 class="subtitulo p-mb-2">Pedidos Entregados</h3>
-      <p class="descripcion p-mb-4">Historial de pedidos entregados</p>
-
       <div class="p-grid p-nogutter p-align-start">
-        <div
-          *ngFor="let order of filteredOrders"
-          class="p-col-12 p-md-6 p-lg-4 p-p-2"
-        >
+        <div *ngFor="let order of filteredOrders" class="p-col-12 p-md-6 p-lg-4 p-p-2">
           <p-card class="shadow-card">
             <ng-template pTemplate="header">
-              <div class="p-d-flex p-jc-between p-ai-center">
-                <span class="font-semibold">PED-{{ order.id }}</span>
+              <div class="card-header">
+                <span class="pedido-id">PED-{{ order.id }}</span>
                 <span class="estado-entregado">Entregado</span>
               </div>
             </ng-template>
+
             <div class="detalle-pedido">
-              <div><strong>Cliente:</strong> {{ order.customer.name }}</div>
-              <div><strong>Productos:</strong>
-                <ng-container *ngFor="let p of order.products; let last = last">
-                  {{ p.quantity }}x {{ p.name }}<span *ngIf="!last">, </span>
-                </ng-container>
+              <div class="linea">
+                <span class="etiqueta">Cliente:</span>
+                <span class="valor">{{ order.customer.name }}</span>
               </div>
-              <div><strong>Fecha:</strong> {{ order.date }}</div>
-              <div><strong>Total:</strong> S/. {{ order.total | number:'1.2-2' }}</div>
+              <div class="linea">
+                <span class="etiqueta">Productos:</span>
+                <span class="valor">
+                  <ng-container *ngFor="let p of order.products; let last = last">
+                    {{ p.quantity }}x {{ p.name }}<span *ngIf="!last">, </span>
+                  </ng-container>
+                </span>
+              </div>
+              <div class="linea">
+                <span class="etiqueta">Fecha:</span>
+                <span class="valor">{{ order.date }}</span>
+              </div>
+              <div class="linea total">
+                <span class="etiqueta">Total:</span>
+                <span class="valor">S/. {{ order.total | number:'1.2-2' }}</span>
+              </div>
             </div>
+
             <ng-template pTemplate="footer">
-              <button
-                pButton
-                label="Ver Detalles"
-                icon="pi pi-eye"
-                (click)="openOrderDetails(order.id)"
-              ></button>
+              <button pButton label="Ver Detalles" icon="pi pi-eye" (click)="openOrderDetails(order.id)"></button>
             </ng-template>
           </p-card>
+
         </div>
       </div>
     </ng-container>
   </div>
 
   <!-- Diálogo de detalles -->
-  <p-dialog
-    header="Detalles del Pedido"
-    [(visible)]="showOrderDetails"
-    [modal]="true"
-    [style]="{ width: '30rem' }"
-    (onHide)="closeDetails()"
-  >
+  <p-dialog header="Detalles del Pedido" [(visible)]="showOrderDetails" [modal]="true" [style]="{ width: '30rem' }"
+    (onHide)="closeDetails()">
     <div *ngIf="selectedOrder">
       <p><strong>Cliente:</strong> {{ selectedOrder.customer.name }}</p>
       <p><strong>Fecha:</strong> {{ selectedOrder.date }}</p>
@@ -140,32 +114,21 @@
 
     <ng-template pTemplate="footer">
       <button pButton label="Cerrar" class="p-button-text" (click)="closeDetails()"></button>
-      <button
-        *ngIf="selectedOrder?.status === 'Pagado'"
-        pButton
-        label="Confirmar Entrega"
-        icon="pi pi-check"
-        class="p-button-success"
-        (click)="prepareDeliveryConfirmation()"
-      ></button>
+      <button *ngIf="selectedOrder?.status === 'Pagado'" pButton label="Confirmar Entrega" icon="pi pi-check"
+        class="p-button-success" (click)="prepareDeliveryConfirmation()"></button>
     </ng-template>
   </p-dialog>
 
   <!-- Diálogo de confirmación -->
   <!-- Diálogo de confirmación -->
-<p-dialog
-  header="Confirmar Entrega"
-  [(visible)]="showDeliveryConfirmation"
-  [modal]="true"
-  [style]="{ width: '25rem' }"
-  (onHide)="cancelDeliveryConfirmation()"
->
-  <div class="p-text-center" *ngIf="selectedOrder">
-    <p>¿Deseas marcar este pedido como <strong>ENTREGADO</strong>?</p>
-    <p><strong>Código:</strong> {{ selectedOrder.id }}</p>
-    <p><strong>Cliente:</strong> {{ selectedOrder.customer.name }}</p>
-    <p><strong>Fecha y hora de entrega:</strong> {{ deliveryDateTime }}</p>
-  </div>
+  <p-dialog header="Confirmar Entrega" [(visible)]="showDeliveryConfirmation" [modal]="true"
+    [style]="{ width: '25rem' }" (onHide)="cancelDeliveryConfirmation()">
+    <div class="p-text-center" *ngIf="selectedOrder">
+      <p>¿Deseas marcar este pedido como <strong>ENTREGADO</strong>?</p>
+      <p><strong>Código:</strong> {{ selectedOrder.id }}</p>
+      <p><strong>Cliente:</strong> {{ selectedOrder.customer.name }}</p>
+      <p><strong>Fecha y hora de entrega:</strong> {{ deliveryDateTime }}</p>
+    </div>
 
 
     <ng-template pTemplate="footer">

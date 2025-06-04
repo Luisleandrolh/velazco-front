@@ -39,7 +39,7 @@
       <mat-card-content class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h3 class="codigo">{{ pedido.codigo }}</h3>
-          <p class="cliente">{{ pedido.cliente }}</p>
+          <p class="cliente">{{ pedido.cliente }}</p> 
 
           <mat-chip [ngClass]="{
               'chip-pendiente': pedido.estado === 'Pendiente',
@@ -51,7 +51,11 @@
         </div>
 
         <div class="text-end">
+<<<<<<< HEAD
           <h3 class="monto">S/.{{ calcularTotal(pedido).toFixed(2) }}</h3>
+=======
+          <h3 class="monto">S/. {{ calcularTotal(pedido).toFixed(2) }}</h3> 
+>>>>>>> 8c74356e6f5247c16b107454eba926cb78cd4718
           <p class="fecha">{{ pedido.fecha }} - {{ pedido.hora }}</p>
 
           <button *ngIf="pedido.estado === 'Pendiente'" mat-stroked-button class="btn-pagar me-2"

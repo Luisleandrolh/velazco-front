@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { MatDialog } from '@angular/material/dialog';
-import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pedido-dialog.component';
+import { MatDialog } from '@angular/material/dialog'; //importa la clase MatDialog para abrir los modales
+import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pedido-dialog.component'; //importa el componenten que seria el modal
 import { OrdersModuleService } from "../../orders-module/services/orders-module.service";
 import Swal from 'sweetalert2';
 import { jsPDF } from 'jspdf';
@@ -55,15 +55,12 @@ export class CajaVistaComponent {
           this.pedidosPendientes = data.content.map((pedido: any) => ({
             codigo: pedido.id.toString(),
             cliente: pedido.clientName,
-            total: pedido.details?.reduce(
-              (acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)),
-              0
-            ) || 0,
+            total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)), 0 ) || 0,
             fecha: new Date(pedido.date).toLocaleDateString(),
             hora: new Date(pedido.date).toLocaleTimeString(),
-            estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
-            pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
-            details: pedido.details || [] 
+
+            estado: pedido.status === 'PENDIENTE' ? 'Pendiente' : pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
+            details: pedido.details || [] // Necesario para mostrar detalles
           }));
         },
         error: (err) => console.error('Error al obtener pedidos:', err)
@@ -82,10 +79,7 @@ export class CajaVistaComponent {
           const pedidosMapeados = data.content.map((pedido: any) => ({
             codigo: pedido.id.toString(),
             cliente: pedido.clientName,
-            total: pedido.details?.reduce(
-              (acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)),
-              0
-            ) || 0,
+            total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)), 0 ) || 0,
             fecha: new Date(pedido.date).toLocaleDateString(),
             hora: new Date(pedido.date).toLocaleTimeString(),
             estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
@@ -189,72 +183,73 @@ export class CajaVistaComponent {
     return acum;
   }
 
-  pagarPedido(pedido: Pedido): void {
-    const datosPago = {
-      paymentMethod: 'efectivo',
-      totalAmount: pedido.total,
-      cashier: {
-        id: 1,
-        name: ''
-      }
-    };
+pagarPedido(pedido: Pedido): void {
+  const datosPago = { //se crea los datos del objeto pago
+    paymentMethod: 'efectivo', //metodo de pago
+    totalAmount: pedido.total,
+    cashier: { //datos del cajero
+      id: 1,
+      name: ''
+    }
+  };
 
-    this.orderService.confirmarVenta(pedido.codigo, datosPago).subscribe({
-      next: (response: any) => {
-        pedido.estado = 'Pagado';
-        this.mostrarAlerta(`Pedido ${pedido.codigo} marcado como Pagado.`);
-        this.cargarPedidosPorEstado();
-      },
-      error: (err: any) => {
-        console.error(`Error al pagar pedido ${pedido.codigo}:`, err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error al procesar el pago. Intenta nuevamente.',
-          confirmButtonText: 'Aceptar'
-        });
-      }
-    });
-  }
+  // Llamada al backend usando el método de confirmarVenta
+  this.orderService.confirmarVenta(pedido.codigo, datosPago).subscribe({
+    next: (response: any) => { //respuesta del backend
+      pedido.estado = 'Pagado'; //actualiza el estado del pedido
+      this.mostrarAlerta(`Pedido ${pedido.codigo} marcado como Pagado.`);
+      this.cargarPedidosPorEstado(); //recarga los pedidos por estado
+    },
+    error: (err: any) => {
+      console.error(`Error al pagar pedido ${pedido.codigo}:`, err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al procesar el pago. Intenta nuevamente.',
+        confirmButtonText: 'Aceptar'
+      });
+    }
+  });
+}
 
-  cancelarPedido(pedido: Pedido): void {
-    Swal.fire({
-      title: `¿Cancelar el pedido ${pedido.codigo}?`,
-      text: "Esta acción no se puede deshacer.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cancelar',
-      cancelButtonText: 'No, mantener'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.orderService.cancelarVenta(pedido.codigo).subscribe({
-          next: () => {
-            pedido.estado = 'Cancelado';
-            this.mostrarAlerta(`Pedido ${pedido.codigo} cancelado correctamente.`);
-            this.cargarPedidosPorEstado();
-          },
-          error: (err) => {
-            console.error(`Error al cancelar pedido ${pedido.codigo}:`, err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'No se pudo cancelar el pedido. Intenta nuevamente.',
-              confirmButtonText: 'Aceptar'
-            });
-          }
-        });
-      }
-    });
-  }
+cancelarPedido(pedido: Pedido): void {
+  Swal.fire({
+    title: `¿Cancelar el pedido ${pedido.codigo}?`,
+    text: "Esta acción no se puede deshacer.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cancelar',
+    cancelButtonText: 'No, mantener'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.orderService.cancelarVenta(pedido.codigo).subscribe({
+        next: () => {
+          pedido.estado = 'Cancelado';
+          this.mostrarAlerta(`Pedido ${pedido.codigo} cancelado correctamente.`);
+          this.cargarPedidosPorEstado();
+        },
+        error: (err) => {
+          console.error(`Error al cancelar pedido ${pedido.codigo}:`, err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo cancelar el pedido. Intenta nuevamente.',
+            confirmButtonText: 'Aceptar'
+          });
+        }
+      });
+    } 
+  });
+}
 
-  mostrarAlerta(mensaje: string) {
-    Swal.fire({
-      icon: 'success',
-      title: '¡Éxito!',
-      text: mensaje,
-      confirmButtonText: 'Aceptar',
-      timer: 3000,
-      timerProgressBar: true,
-    });
-  }
+mostrarAlerta(mensaje: string) {
+  Swal.fire({
+    icon: 'success',
+    title: '¡Éxito!',
+    text: mensaje,
+    confirmButtonText: 'Aceptar',
+    timer: 3000,
+    timerProgressBar: true,
+  });
+}
 }
