@@ -7,10 +7,9 @@
       <span class="p-input-icon-left" style="width: 16rem;">
         <i class="pi pi-search"></i>
         <input type="text" pInputText [(ngModel)]="searchTerm" (input)="searchOrders()"
-          placeholder="Buscar por código o cliente..." style="width: 100%;" />
+          placeholder="Buscar por código o cliente" style="width: 100%;" />
       </span>
 
-      <i *ngIf="hasActiveFilters()" class="pi pi-circle-fill p-ml-2" aria-label="Filtros activos"></i>
     </div>
   </div>
 
@@ -115,11 +114,10 @@
     <ng-template pTemplate="footer">
       <button pButton label="Cerrar" class="p-button-text" (click)="closeDetails()"></button>
       <button *ngIf="selectedOrder?.status === 'Pagado'" pButton label="Confirmar Entrega" icon="pi pi-check"
-        class="p-button-success" (click)="prepareDeliveryConfirmation()"></button>
+        class="p-button" (click)="prepareDeliveryConfirmation()"></button>
     </ng-template>
   </p-dialog>
 
-  <!-- Diálogo de confirmación -->
   <!-- Diálogo de confirmación -->
   <p-dialog header="Confirmar Entrega" [(visible)]="showDeliveryConfirmation" [modal]="true"
     [style]="{ width: '25rem' }" (onHide)="cancelDeliveryConfirmation()">
@@ -133,7 +131,7 @@
 
     <ng-template pTemplate="footer">
       <button pButton label="Cancelar" class="p-button-text" (click)="cancelDeliveryConfirmation()"></button>
-      <button pButton label="Confirmar" class="p-button-success" (click)="confirmDelivery()"></button>
+      <button pButton label="Confirmar" class="p-button" (click)="confirmDelivery()"></button>
     </ng-template>
   </p-dialog>
 </div>
