@@ -32,12 +32,6 @@ export class EntregasVistaComponent implements OnInit {
   showDeliveryConfirmation = false;
 
   searchTerm = '';
-  filters = { startDate: '', endDate: '', amountRange: '' };
-  paymentMethods = [
-    { name: 'Efectivo', selected: false },
-    { name: 'Tarjeta', selected: false },
-    { name: 'Yape/Plin', selected: false },
-  ];
 
   pendientes: DeliveryOrder[] = [];
   entregados: DeliveryOrder[] = [];
@@ -57,19 +51,14 @@ export class EntregasVistaComponent implements OnInit {
   }
 
   onTabChange(item: any): void {
-  this.activeTab = item.id;
-  this.searchTerm = '';
-  
-  if (this.hasActiveFilters()) {
-    this.applyFilters(); // aplica los filtros existentes
-  } else {
+    this.activeTab = item.id;
+    this.searchTerm = '';
+
     this.filteredOrders =
       this.activeTab === 'pendientes' ? [...this.pendientes] :
       this.activeTab === 'entregados' ? [...this.entregados] :
       [];
   }
-}
-
 
   private cargarPedidos(): void {
     this.deliveryService.obtenerPedidosPorEstado('PAGADO', 0, 50).subscribe({
@@ -110,7 +99,11 @@ export class EntregasVistaComponent implements OnInit {
         quantity: d.quantity,
         price: d.unitPrice
       })) || [],
-      customer: { name: p.clientName, phone: p.clientPhone, email: p.clientEmail },
+      customer: {
+        name: p.clientName,
+        phone: p.clientPhone,
+        email: p.clientEmail
+      },
       dispatch: p.dispatch
     }));
   }
@@ -126,29 +119,29 @@ export class EntregasVistaComponent implements OnInit {
   }
 
   openOrderDetails(orderId: string): void {
-  const found = (this.activeTab === 'pendientes' ? this.pendientes : this.entregados)
-    .find(o => o.id === orderId);
+    const found = (this.activeTab === 'pendientes' ? this.pendientes : this.entregados)
+      .find(o => o.id === orderId);
 
-  if (!found) {
-    console.warn('Pedido no encontrado:', orderId);
-    return;
+    if (!found) {
+      console.warn('Pedido no encontrado:', orderId);
+      return;
+    }
+
+    this.selectedOrder = found;
+    this.showOrderDetails = true;
   }
-
-  this.selectedOrder = found;
-  this.showOrderDetails = true;
-}
-
 
   closeDetails(): void {
     this.showOrderDetails = false;
   }
 
   prepareDeliveryConfirmation(): void {
-  if (!this.selectedOrder) return;
-  this.showOrderDetails = false;
-  this.deliveryDateTime = new Date().toLocaleString('es-PE');
-  this.showDeliveryConfirmation = true;
-}
+    if (!this.selectedOrder) return;
+
+    this.showOrderDetails = false;
+    this.deliveryDateTime = new Date().toLocaleString('es-PE');
+    this.showDeliveryConfirmation = true;
+  }
 
   cancelDeliveryConfirmation(): void {
     this.showDeliveryConfirmation = false;
@@ -185,46 +178,4 @@ export class EntregasVistaComponent implements OnInit {
     });
   }
 
-  hasActiveFilters(): boolean {
-    return !!this.filters.startDate || !!this.filters.endDate ||
-           !!this.filters.amountRange ||
-           this.paymentMethods.some(m => m.selected);
-  }
-
-  clearFilters(): void {
-    this.filters = { startDate: '', endDate: '', amountRange: '' };
-    this.paymentMethods.forEach(m => m.selected = false);
-    this.applyFilters();
-  }
-
-  applyFilters(): void {
-    const { startDate, endDate, amountRange } = this.filters;
-
-    let lista =
-      this.activeTab === 'pendientes' ? this.pendientes :
-      this.activeTab === 'entregados' ? this.entregados :
-      [];
-
-    if (startDate) {
-      const inicio = new Date(startDate);
-      lista = lista.filter(o => new Date(o.date) >= inicio);
-    }
-    if (endDate) {
-      const fin = new Date(endDate);
-      lista = lista.filter(o => new Date(o.date) <= fin);
-    }
-
-    if (amountRange) {
-      const [min, max] = amountRange === '100+' ? [100, Infinity]
-                       : amountRange.split('-').map(Number);
-      lista = lista.filter(o => o.total >= min && o.total <= max);
-    }
-
-    const métodosSel = this.paymentMethods.filter(m => m.selected).map(m => m.name);
-    if (métodosSel.length) {
-      lista = lista.filter(o => métodosSel.includes(o.paymentMethod));
-    }
-
-    this.filteredOrders = lista;
-  }
 }
