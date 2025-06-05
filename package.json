@@ -42,6 +42,7 @@
     "angular-15-demo": "file:",
     "chart.js": "^3.9.1",
     "express": "^4.15.2",
+    "jspdf": "^3.0.1",
     "ng2-charts": "^4.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^15.4.1",
