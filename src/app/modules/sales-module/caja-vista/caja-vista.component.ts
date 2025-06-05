@@ -58,8 +58,8 @@ export class CajaVistaComponent {
             total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)), 0 ) || 0,
             fecha: new Date(pedido.date).toLocaleDateString(),
             hora: new Date(pedido.date).toLocaleTimeString(),
-            estado: pedido.status === 'PENDIENTE' ? 'Pendiente' :
-              pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
+
+            estado: pedido.status === 'PENDIENTE' ? 'Pendiente' : pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
             details: pedido.details || [] // Necesario para mostrar detalles
           }));
         },
@@ -184,20 +184,21 @@ export class CajaVistaComponent {
   }
 
 pagarPedido(pedido: Pedido): void {
-  const datosPago = { //se crea los datos del objeto pago
-    paymentMethod: 'efectivo', //metodo de pago
+  const datosPago = {
+    paymentMethod: 'efectivo',
     totalAmount: pedido.total,
-    cashier: {
+    cashier: { //datos del cajero
       id: 1,
       name: ''
     }
   };
 
+  // Llamada al backend usando el método de confirmarVenta
   this.orderService.confirmarVenta(pedido.codigo, datosPago).subscribe({
-    next: (response: any) => {
-      pedido.estado = 'Pagado';
+    next: (response: any) => { //respuesta del backend
+      pedido.estado = 'Pagado'; //actualiza el estado del pedido
       this.mostrarAlerta(`Pedido ${pedido.codigo} marcado como Pagado.`);
-      this.cargarPedidosPorEstado();
+      this.cargarPedidosPorEstado(); //recarga los pedidos por estado
     },
     error: (err: any) => {
       console.error(`Error al pagar pedido ${pedido.codigo}:`, err);
@@ -237,19 +238,19 @@ cancelarPedido(pedido: Pedido): void {
           });
         }
       });
-    }
+    } 
   });
 }
 
+mostrarAlerta(mensaje: string) {
+  Swal.fire({
+    icon: 'success',
+    title: '¡Éxito!',
+    text: mensaje,
+    confirmButtonText: 'Aceptar',
+    timer: 3000,
+    timerProgressBar: true,
+  });
+}
 
-  mostrarAlerta(mensaje: string) {
-    Swal.fire({
-      icon: 'success',
-      title: '¡Éxito!',
-      text: mensaje,
-      confirmButtonText: 'Aceptar',
-      timer: 3000,
-      timerProgressBar: true,
-    });
-  }
 }
