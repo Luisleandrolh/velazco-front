@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { DeliveriesModuleService } from './service/deliveries-module.service';
 
-export interface DeliveryOrder {
+export interface DeliveryOrder {  //interfaz de pedido de entrega
   id: string;
   idNumber: number;
   status: 'Pagado' | 'Entregado';
   date: string;
   originalDate: string;
   total: number;
-  paymentMethod: string;
   products: { name: string; quantity: number; price: number }[];
   customer: { name: string; phone?: string; email?: string };
   dispatch?: { id: number };
@@ -20,7 +19,7 @@ export interface DeliveryOrder {
   templateUrl: './entregas-vista.component.html',
   styleUrls: ['./entregas-vista.component.css']
 })
-export class EntregasVistaComponent implements OnInit {
+export class EntregasVistaComponent implements OnInit { //componente de entregas vista
   activeTab: 'pendientes' | 'entregados' = 'pendientes';
   activeTabItem: any;
   tabItems = [
@@ -43,14 +42,14 @@ export class EntregasVistaComponent implements OnInit {
   userId = 1;
   userName = 'Mateo';
 
-  constructor(private deliveryService: DeliveriesModuleService) {}
+  constructor(private deliveryService: DeliveriesModuleService) {} //constructor que inyecta el servicio de entregas
 
-  ngOnInit(): void {
+  ngOnInit(): void {  //metodo que carga los pedidos al iniciar el componente
     this.cargarPedidos();
     this.activeTabItem = this.tabItems[0];
   }
 
-  onTabChange(item: any): void {
+  onTabChange(item: any): void { //metodo que cambia la pestaña activa
     this.activeTab = item.id;
     this.searchTerm = '';
 
@@ -60,9 +59,9 @@ export class EntregasVistaComponent implements OnInit {
       [];
   }
 
-  private cargarPedidos(): void {
-    this.deliveryService.obtenerPedidosPorEstado('PAGADO', 0, 50).subscribe({
-      next: ({ content }) => {
+  private cargarPedidos(): void { //metodo privado que carga los pedidos desde el servicio
+    this.deliveryService.obtenerPedidosPorEstado('PAGADO', 0, 50).subscribe({ //llama al servicio para obtener los pedidos pagados
+      next: ({ content }) => { 
         this.pendientes = this.mapeoBackend(content, 'Pagado');
         if (this.activeTab === 'pendientes') {
           this.filteredOrders = [...this.pendientes];
@@ -71,7 +70,7 @@ export class EntregasVistaComponent implements OnInit {
       error: err => console.error('Error PAGADO', err)
     });
 
-    this.deliveryService.obtenerPedidosPorEstado('ENTREGADO', 0, 50).subscribe({
+    this.deliveryService.obtenerPedidosPorEstado('ENTREGADO', 0, 50).subscribe({ //llama al servicio para obtener los pedidos entregados
       next: ({ content }) => {
         this.entregados = this.mapeoBackend(content, 'Entregado');
         if (this.activeTab === 'entregados') {
@@ -82,7 +81,7 @@ export class EntregasVistaComponent implements OnInit {
     });
   }
 
-  private mapeoBackend(data: any[], estadoFront: 'Pagado' | 'Entregado'): DeliveryOrder[] {
+  private mapeoBackend(data: any[], estadoFront: 'Pagado' | 'Entregado'): DeliveryOrder[] { //metodo privado que mapea los datos del backend a la interfaz DeliveryOrder
     return data.map(p => ({
       id: p.id.toString(),
       idNumber: p.id,
@@ -93,7 +92,6 @@ export class EntregasVistaComponent implements OnInit {
         (acc: number, d: any) => acc + (d.unitPrice || 0) * (d.quantity || 0),
         0
       ) || 0,
-      paymentMethod: p.paymentMethod || '-',
       products: p.details?.map((d: any) => ({
         name: d.product?.name,
         quantity: d.quantity,
@@ -108,7 +106,7 @@ export class EntregasVistaComponent implements OnInit {
     }));
   }
 
-  searchOrders(): void {
+  searchOrders(): void { //metodo que busca los pedidos por el termino de busqueda
     const term = this.searchTerm.toLowerCase();
     const origen = this.activeTab === 'pendientes' ? this.pendientes : this.entregados;
 
@@ -118,7 +116,7 @@ export class EntregasVistaComponent implements OnInit {
     );
   }
 
-  openOrderDetails(orderId: string): void {
+  openOrderDetails(orderId: string): void { //metodo que abre los detalles del pedido
     const found = (this.activeTab === 'pendientes' ? this.pendientes : this.entregados)
       .find(o => o.id === orderId);
 
@@ -131,11 +129,11 @@ export class EntregasVistaComponent implements OnInit {
     this.showOrderDetails = true;
   }
 
-  closeDetails(): void {
+  closeDetails(): void { //metodo que cierra los detalles del pedido
     this.showOrderDetails = false;
   }
 
-  prepareDeliveryConfirmation(): void {
+  prepareDeliveryConfirmation(): void {   //metodo que prepara la confirmacion de entrega
     if (!this.selectedOrder) return;
 
     this.showOrderDetails = false;
@@ -143,18 +141,18 @@ export class EntregasVistaComponent implements OnInit {
     this.showDeliveryConfirmation = true;
   }
 
-  cancelDeliveryConfirmation(): void {
+  cancelDeliveryConfirmation(): void { //metodo que cancela la confirmacion de entrega
     this.showDeliveryConfirmation = false;
   }
 
-  confirmDelivery(): void {
+  confirmDelivery(): void { //metodo que confirma la entrega
     if (!this.selectedOrder) return;
 
     const deliveryPayload = {
       id: this.selectedOrder.idNumber,
       date: this.selectedOrder.originalDate,
       clientName: this.selectedOrder.customer.name,
-      status: 'ENTREGADO' as const,
+      status: 'ENTREGADO' as const, 
       dispatch: {
         id: this.selectedOrder.dispatch?.id || 1,
         deliveryDate: this.deliveryDateTime,
@@ -165,7 +163,7 @@ export class EntregasVistaComponent implements OnInit {
       }
     };
 
-    this.deliveryService.confirmDelivery(this.selectedOrder.idNumber, deliveryPayload).subscribe({
+    this.deliveryService.confirmDelivery(this.selectedOrder.idNumber, deliveryPayload).subscribe({ //llama al servicio para confirmar la entrega
       next: () => {
         this.showDeliveryConfirmation = false;
         this.cargarPedidos();
