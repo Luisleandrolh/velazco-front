@@ -184,8 +184,8 @@ export class CajaVistaComponent {
   }
 
 pagarPedido(pedido: Pedido): void {
-  const datosPago = { //se crea los datos del objeto pago, cuando se va a pagar pedido
-    paymentMethod: 'efectivo', //metodo de pago
+  const datosPago = {
+    paymentMethod: 'efectivo',
     totalAmount: pedido.total,
     cashier: { //datos del cajero
       id: 1,
@@ -252,4 +252,5 @@ mostrarAlerta(mensaje: string) {
     timerProgressBar: true,
   });
 }
+
 }
