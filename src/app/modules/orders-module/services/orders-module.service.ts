@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 export class OrdersModuleService {
  
 private dominio: string = environment.baseUrlApi;
-  private apiUrl: string = `${this.dominio}/api/orders`;
+ private apiUrl: string = `${this.dominio}/api/orders`;
 
   constructor(private http: HttpClient) { 
   }
@@ -23,7 +23,7 @@ private dominio: string = environment.baseUrlApi;
     );
   }
 
-    // GET - Obtener pedidos por estado con paginación
+    //Obtener pedidos por estado con paginación
   obtenerPedidosPorEstado(
     estado: string, 
     pagina: number = 0, 
@@ -40,14 +40,14 @@ private dominio: string = environment.baseUrlApi;
     );
   }
 
-
+//post
  confirmarVenta(pedidoId: string, datosPago: any): Observable<any> {
   return this.http.post(`${this.apiUrl}/${pedidoId}/confirm-sale`, datosPago).pipe(
     catchError(this.handleError)
   );
 }
 
-
+//put
 cancelarVenta(pedidoId: string): Observable<any> {
   return this.http.put(`${this.apiUrl}/${pedidoId}/cancel`, {}).pipe(
     catchError(this.handleError)

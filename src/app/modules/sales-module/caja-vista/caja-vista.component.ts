@@ -39,7 +39,7 @@ export class CajaVistaComponent {
     private orderService: OrdersModuleService,
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void { //iniciar la carga de pedidos
     this.cargarPedidosPorEstado();
   }
 
@@ -74,7 +74,7 @@ export class CajaVistaComponent {
     estados.forEach(estado => {
       this.orderService.obtenerPedidosPorEstado(estado, 0, 10).subscribe({
         next: (data) => {
-          const pedidosMapeados = data.content.map((pedido: any) => ({
+          const pedidosMapeados = data.content.map((pedido: any) => ({ 
             codigo: pedido.id.toString(),
             cliente: pedido.clientName,
             total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)), 0 ) || 0,
@@ -96,12 +96,12 @@ export class CajaVistaComponent {
     });
   }
 
-  onTabChange(index: number) {
+  onTabChange(index: number) { //cambio de pestaña
     this.tabIndex = index;
     this.cargarPedidosPorEstado();
   }
 
-  abrirDialogo(pedido: Pedido): void {
+  abrirDialogo(pedido: Pedido): void { //abrir los dealles de modal
     this.dialog.open(DetallePedidoDialogComponent, {
       width: '400px',
       data: pedido
