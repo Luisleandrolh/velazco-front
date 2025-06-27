@@ -10,7 +10,7 @@
       <div class="card-header">
         <h2>{{ isEditing ? 'Editar' : 'Nueva' }} Orden</h2>
       </div>
-      
+
       <form [formGroup]="productionForm" (ngSubmit)="onSubmit()" class="form">
         <div class="form-grid">
           <div class="input-group">
@@ -148,7 +148,20 @@
               </span>
             </div>
           </div>
-          
+
+          <!-- ✅ Detalles de productos con comentarios -->
+          <div class="order-details">
+            <div 
+              class="order-product" 
+              *ngFor="let d of order.details"
+              style="margin-left: 1rem; padding: 0.25rem 0;"
+            >
+              <strong>Producto:</strong> {{ d.product.name }} |
+              <strong>Cantidad:</strong> {{ d.requestedQuantity }} |
+              <strong>Comentario:</strong> {{ d.comments || '—' }}
+            </div>
+          </div>
+
           <div class="order-actions">
             <button 
               (click)="onEdit(order)" 
