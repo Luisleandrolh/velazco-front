@@ -15,7 +15,7 @@ export interface Pedido {
   details: any[]; // Mejor tipar según estructura real
 }
 
-export interface RespuestaPedidos {
+export interface RespuestaPedidos { //define como llega la rpta de la API con un arreglo de pedidos
   content: Pedido[];
   totalElements: number;
   totalPages: number;
@@ -23,32 +23,26 @@ export interface RespuestaPedidos {
   number: number;
 }
 
-@Injectable({
+@Injectable({  //marcar una clase como servicio
   providedIn: 'root'
 })
-export class OrdersModuleService {
-  private dominio: string = environment.baseUrlApi;
-  private apiUrl: string = `${this.dominio}/api/orders`;
 
-  constructor(private http: HttpClient) {}
+export class OrdersModuleService { // servicio para manejar las solicitudes http relacionado con pedidos.
+  private dominio: string = environment.baseUrlApi; //Define el dominio o la URL base del backend.
+  private apiUrl: string = `${this.dominio}/api/orders`; //Define la ruta completa que incluye la URL base y el endpoint de la API de pedidos.
 
-  obtenerPedidosPorEstado(
-    estado: string, 
-    pagina: number = 0, 
-    tamanio: number = 10
-  ): Observable<RespuestaPedidos> {
-    const url = `${this.apiUrl}/status/${estado}`;
-    const params = {
-      page: pagina.toString(),
-      size: tamanio.toString()
-    };
+  constructor(private http: HttpClient) { } //inyecta un objeto del servicio httpclient en la clase
 
-    return this.http.get<RespuestaPedidos>(url, { params }).pipe(
+  obtenerPedidosPorEstado(estado: string, pagina: number = 0, tamanio: number = 10): Observable<RespuestaPedidos> { 
+    const url = `${this.apiUrl}/status/${estado}`; //es la url en donde se hace la solicitud de la api
+    const params = { page: pagina.toString(), size: tamanio.toString() }; //muestra 10 pedidos por pagina
+
+    return this.http.get<RespuestaPedidos>(url, { params }).pipe( //emitirá la respuesta con los pedidos y los datos de paginación cuando esté disponible
       catchError(this.handleError)
     );
   }
 
- 
+
 
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la petición:', error);
