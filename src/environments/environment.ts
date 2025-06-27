@@ -2,6 +2,7 @@
 export const environment = {
   production: false,
   baseUrlApi: 'https://velazco-backend-develop.up.railway.app',
+  
 
 
   baseAuthRoute: 'oauth2sample',
