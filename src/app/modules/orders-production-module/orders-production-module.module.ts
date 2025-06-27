@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { OrdersProductionModuleRoutingModule } from './orders-production-module-routing.module';
-import { OrdenesproduccionComponent } from './ordenesproduccion/ordenesproduccion.component';
+import { ProductionComponent } from './ordenesproduccion/ordenesproduccion.component';
 import { FormsModule } from '@angular/forms';
 
 // PrimeNG Modules
@@ -23,10 +24,11 @@ import { MessagesModule } from 'primeng/messages';
   declarations: [
     
   
-    OrdenesproduccionComponent
+    ProductionComponent
   ],
   imports: [
     CommonModule,
+      ReactiveFormsModule,
     OrdersProductionModuleRoutingModule,
     FormsModule,
     ButtonModule,
@@ -39,7 +41,8 @@ import { MessagesModule } from 'primeng/messages';
     InputNumberModule,
     TabViewModule,
     CardModule,
-    MessagesModule
+    MessagesModule,
+    
   ]
 })
 export class OrdersProductionModuleModule { }
