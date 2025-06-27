@@ -33,6 +33,7 @@ export class OrdenProduccionService {
   deleteProduction(id: number): Observable<any> {
     return this.http.delete(`${BASE_URL}/productions/${id}`, AUTH_HEADER);
   }
+  
 }
 
 

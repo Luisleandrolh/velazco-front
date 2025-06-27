@@ -1,12 +1,13 @@
+// ordenesproduccion.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { OrdenProduccionService } from '../services/ordenes.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-production',
   templateUrl: './ordenesproduccion.component.html',
-    styleUrls: ['./ordenesproduccion.component.css']
-
+  styleUrls: ['./ordenesproduccion.component.css']
 })
 export class ProductionComponent implements OnInit {
   productionForm!: FormGroup;
@@ -71,11 +72,23 @@ export class ProductionComponent implements OnInit {
       this.service.updateProduction(this.editingId, value).subscribe(() => {
         this.resetForm();
         this.loadProductions();
+        Swal.fire({
+          icon: 'success',
+          title: 'Orden actualizada',
+          text: 'La orden ha sido actualizada correctamente.',
+          confirmButtonColor: '#3085d6'
+        });
       });
     } else {
       this.service.createProduction(value).subscribe(() => {
         this.resetForm();
         this.loadProductions();
+        Swal.fire({
+          icon: 'success',
+          title: 'Orden creada',
+          text: 'La orden ha sido registrada exitosamente.',
+          confirmButtonColor: '#3085d6'
+        });
       });
     }
   }
@@ -101,8 +114,27 @@ export class ProductionComponent implements OnInit {
   }
 
   onDelete(id: number): void {
-    this.service.deleteProduction(id).subscribe(() => {
-      this.loadProductions();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará la orden de forma permanente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.service.deleteProduction(id).subscribe(() => {
+          this.loadProductions();
+          Swal.fire({
+            icon: 'success',
+            title: 'Eliminado',
+            text: 'La orden ha sido eliminada correctamente.',
+            confirmButtonColor: '#3085d6'
+          });
+        });
+      }
     });
   }
 

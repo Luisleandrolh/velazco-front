@@ -1,14 +1,17 @@
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <div class="container">
   <header class="page-header">
-    <h1>Órdenes de Producción</h1>
+    <h1><i class="fas fa-industry"></i> Órdenes de Producción</h1>
     <p class="subtitle">Repostería Velazco</p>
   </header>
 
   <!-- Formulario de Creación/Edición -->
   <section class="form-section">
-    <div class="card">
+    <div class="card fade-in">
       <div class="card-header">
-        <h2>{{ isEditing ? 'Editar' : 'Nueva' }} Orden</h2>
+        <h2><i class="fas fa-clipboard-list"></i> {{ isEditing ? 'Editar' : 'Nueva' }} Orden</h2>
       </div>
 
       <form [formGroup]="productionForm" (ngSubmit)="onSubmit()" class="form">
@@ -47,13 +50,13 @@
         <!-- Detalles de Productos -->
         <div class="products-section">
           <div class="section-header">
-            <h3>Productos</h3>
+            <h3><i class="fas fa-box"></i> Productos</h3>
             <button 
               type="button" 
               (click)="addDetail()" 
               class="btn btn-outline"
             >
-              + Agregar Producto
+              <i class="fas fa-plus"></i> Agregar Producto
             </button>
           </div>
 
@@ -70,8 +73,9 @@
                   (click)="removeDetail(i)" 
                   *ngIf="details.length > 1"
                   class="btn-remove"
+                  title="Quitar producto"
                 >
-                  ×
+                  <i class="fas fa-times-circle"></i>
                 </button>
               </div>
 
@@ -98,12 +102,12 @@
 
                 <div class="input-group full-width">
                   <label>Comentarios</label>
-                  <input 
-                    type="text" 
+                  <textarea 
                     formControlName="comments" 
                     class="input"
+                    rows="2"
                     placeholder="Comentarios adicionales..."
-                  />
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -113,10 +117,10 @@
         <!-- Botones de Acción -->
         <div class="form-actions">
           <button type="button" (click)="resetForm()" class="btn btn-secondary">
-            Cancelar
+            <i class="fas fa-undo"></i> Cancelar
           </button>
           <button type="submit" class="btn btn-primary">
-            {{ isEditing ? 'Actualizar' : 'Crear' }} Orden
+            <i class="fas fa-save"></i> {{ isEditing ? 'Actualizar' : 'Crear' }} Orden
           </button>
         </div>
       </form>
@@ -125,58 +129,52 @@
 
   <!-- Lista de Órdenes -->
   <section class="orders-section">
-    <div class="card">
+    <div class="card fade-in">
       <div class="card-header">
-        <h2>Órdenes Registradas</h2>
+        <h2><i class="fas fa-list"></i> Órdenes Registradas</h2>
         <span class="orders-count">{{ productions.length }} órdenes</span>
       </div>
 
-      <div class="orders-list" *ngIf="productions.length > 0; else noOrders">
-        <div 
-          *ngFor="let order of productions" 
-          class="order-item"
-        >
-          <div class="order-info">
-            <div class="order-id">#{{ order.id }}</div>
-            <div class="order-date">{{ order.productionDate | date:'dd/MM/yyyy' }}</div>
-            <div class="order-status">
-              <span 
-                class="status-badge"
-                [ngClass]="'status-' + order.status.toLowerCase().replace('_', '-')"
-              >
-                {{ order.status.replace('_', ' ') }}
-              </span>
-            </div>
-          </div>
-
-          <!-- ✅ Detalles de productos con comentarios -->
-          <div class="order-details">
-            <div 
-              class="order-product" 
-              *ngFor="let d of order.details"
-              style="margin-left: 1rem; padding: 0.25rem 0;"
-            >
-              <strong>Producto:</strong> {{ d.product.name }} |
-              <strong>Cantidad:</strong> {{ d.requestedQuantity }} |
-              <strong>Comentario:</strong> {{ d.comments || '—' }}
-            </div>
-          </div>
-
-          <div class="order-actions">
-            <button 
-              (click)="onEdit(order)" 
-              class="btn btn-ghost"
-            >
-              Editar
-            </button>
-            <button 
-              (click)="onDelete(order.id)" 
-              class="btn btn-danger"
-            >
-              Eliminar
-            </button>
-          </div>
-        </div>
+      <div class="orders-table-wrapper" *ngIf="productions.length > 0; else noOrders">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Productos</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of productions">
+              <td>#{{ order.id }}</td>
+              <td>{{ order.productionDate | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="status-badge"
+                      [ngClass]="'status-' + order.status.toLowerCase().replace('_', '-')">
+                  {{ order.status.replace('_', ' ') }}
+                </span>
+              </td>
+              <td>
+                <ul class="product-list">
+                  <li *ngFor="let d of order.details">
+                    <strong>{{ d.product.name }}</strong> ({{ d.requestedQuantity }})<br>
+                    <small class="comment">📝 {{ d.comments || 'Sin comentario' }}</small>
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <button (click)="onEdit(order)" class="btn btn-ghost">
+                  <i class="fas fa-edit"></i> Editar
+                </button>
+                <button (click)="onDelete(order.id)" class="btn btn-danger">
+                  <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <ng-template #noOrders>
