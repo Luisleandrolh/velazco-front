@@ -1,242 +1,120 @@
-import { Component } from '@angular/core';
-import { MessageService } from 'primeng/api';
-
-interface ProductoOrden {
-  nombre: string;
-  cantidad: number;
-}
-
-interface OrdenProduccion {
-  id: string;
-  fechaCreacion: Date;
-  fechaRequerida: Date | string;
-  responsable?: string;
-  productos: ProductoOrden[];
-  estado?: string;
-}
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { OrdenProduccionService } from '../services/ordenes.service';
 
 @Component({
-  selector: 'app-ordenesproduccion',
+  selector: 'app-production',
   templateUrl: './ordenesproduccion.component.html',
-  styleUrls: ['./ordenesproduccion.component.css'],
-  providers: [MessageService]
+    styleUrls: ['./ordenesproduccion.component.css']
+
 })
-export class OrdenesproduccionComponent {
-  modalAbierto = false;
-  modalEdicionAbierto = false;
+export class ProductionComponent implements OnInit {
+  productionForm!: FormGroup;
+  productions: any[] = [];
+  products: any[] = [];
 
-  responsables = ['Laura', 'Carlos', 'Pedro'];
-  productosDisponibles = ['Cheesecake', 'Brownies', 'Cupcakes', 'Torta de Chocolate', 'Galletas', 'Alfajores'];
+  isEditing = false;
+  editingId: number | null = null;
 
-  nuevaOrden = {
-    fechaRequerida: '',
-    responsable: '',
-    productos: [{ nombre: 'Cheesecake', cantidad: 1 }]
-  };
+  constructor(private fb: FormBuilder, private service: OrdenProduccionService) {}
 
-  ordenEditada: OrdenProduccion = {
-    id: '',
-    fechaCreacion: new Date(),
-    fechaRequerida: '',
-    responsable: '',
-    productos: []
-  };
-
-  ordenes: OrdenProduccion[] = [
-    {
-      id: 'OP-2023-045',
-      fechaCreacion: new Date('2023-04-24'),
-      fechaRequerida: new Date('2023-04-25'),
-      responsable: 'Laura',
-      productos: [
-        { nombre: 'Torta de Chocolate', cantidad: 5 },
-        { nombre: 'Cupcakes', cantidad: 24 }
-      ],
-      estado: 'Pendiente'
-    },
-    {
-      id: 'OP-2023-046',
-      fechaCreacion: new Date('2023-04-24'),
-      fechaRequerida: new Date('2023-04-26'),
-      responsable: 'Carlos',
-      productos: [
-        { nombre: 'Cheesecake', cantidad: 8 },
-        { nombre: 'Galletas', cantidad: 100 }
-      ],
-      estado: 'En proceso'
-    },
-    {
-      id: 'OP-2023-047',
-      fechaCreacion: new Date('2023-04-24'),
-      fechaRequerida: new Date('2023-04-27'),
-      responsable: 'Pedro',
-      productos: [
-        { nombre: 'Brownies', cantidad: 30 },
-        { nombre: 'Alfajores', cantidad: 50 }
-      ],
-      estado: 'Completada'
-    }
-  ];
-
-minDate = new Date();
-  searchTerm: string = '';
-  filterDate: Date | null = null;
-
-  constructor(private messageService: MessageService) {}
-
-  showModal() {
-    this.modalAbierto = true;
+  ngOnInit(): void {
+    this.initForm();
+    this.loadProductions();
+    this.loadProducts();
   }
 
-  cerrarModal() {
-    this.modalAbierto = false;
-    this.resetNuevaOrden();
+  initForm() {
+    this.productionForm = this.fb.group({
+      productionDate: [''],
+      assignedToId: [''],
+      status: ['PENDIENTE'],
+      details: this.fb.array([this.createDetail()])
+    });
   }
 
-  agregarProducto() {
-    this.nuevaOrden.productos.push({ nombre: this.productosDisponibles[0], cantidad: 1 });
+  createDetail(): FormGroup {
+    return this.fb.group({
+      productId: [''],
+      requestedQuantity: [''],
+      comments: ['']
+    });
   }
 
-  eliminarProducto(index: number) {
-    if (this.nuevaOrden.productos.length > 1) {
-    this.nuevaOrden.productos.splice(index, 1);
+  get details(): FormArray {
+    return this.productionForm.get('details') as FormArray;
+  }
+
+  addDetail(): void {
+    this.details.push(this.createDetail());
+  }
+
+  removeDetail(index: number): void {
+    this.details.removeAt(index);
+  }
+
+  loadProductions(): void {
+    this.service.getAllProductions().subscribe(data => {
+      this.productions = data;
+    });
+  }
+
+  loadProducts(): void {
+    this.service.getProducts().subscribe(data => {
+      this.products = data;
+    });
+  }
+
+  onSubmit(): void {
+    const value = this.productionForm.value;
+    if (this.isEditing && this.editingId !== null) {
+      this.service.updateProduction(this.editingId, value).subscribe(() => {
+        this.resetForm();
+        this.loadProductions();
+      });
     } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe haber al menos un producto'
+      this.service.createProduction(value).subscribe(() => {
+        this.resetForm();
+        this.loadProductions();
       });
     }
   }
 
-  crearOrden() {
-    // Generar nuevo ID
-    const newId = 'OP-' + new Date().getFullYear() + '-' + (this.ordenes.length + 100).toString().padStart(3, '0');
-    
-    const nuevaOrdenCompleta: OrdenProduccion = {
-      id: newId,
-      fechaCreacion: new Date(),
-      fechaRequerida: this.nuevaOrden.fechaRequerida,
-      responsable: this.nuevaOrden.responsable,
-      productos: [...this.nuevaOrden.productos],
-      estado: 'Pendiente'
-    };
+  onEdit(production: any): void {
+    this.isEditing = true;
+    this.editingId = production.id;
 
-    this.ordenes.unshift(nuevaOrdenCompleta);
-    
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Éxito',
-      detail: `Orden ${newId} creada correctamente`
+    this.productionForm.patchValue({
+      productionDate: production.productionDate,
+      assignedToId: production.assignedTo.id,
+      status: production.status
     });
-    
-    this.cerrarModal();
-  }
 
-  resetNuevaOrden() {
-    this.nuevaOrden = {
-      fechaRequerida: '',
-      responsable: '',
-      productos: [{ nombre: 'Cheesecake', cantidad: 1 }]
-    };
-  }
-
-  verDetalles(orden: OrdenProduccion) {
-    console.log('Detalles de orden:', orden);
-    // Aquí podrías implementar un modal de detalles si lo deseas
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Detalles de orden',
-      detail: `Mostrando detalles de ${orden.id}`,
-      life: 3000
+    this.details.clear();
+    production.details.forEach((d: any) => {
+      this.details.push(this.fb.group({
+        productId: d.product.id,
+        requestedQuantity: d.requestedQuantity,
+        comments: d.comments
+      }));
     });
   }
 
-  editarOrden(orden: OrdenProduccion) {
-    this.ordenEditada = {
-      id: orden.id,
-      fechaCreacion: orden.fechaCreacion,
-      fechaRequerida: orden.fechaRequerida,
-      responsable: orden.responsable || '',
-      productos: [...orden.productos],
-      estado: orden.estado || 'Pendiente'
-    };
-    this.modalEdicionAbierto = true;
-  }
-
-  cerrarModalEdicion() {
-    this.modalEdicionAbierto = false;
-  }
-
-  agregarProductoEdicion() {
-    this.ordenEditada.productos.push({ nombre: this.productosDisponibles[0], cantidad: 1 });
-  }
-
-  eliminarProductoEdicion(index: number) {
-    if (this.ordenEditada.productos.length > 1) {
-      this.ordenEditada.productos.splice(index, 1);
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe haber al menos un producto'
-      });
-    }
-  }
-
-  guardarCambios() {
-    const index = this.ordenes.findIndex(o => o.id === this.ordenEditada.id);
-    if (index !== -1) {
-      this.ordenes[index] = { ...this.ordenEditada };
-      
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Éxito',
-        detail: `Orden ${this.ordenEditada.id} actualizada correctamente`
-      });
-      
-      this.cerrarModalEdicion();
-    }
-  }
-
-  eliminarOrden(id: string) {
-    if (confirm('¿Estás seguro de eliminar esta orden?')) {
-      this.ordenes = this.ordenes.filter(o => o.id !== id);
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Confirmado',
-        detail: 'Orden eliminada'
-      });
-    }
-  }
-
-  getOrdenesFiltradas() {
-    return this.ordenes.filter(o => {
-      const matchText = this.searchTerm
-        ? o.id.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          o.productos.some(p => p.nombre.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
-          (o.responsable && o.responsable.toLowerCase().includes(this.searchTerm.toLowerCase()))
-        : true;
-      
-      const matchDate = this.filterDate
-        ? new Date(o.fechaCreacion).toDateString() === new Date(this.filterDate).toDateString()
-        : true;
-      
-      return matchText && matchDate;
+  onDelete(id: number): void {
+    this.service.deleteProduction(id).subscribe(() => {
+      this.loadProductions();
     });
   }
 
-  esFormularioValido(): boolean {
-  return !!this.nuevaOrden.fechaRequerida && 
-         !!this.nuevaOrden.responsable && 
-         this.nuevaOrden.productos.length > 0 &&
-         this.nuevaOrden.productos.every(p => !!p.nombre && p.cantidad > 0);
-}
-
-  esFormularioEdicionValido(): boolean {
-    return !!this.ordenEditada.fechaRequerida && 
-           !!this.ordenEditada.responsable && 
-           this.ordenEditada.productos.length > 0 &&
-           this.ordenEditada.productos.every(p => !!p.nombre && p.cantidad > 0);
+  resetForm(): void {
+    this.productionForm.reset({
+      productionDate: '',
+      assignedToId: '',
+      status: 'PENDIENTE',
+      details: []
+    });
+    this.details.push(this.createDetail());
+    this.isEditing = false;
+    this.editingId = null;
   }
 }

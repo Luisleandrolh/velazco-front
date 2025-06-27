@@ -58,7 +58,6 @@ export class CajaVistaComponent {
             total: pedido.details?.reduce((acc: number, det: any) => acc + ((det.unitPrice || 0) * (det.quantity || 0)), 0 ) || 0,
             fecha: new Date(pedido.date).toLocaleDateString(),
             hora: new Date(pedido.date).toLocaleTimeString(),
-
             estado: pedido.status === 'PENDIENTE' ? 'Pendiente' : pedido.status === 'PAGADO' ? 'Pagado' : 'Cancelado',
             details: pedido.details || [] // Necesario para mostrar detalles
           }));
