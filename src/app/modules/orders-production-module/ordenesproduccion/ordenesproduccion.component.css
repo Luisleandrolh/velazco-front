@@ -1,19 +1,23 @@
-
-/* Reset básico */
+/* Reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Tipografía y estructura */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f9fafb;
+  color: #2e2e2e;
+  line-height: 1.5;
+}
+
 /* Layout general */
 .container {
-  max-width: 1140px;
+  max-width: 1280px;
   margin: auto;
   padding: 2rem 1rem;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  color: #2e2e2e;
-  background-color: #fdfdfd;
 }
 
 /* Cabecera */
@@ -21,39 +25,33 @@
   text-align: center;
   margin-bottom: 2rem;
 }
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
 
 .page-header h1 {
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: #222;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #111827;
 }
 
 .page-header .subtitle {
   font-size: 1rem;
-  color: #888;
+  color: #6b7280;
 }
 
 /* Card */
 .card {
-  background: #fff;
+  background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 2rem;
   margin-bottom: 2rem;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.2s ease-in-out;
 }
 
 .card:hover {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
 }
 
-/* Cabecera de sección */
+/* Título de sección */
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -62,100 +60,116 @@
 }
 
 .card-header h2 {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #333;
+  color: #1f2937;
 }
 
-/* Formulario */
+/* Grid del formulario */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
+/* Inputs y selects */
 .input-group {
   display: flex;
   flex-direction: column;
 }
 
+label {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 0.35rem;
+  font-weight: 500;
+}
+
 .input,
-.select {
-  padding: 0.55rem 0.8rem;
-  border: 1px solid #dcdcdc;
+.select,
+textarea {
+  padding: 0.65rem 1rem;
+  border: 1px solid #d1d5db;
   border-radius: 10px;
   font-size: 0.95rem;
-  transition: border 0.3s;
+  transition: border-color 0.2s ease;
+  background-color: #ffffff;
 }
 
 .input:focus,
-.select:focus {
-  border-color: #4a90e2;
+.select:focus,
+textarea:focus {
+  border-color: #2563eb;
   outline: none;
-}
-
-label {
-  font-size: 0.85rem;
-  color: #555;
-  margin-bottom: 0.4rem;
 }
 
 /* Botones */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.6rem 1.2rem;
   font-size: 0.9rem;
+  font-weight: 500;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
-  background-color: #4a90e2;
+  background-color: #2563eb;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #3a7bd5;
+  background-color: #1d4ed8;
 }
 
 .btn-secondary {
-  background-color: #f4f4f4;
-  color: #555;
+  background-color: #f3f4f6;
+  color: #374151;
 }
 
 .btn-secondary:hover {
-  background-color: #e2e2e2;
+  background-color: #e5e7eb;
 }
 
 .btn-outline {
-  background: transparent;
-  border: 1px solid #ccc;
-  color: #555;
+  border: 1px solid #d1d5db;
+  background-color: transparent;
+  color: #374151;
 }
 
 .btn-outline:hover {
-  background-color: #f8f8f8;
+  background-color: #f9fafb;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
 }
 
 .btn-ghost {
   background: none;
-  color: #4a90e2;
-  border: none;
+  color: #2563eb;
+  padding: 0.4rem 0.8rem;
 }
 
 .btn-ghost:hover {
   text-decoration: underline;
 }
 
-.btn-danger {
-  background-color: #ff6b6b;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #e84141;
+/* Botones de formulario */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 /* Productos */
@@ -170,10 +184,10 @@ label {
 }
 
 .product-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
   padding: 1rem;
-  border: 1px solid #eee;
   border-radius: 12px;
-  background-color: #f9fafc;
 }
 
 .product-header {
@@ -186,8 +200,8 @@ label {
 .btn-remove {
   background: none;
   border: none;
-  font-size: 1.2rem;
-  color: #d9534f;
+  font-size: 1.1rem;
+  color: #ef4444;
   cursor: pointer;
 }
 
@@ -200,6 +214,9 @@ label {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .orders-table thead {
@@ -208,59 +225,59 @@ label {
 
 .orders-table th,
 .orders-table td {
-  padding: 0.9rem 1rem;
-  border-bottom: 1px solid #eee;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
   text-align: left;
 }
 
 .orders-table tr:hover {
-  background-color: #fafafa;
+  background-color: #f9fafb;
 }
 
 .product-list {
   list-style: none;
-  padding-left: 0;
+  padding: 0;
   margin: 0;
 }
 
 .product-list li {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
 }
 
 .comment {
   font-size: 0.8rem;
-  color: #777;
+  color: #6b7280;
 }
 
 /* Badges */
 .status-badge {
-  padding: 0.4rem 0.75rem;
-  border-radius: 999px;
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
   font-size: 0.75rem;
   font-weight: 600;
-  display: inline-block;
+  border-radius: 9999px;
   text-transform: uppercase;
 }
 
 .status-pendiente {
-  background-color: #fff6db;
-  color: #8f5d00;
+  background-color: #fef3c7;
+  color: #92400e;
 }
 
 .status-en-proceso {
-  background-color: #dbefff;
-  color: #005b96;
+  background-color: #dbeafe;
+  color: #1e3a8a;
 }
 
 .status-finalizado {
-  background-color: #d6f5e9;
-  color: #2c7a4b;
+  background-color: #d1fae5;
+  color: #065f46;
 }
 
-/* Empty */
+/* Estado vacío */
 .empty-state {
   text-align: center;
-  color: #888;
+  color: #9ca3af;
   padding: 2rem 1rem;
 }
 
@@ -269,15 +286,21 @@ label {
   margin-bottom: 1rem;
 }
 
+/* Animación */
 .fade-in {
   animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
 
 /* Responsive */
 @media (max-width: 768px) {
