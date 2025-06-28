@@ -1,4 +1,3 @@
-// ordenesproduccion.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { OrdenProduccionService } from '../services/ordenes.service';
@@ -99,7 +98,7 @@ export class ProductionComponent implements OnInit {
 
     this.productionForm.patchValue({
       productionDate: production.productionDate,
-      assignedToId: production.assignedTo.id,
+      assignedToId: production.assignedTo?.id,
       status: production.status
     });
 
@@ -145,7 +144,11 @@ export class ProductionComponent implements OnInit {
       status: 'PENDIENTE',
       details: []
     });
+
+    // Asegura al menos un producto vacío tras limpiar
+    this.details.clear();
     this.details.push(this.createDetail());
+
     this.isEditing = false;
     this.editingId = null;
   }
