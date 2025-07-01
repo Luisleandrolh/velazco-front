@@ -1,227 +1,148 @@
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <div class="container">
-  <h2>Órdenes de Producción</h2>
-  <!-- Encabezado mejorado -->
-  <div class="header-container">
-    <div class="search-section">
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input pInputText type="text" placeholder="Buscar órdenes..." [(ngModel)]="searchTerm" />
-      </span>
-    </div>
+  <header class="page-header">
+    <h1><i class="fas fa-industry"></i> Órdenes de Producción</h1>
+    <p class="subtitle">Repostería Velazco</p>
+  </header>
 
-    <div class="date-filter-section">
-      <p-calendar [(ngModel)]="filterDate" [showIcon]="true" dateFormat="dd/mm/yy" 
-                 placeholder="Seleccionar fecha" [showButtonBar]="true"></p-calendar>
-    </div>
-
-    <div class="new-order-section">
-      <button pButton pRipple type="button" icon="pi pi-plus" label="Nueva Orden" 
-              class="new-order-btn" (click)="showModal()"></button>
-    </div>
-  </div>
-
-  <p-tabView>
-    <p-tabPanel header="Nuevas Órdenes">
-      <p-card header="Órdenes de Producción" subheader="Cree y gestione órdenes de producción para la pastelería">
-        <p-table [value]="getOrdenesFiltradas()" [paginator]="true" [rows]="5" [responsive]="true">
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Id</th>
-      <th>Responsable</th>
-      <th>Productos</th>
-      <th>Fecha Creación</th>
-      <th>Fecha Requerida</th>
-      <th class="text-right">Acciones</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-orden>
-    <tr>
-      <td>{{ orden.id }}</td>
-      <td>{{ orden.responsable || 'Sin asignar' }}</td>
-      <td>
-        <span *ngFor="let producto of orden.productos; let last = last">
-          {{ producto.nombre }} ({{ producto.cantidad }})<span *ngIf="!last">, </span>
-        </span>
-      </td>
-      <td>{{ orden.fechaCreacion | date: 'dd/MM/yyyy' }}</td>
-      <td>{{ orden.fechaRequerida | date: 'dd/MM/yyyy' }}</td>
-      <td class="text-right">
-        <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-plain mr-2" (click)="editarOrden(orden)"></button>
-        <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-plain p-button-danger" (click)="eliminarOrden(orden.id)"></button>
-      </td>
-      
-    </tr>
-  </ng-template>
-</p-table>
-      </p-card>
-    </p-tabPanel>
-  </p-tabView>
-
-  <p-dialog header="Crear Nueva Orden" [(visible)]="modalAbierto" [modal]="true" 
-          [style]="{width: '650px'}" [breakpoints]="{'960px': '75vw', '640px': '90vw'}" 
-          [draggable]="false" [resizable]="false" [closable]="true" [closeOnEscape]="true">
-  
-  <div class="modal-content">
-    <!-- Sección de información básica -->
-    <div class="grid gap-3 mb-5">
-      <div class="col-12 md:col-6">
-        <label class="input-label">Fecha Requerida</label>
-        <p-calendar [(ngModel)]="nuevaOrden.fechaRequerida" [showIcon]="true" dateFormat="dd/mm/yy" 
-                   [showButtonBar]="true" [minDate]="minDate" inputStyleClass="w-full"
-                   placeholder="Seleccione fecha"></p-calendar>
+  <!-- Formulario de Creación/Edición -->
+  <section class="form-section">
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2><i class="fas fa-clipboard-list"></i> {{ isEditing ? 'Editar' : 'Nueva' }} Orden</h2>
       </div>
-      
-      <div class="col-12 md:col-6">
-        <label class="input-label">Responsable</label>
-        <p-dropdown [(ngModel)]="nuevaOrden.responsable" [options]="responsables" 
-                   placeholder="Asignar responsable" [filter]="true" appendTo="body"
-                   class="w-full" inputStyleClass="w-full">
-          <ng-template let-item pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <i class="pi pi-user"></i>
-              <span>{{item}}</span>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-    </div>
 
-    <!-- Sección de productos - Diseño tipo tarjeta -->
-    <div class="products-section">
-      <label class="section-title">Productos</label>
-      <p-messages severity="info" *ngIf="nuevaOrden.productos.length === 0">
-        <ng-template pTemplate>
-          <i class="pi pi-info-circle"></i>
-          <div class="ml-2">Agregue al menos un producto</div>
-        </ng-template>
-      </p-messages>
+      <form [formGroup]="productionForm" (ngSubmit)="onSubmit()" class="form">
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="productionDate">Fecha de Producción</label>
+            <input id="productionDate" type="date" formControlName="productionDate" class="input" />
+          </div>
 
-      <div class="product-cards">
-        <div *ngFor="let producto of nuevaOrden.productos; let i = index" class="product-card">
-          <div class="product-card-content">
-            <div class="product-select">
-              <p-dropdown [(ngModel)]="producto.nombre" [options]="productosDisponibles" 
-                         placeholder="Producto" [showClear]="true" appendTo="body"
-                         class="w-full" [filter]="true">
-                <ng-template let-item pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <i class="pi pi-box"></i>
-                    <span>{{item}}</span>
-                  </div>
-                </ng-template>
-              </p-dropdown>
-            </div>
-            
-            <div class="product-quantity">
-              <label>Cantidad</label>
-              <p-inputNumber [(ngModel)]="producto.cantidad" [min]="1" mode="decimal" 
-                           [showButtons]="true" inputId="cantidad-{{i}}"></p-inputNumber>
-            </div>
-            
-            <button pButton pRipple type="button" icon="pi pi-trash" 
-                    class="p-button-rounded p-button-text p-button-danger product-remove"
-                    (click)="eliminarProducto(i)"></button>
+          <div class="input-group">
+            <label for="assignedToId">Asignado a (ID)</label>
+            <input id="assignedToId" type="number" formControlName="assignedToId" class="input" placeholder="ID del empleado" />
+          </div>
+
+          <div class="input-group full-width">
+            <label for="status">Estado</label>
+            <input id="status" type="text" class="input" formControlName="status" value="PENDIENTE" readonly />
           </div>
         </div>
-      </div>
 
-      <button pButton pRipple type="button" icon="pi pi-plus" label="Añadir producto" 
-              class="p-button-outlined add-product-btn" (click)="agregarProducto()"></button>
-    </div>
-  </div>
+        <!-- Detalles de Productos -->
+        <div class="products-section">
+          <div class="section-header">
+            <h3><i class="fas fa-box"></i> Productos</h3>
+            <button type="button" (click)="addDetail()" class="btn btn-outline">
+              <i class="fas fa-plus"></i> Agregar Producto
+            </button>
+          </div>
 
-  <ng-template pTemplate="footer">
-    <div class="flex justify-content-between w-full">
-      <button pButton pRipple type="button" label="Cancelar" 
-              class="p-button-outlined cancel-btn" (click)="cerrarModal()"></button>
-      <button pButton pRipple type="button" label="Crear orden" icon="pi pi-check" 
-              class="create-btn" (click)="crearOrden()" 
-              [disabled]="!esFormularioValido()"></button>
-    </div>
-  </ng-template>
-</p-dialog>
+          <div formArrayName="details" class="products-list">
+            <div *ngFor="let detail of details.controls; let i = index" [formGroupName]="i" class="product-card">
+              <div class="product-header">
+                <span class="product-number">Producto {{ i + 1 }}</span>
+                <button type="button" (click)="removeDetail(i)" *ngIf="details.length > 1" class="btn-remove" title="Quitar producto">
+                  <i class="fas fa-times-circle"></i>
+                </button>
+              </div>
 
-<p-dialog header="Editar Orden" [(visible)]="modalEdicionAbierto" [modal]="true" 
-          [style]="{width: '650px'}" [breakpoints]="{'960px': '75vw', '640px': '90vw'}" 
-          [draggable]="false" [resizable]="false" [closable]="true" [closeOnEscape]="true">
-  
-  <div class="modal-content">
-    <!-- Sección de información básica -->
-    <div class="grid gap-3 mb-5">
-      <div class="col-12 md:col-6">
-        <label class="input-label">Fecha Requerida</label>
-        <p-calendar [(ngModel)]="ordenEditada.fechaRequerida" [showIcon]="true" dateFormat="dd/mm/yy" 
-                   [showButtonBar]="true" [minDate]="minDate" inputStyleClass="w-full"
-                   placeholder="Seleccione fecha"></p-calendar>
-      </div>
-      
-      <div class="col-12 md:col-6">
-        <label class="input-label">Responsable</label>
-        <p-dropdown [(ngModel)]="ordenEditada.responsable" [options]="responsables" 
-                   placeholder="Asignar responsable" [filter]="true" appendTo="body"
-                   class="w-full" inputStyleClass="w-full">
-          <ng-template let-item pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <i class="pi pi-user"></i>
-              <span>{{item}}</span>
+              <div class="product-form">
+                <div class="input-group">
+                  <label>Producto</label>
+                  <select formControlName="productId" class="select">
+                    <option value="">Seleccionar...</option>
+                    <option *ngFor="let p of products" [value]="p.id">{{ p.name }}</option>
+                  </select>
+                </div>
+
+                <div class="input-group">
+                  <label>Cantidad</label>
+                  <input type="number" formControlName="requestedQuantity" class="input" placeholder="0" />
+                </div>
+
+                <div class="input-group full-width">
+                  <label>Comentarios</label>
+                  <textarea formControlName="comments" class="input" rows="2" placeholder="Comentarios adicionales..."></textarea>
+                </div>
+              </div>
             </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-    </div>
-
-    <!-- Sección de productos - Diseño tipo tarjeta -->
-    <div class="products-section">
-      <label class="section-title">Productos</label>
-      <p-messages severity="info" *ngIf="ordenEditada.productos.length === 0">
-        <ng-template pTemplate>
-          <i class="pi pi-info-circle"></i>
-          <div class="ml-2">Agregue al menos un producto</div>
-        </ng-template>
-      </p-messages>
-
-      <div class="product-cards">
-        <div *ngFor="let producto of ordenEditada.productos; let i = index" class="product-card">
-          <div class="product-card-content">
-            <div class="product-select">
-              <p-dropdown [(ngModel)]="producto.nombre" [options]="productosDisponibles" 
-                         placeholder="Producto" [showClear]="true" appendTo="body"
-                         class="w-full" [filter]="true">
-                <ng-template let-item pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <i class="pi pi-box"></i>
-                    <span>{{item}}</span>
-                  </div>
-                </ng-template>
-              </p-dropdown>
-            </div>
-            
-            <div class="product-quantity">
-              <label>Cantidad</label>
-              <p-inputNumber [(ngModel)]="producto.cantidad" [min]="1" mode="decimal" 
-                           [showButtons]="true" inputId="cantidad-edit-{{i}}"></p-inputNumber>
-            </div>
-            
-            <button pButton pRipple type="button" icon="pi pi-trash" 
-                    class="p-button-rounded p-button-text p-button-danger product-remove"
-                    (click)="eliminarProductoEdicion(i)"></button>
           </div>
         </div>
+
+        <!-- Botones de Acción -->
+        <div class="form-actions">
+          <button type="button" (click)="resetForm()" class="btn btn-secondary">
+            <i class="fas fa-undo"></i> Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> {{ isEditing ? 'Actualizar' : 'Crear' }} Orden
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Lista de Órdenes -->
+  <section class="orders-section">
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2><i class="fas fa-list"></i> Órdenes Registradas</h2>
+        <span class="orders-count">{{ productions.length }} órdenes</span>
       </div>
 
-      <button pButton pRipple type="button" icon="pi pi-plus" label="Añadir producto" 
-              class="p-button-outlined add-product-btn" (click)="agregarProductoEdicion()"></button>
-    </div>
-  </div>
+      <div class="orders-table-wrapper" *ngIf="productions.length > 0; else noOrders">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Productos</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of productions">
+              <td>#{{ order.id }}</td>
+              <td>{{ order.productionDate | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="status-badge"
+                      [ngClass]="'status-' + order.status.toLowerCase().replace('_', '-')">
+                  {{ order.status.replace('_', ' ') }}
+                </span>
+              </td>
+              <td>
+                <ul class="product-list">
+                  <li *ngFor="let d of order.details">
+                    <strong>{{ d.product.name }}</strong> ({{ d.requestedQuantity }})<br>
+                    <small class="comment">📝 {{ d.comments || 'Sin comentario' }}</small>
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <button (click)="onEdit(order)" class="btn btn-ghost">
+                  <i class="fas fa-edit"></i> Editar
+                </button>
+                <button (click)="onDelete(order.id)" class="btn btn-danger">
+                  <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-  <ng-template pTemplate="footer">
-    <div class="flex justify-content-between w-full">
-      <button pButton pRipple type="button" label="Cancelar" 
-              class="p-button-outlined cancel-btn" (click)="cerrarModalEdicion()"></button>
-      <button pButton pRipple type="button" label="Guardar cambios" icon="pi pi-check" 
-              class="create-btn" (click)="guardarCambios()" 
-              [disabled]="!esFormularioEdicionValido()"></button>
+      <ng-template #noOrders>
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h3>No hay órdenes registradas</h3>
+          <p>Crea tu primera orden de producción</p>
+        </div>
+      </ng-template>
     </div>
-  </ng-template>
-</p-dialog>
+  </section>
 </div>
