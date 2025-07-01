@@ -140,18 +140,19 @@ export class ProductionComponent implements OnInit {
     console.log('Enviando datos al backend:', updatedValue); // Depuración
 
     if (this.isEditing && this.ordenEditando?.id) {
-      this.service.updateProduction(this.ordenEditando.id, updatedValue).subscribe({
-        next: (response) => {
-          console.log('Respuesta de actualización:', response);
-          this.loadProductions();
-          Swal.fire('Actualizado', 'La orden ha sido actualizada.', 'success');
-          this.cerrarModal();
-        },
-        error: (err) => {
-          console.error('Error al actualizar:', err);
-          Swal.fire('Error', 'No se pudo actualizar la orden.', 'error');
-        }
-      });
+     this.service.updateProduction(this.ordenEditando.id, updatedValue).subscribe({
+  next: (response) => {
+    console.log('Respuesta de actualización:', response);
+    this.loadProductions();
+    Swal.fire('Actualizado', 'La orden ha sido actualizada.', 'success');
+    this.cerrarModal();
+  },
+  error: (err) => {
+    console.error('Error al actualizar:', err);
+    Swal.fire('Error', 'No se pudo actualizar la orden.', 'error');
+  }
+});
+
     } else {
       this.service.createProduction(updatedValue).subscribe({
         next: () => {
