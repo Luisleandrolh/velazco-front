@@ -120,34 +120,46 @@ export class ProductionComponent implements OnInit {
 
   guardarOrden(): void {
     if (this.productionForm.invalid) {
+      console.log('Formulario inválido:', this.productionForm.value);
       Swal.fire('Error', 'Por favor completa todos los campos obligatorios.', 'warning');
       return;
     }
 
     const value = this.productionForm.value;
 
-    console.log('Enviando datos al backend:', value); // Depuración
+    // Ajustar los detalles para que coincidan con la estructura esperada
+    const updatedValue = {
+      ...value,
+      details: value.details.map((detail: any) => ({
+        productId: detail.productId,
+        requestedQuantity: detail.requestedQuantity,
+        comments: detail.comments || '' // Asignar comentarios vacíos si no se proporcionan
+      }))
+    };
+
+    console.log('Enviando datos al backend:', updatedValue); // Depuración
 
     if (this.isEditing && this.ordenEditando?.id) {
-      this.service.updateProduction(this.ordenEditando.id, value).subscribe({
-        next: () => {
+      this.service.updateProduction(this.ordenEditando.id, updatedValue).subscribe({
+        next: (response) => {
+          console.log('Respuesta de actualización:', response);
           this.loadProductions();
           Swal.fire('Actualizado', 'La orden ha sido actualizada.', 'success');
           this.cerrarModal();
         },
-        error: err => {
+        error: (err) => {
           console.error('Error al actualizar:', err);
           Swal.fire('Error', 'No se pudo actualizar la orden.', 'error');
         }
       });
     } else {
-      this.service.createProduction(value).subscribe({
+      this.service.createProduction(updatedValue).subscribe({
         next: () => {
           this.loadProductions();
           Swal.fire('Creado', 'La orden ha sido creada.', 'success');
           this.cerrarModal();
         },
-        error: err => {
+        error: (err) => {
           console.error('Error al crear:', err);
           Swal.fire('Error', 'No se pudo crear la orden.', 'error');
         }
@@ -169,7 +181,6 @@ export class ProductionComponent implements OnInit {
       `,
       confirmButtonText: 'Cerrar',
       width: 600
-
     });
   }
 
