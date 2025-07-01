@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { OrdersProductionModuleRoutingModule } from './orders-production-module-routing.module';
 import { ProductionComponent } from './ordenesproduccion/ordenesproduccion.component';
-import { FormsModule } from '@angular/forms';
 
-// PrimeNG Modules
+// PrimeNG Modules (solo si los usas realmente)
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
@@ -19,18 +18,16 @@ import { TabViewModule } from 'primeng/tabview';
 import { CardModule } from 'primeng/card';
 import { MessagesModule } from 'primeng/messages';
 
-
 @NgModule({
   declarations: [
-    
-  
-    ProductionComponent
+    ProductionComponent,
   ],
   imports: [
     CommonModule,
-      ReactiveFormsModule,
-    OrdersProductionModuleRoutingModule,
+    ReactiveFormsModule,
     FormsModule,
+    OrdersProductionModuleRoutingModule,
+    // PrimeNG
     ButtonModule,
     RippleModule,
     TableModule,
@@ -41,8 +38,7 @@ import { MessagesModule } from 'primeng/messages';
     InputNumberModule,
     TabViewModule,
     CardModule,
-    MessagesModule,
-    
+    MessagesModule
   ]
 })
-export class OrdersProductionModuleModule { }
+export class OrdersProductionModuleModule {}

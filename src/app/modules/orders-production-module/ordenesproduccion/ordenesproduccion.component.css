@@ -65,42 +65,122 @@ body {
   color: #1f2937;
 }
 
-/* Grid del formulario */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.25rem;
-}
-
-/* Inputs y selects */
-.input-group {
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-label {
-  font-size: 0.875rem;
-  color: #4b5563;
-  margin-bottom: 0.35rem;
+.modal-container {
+  background: white;
+  padding: 24px;
+  width: 100%;
+  max-width: 650px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Formulario */
+form .form-group {
+  margin-bottom: 1rem;
+}
+
+form .form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
   font-weight: 500;
+  font-size: 0.875rem;
+  color: #374151;
 }
 
-.input,
-.select,
-textarea {
+form .form-group input,
+form .form-group select,
+form .form-group textarea {
+  width: 100%;
   padding: 0.65rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 10px;
   font-size: 0.95rem;
-  transition: border-color 0.2s ease;
   background-color: #ffffff;
 }
 
-.input:focus,
-.select:focus,
-textarea:focus {
+form .form-group input:focus,
+form .form-group select:focus {
   border-color: #2563eb;
   outline: none;
+}
+
+/* Detalles */
+.detail-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.detail-row button {
+  height: 38px;
+  background-color: #f87171;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.detail-row button:hover {
+  background-color: #dc2626;
+}
+
+.modal-footer {
+  margin-top: 1.5rem;
+  text-align: right;
+}
+
+.save-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.65rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.save-btn:hover {
+  background-color: #1d4ed8;
 }
 
 /* Botones */
@@ -164,45 +244,31 @@ textarea:focus {
   text-decoration: underline;
 }
 
-/* Botones de formulario */
-.form-actions {
+/* Pestañas */
+.tabs {
   display: flex;
-  justify-content: flex-end;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
 }
 
-/* Productos */
-.products-section {
-  margin-top: 2rem;
-}
-
-.products-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.product-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  padding: 1rem;
-  border-radius: 12px;
-}
-
-.product-header {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.btn-remove {
+.tabs button {
   background: none;
   border: none;
-  font-size: 1.1rem;
-  color: #ef4444;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #4b5563;
+  border-bottom: 3px solid transparent;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tabs button.active {
+  color: #2563eb;
+  border-color: #2563eb;
+  background-color: #f0f9ff;
+  border-radius: 8px 8px 0 0;
 }
 
 /* Tabla de órdenes */
@@ -317,5 +383,9 @@ textarea:focus {
   .form-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
   }
 }

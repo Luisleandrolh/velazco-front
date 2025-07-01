@@ -1,148 +1,179 @@
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <div class="container">
   <header class="page-header">
     <h1><i class="fas fa-industry"></i> Órdenes de Producción</h1>
     <p class="subtitle">Repostería Velazco</p>
   </header>
 
-  <!-- Formulario de Creación/Edición -->
-  <section class="form-section">
-    <div class="card fade-in">
-      <div class="card-header">
-        <h2><i class="fas fa-clipboard-list"></i> {{ isEditing ? 'Editar' : 'Nueva' }} Orden</h2>
+  <!-- Modal para agregar/editar orden -->
+  <div class="modal-overlay" *ngIf="modalVisible">
+    <div class="modal-container" [class.editing]="isEditing">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar Orden' : 'Agregar Nueva Orden' }}</h3>
+        <button class="close-btn" (click)="cerrarModal()">&times;</button>
       </div>
-
-      <form [formGroup]="productionForm" (ngSubmit)="onSubmit()" class="form">
-        <div class="form-grid">
-          <div class="input-group">
-            <label for="productionDate">Fecha de Producción</label>
-            <input id="productionDate" type="date" formControlName="productionDate" class="input" />
+      <form [formGroup]="productionForm" (ngSubmit)="guardarOrden()">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Fecha de Producción</label>
+            <input type="date" formControlName="productionDate" required />
           </div>
 
-          <div class="input-group">
-            <label for="assignedToId">Asignado a (ID)</label>
-            <input id="assignedToId" type="number" formControlName="assignedToId" class="input" placeholder="ID del empleado" />
+          <div class="form-group">
+            <label>Asignado a (opcional)</label>
+            <input type="text" formControlName="assignedToId" />
           </div>
 
-          <div class="input-group full-width">
-            <label for="status">Estado</label>
-            <input id="status" type="text" class="input" formControlName="status" value="PENDIENTE" readonly />
-          </div>
-        </div>
+          <div formArrayName="details">
+            <div *ngFor="let detail of details.controls; let i = index" [formGroupName]="i" class="detail-row">
+              <label>Producto</label>
+              <select formControlName="productId" required>
+                <option *ngFor="let p of products" [value]="p.id">{{ p.name }}</option>
+              </select>
 
-        <!-- Detalles de Productos -->
-        <div class="products-section">
-          <div class="section-header">
-            <h3><i class="fas fa-box"></i> Productos</h3>
-            <button type="button" (click)="addDetail()" class="btn btn-outline">
-              <i class="fas fa-plus"></i> Agregar Producto
-            </button>
-          </div>
+              <label>Cantidad</label>
+              <input type="number" formControlName="requestedQuantity" min="1" required />
 
-          <div formArrayName="details" class="products-list">
-            <div *ngFor="let detail of details.controls; let i = index" [formGroupName]="i" class="product-card">
-              <div class="product-header">
-                <span class="product-number">Producto {{ i + 1 }}</span>
-                <button type="button" (click)="removeDetail(i)" *ngIf="details.length > 1" class="btn-remove" title="Quitar producto">
-                  <i class="fas fa-times-circle"></i>
-                </button>
-              </div>
+              <label>Comentarios</label>
+              <input type="text" formControlName="comments" />
 
-              <div class="product-form">
-                <div class="input-group">
-                  <label>Producto</label>
-                  <select formControlName="productId" class="select">
-                    <option value="">Seleccionar...</option>
-                    <option *ngFor="let p of products" [value]="p.id">{{ p.name }}</option>
-                  </select>
-                </div>
-
-                <div class="input-group">
-                  <label>Cantidad</label>
-                  <input type="number" formControlName="requestedQuantity" class="input" placeholder="0" />
-                </div>
-
-                <div class="input-group full-width">
-                  <label>Comentarios</label>
-                  <textarea formControlName="comments" class="input" rows="2" placeholder="Comentarios adicionales..."></textarea>
-                </div>
-              </div>
+              <button type="button" (click)="removeDetail(i)">Eliminar</button>
             </div>
+            <button type="button" (click)="addDetail()">Agregar Producto</button>
           </div>
         </div>
-
-        <!-- Botones de Acción -->
-        <div class="form-actions">
-          <button type="button" (click)="resetForm()" class="btn btn-secondary">
-            <i class="fas fa-undo"></i> Cancelar
-          </button>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> {{ isEditing ? 'Actualizar' : 'Crear' }} Orden
-          </button>
+        <div class="modal-footer">
+          <button type="submit" class="save-btn">{{ isEditing ? 'Actualizar' : 'Guardar' }}</button>
         </div>
       </form>
     </div>
-  </section>
+  </div>
 
-  <!-- Lista de Órdenes -->
-  <section class="orders-section">
-    <div class="card fade-in">
-      <div class="card-header">
-        <h2><i class="fas fa-list"></i> Órdenes Registradas</h2>
-        <span class="orders-count">{{ productions.length }} órdenes</span>
-      </div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'pendientes'" (click)="activeTab = 'pendientes'">
+      <i class="fas fa-hourglass-half"></i> Pendientes
+    </button>
+    <button [class.active]="activeTab === 'historial'" (click)="activeTab = 'historial'">
+      <i class="fas fa-history"></i> Historial
+    </button>
+  </div>
 
-      <div class="orders-table-wrapper" *ngIf="productions.length > 0; else noOrders">
-        <table class="orders-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-              <th>Productos</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let order of productions">
-              <td>#{{ order.id }}</td>
-              <td>{{ order.productionDate | date:'dd/MM/yyyy' }}</td>
-              <td>
-                <span class="status-badge"
-                      [ngClass]="'status-' + order.status.toLowerCase().replace('_', '-')">
-                  {{ order.status.replace('_', ' ') }}
-                </span>
-              </td>
-              <td>
-                <ul class="product-list">
-                  <li *ngFor="let d of order.details">
-                    <strong>{{ d.product.name }}</strong> ({{ d.requestedQuantity }})<br>
-                    <small class="comment">📝 {{ d.comments || 'Sin comentario' }}</small>
-                  </li>
-                </ul>
-              </td>
-              <td>
-                <button (click)="onEdit(order)" class="btn btn-ghost">
-                  <i class="fas fa-edit"></i> Editar
-                </button>
-                <button (click)="onDelete(order.id)" class="btn btn-danger">
-                  <i class="fas fa-trash-alt"></i> Eliminar
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <ng-template #noOrders>
-        <div class="empty-state">
-          <div class="empty-icon">📋</div>
-          <h3>No hay órdenes registradas</h3>
-          <p>Crea tu primera orden de producción</p>
-        </div>
-      </ng-template>
+  <!-- Pendientes -->
+  <div *ngIf="activeTab === 'pendientes'">
+    <div class="actions-bar">
+      <button class="btn btn-primary" (click)="abrirModalNuevaOrden()">
+        <i class="fas fa-plus"></i> Agregar Nueva Orden
+      </button>
     </div>
-  </section>
+
+    <section class="orders-section">
+      <div class="card fade-in">
+        <div class="card-header">
+          <h2><i class="fas fa-list"></i> Órdenes Pendientes</h2>
+          <span class="orders-count">{{ productions.length }} órdenes</span>
+        </div>
+
+        <div class="orders-table-wrapper" *ngIf="productions.length > 0; else noOrders">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Productos</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of productions">
+                <td>#{{ order.id }}</td>
+                <td>{{ order.productionDate | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="'status-' + order.status.toLowerCase().replace('_', '-')">
+                    {{ order.status.replace('_', ' ') }}
+                  </span>
+                </td>
+                <td>
+                  <ul class="product-list">
+                    <li *ngFor="let d of order.details">
+                      <strong>{{ d.product.name }}</strong> ({{ d.requestedQuantity }})<br />
+                      <small class="comment">📝 {{ d.comments || 'Sin comentario' }}</small>
+                    </li>
+                  </ul>
+                </td>
+                <td>
+                  <button (click)="editarOrden(order)" class="btn btn-ghost">
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button (click)="onDelete(order.id)" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                  </button>
+                  <button (click)="verDetalles(order)" class="btn btn-ghost">
+                    <i class="fas fa-eye"></i> Ver Detalles
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noOrders>
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3>No hay órdenes registradas</h3>
+            <p>Crea tu primera orden de producción</p>
+          </div>
+        </ng-template>
+      </div>
+    </section>
+  </div>
+
+  <!-- Historial -->
+  <div *ngIf="activeTab === 'historial'">
+    <section class="orders-section">
+      <div class="card fade-in">
+        <div class="card-header">
+          <h2><i class="fas fa-clock"></i> Historial de Órdenes</h2>
+          <span class="orders-count">{{ historial.length }} órdenes finalizadas</span>
+        </div>
+
+        <div class="orders-table-wrapper" *ngIf="historial.length > 0; else noHistorial">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let h of historial">
+                <td>#{{ h.id }}</td>
+                <td>{{ h.productionDate | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="'status-' + h.status.toLowerCase().replace('_', '-')">
+                    {{ h.status.replace('_', ' ') }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-ghost" (click)="verDetalles(h)">
+                    <i class="fas fa-eye"></i> Ver Detalles
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noHistorial>
+          <div class="empty-state">
+            <div class="empty-icon">📜</div>
+            <h3>No hay historial de órdenes</h3>
+            <p>Aún no se han registrado órdenes finalizadas</p>
+          </div>
+        </ng-template>
+      </div>
+    </section>
+  </div>
 </div>
