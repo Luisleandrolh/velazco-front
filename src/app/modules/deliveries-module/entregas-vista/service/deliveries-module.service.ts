@@ -59,7 +59,7 @@ export class DeliveriesModuleService {
       params = params.set('clientName', clientName);
     }
   
-    const url = `${this.baseUrl}/api/orders/filter`;
+    const url = `${this.apiUrl}/api/orders/filter`;
     return this.http.get(url, { params });
   }
   
