@@ -127,15 +127,13 @@ form .form-group input,
 form .form-group select,
 form .form-group textarea {
   width: 100%;
-  padding: 0.65rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
   background-color: #ffffff;
 }
 
-form .form-group input:focus,
-form .form-group select:focus {
+.input:focus,
+.select:focus,
+textarea:focus {
   border-color: #2563eb;
   outline: none;
 }
@@ -269,103 +267,6 @@ form .form-group select:focus {
   border-color: #2563eb;
   background-color: #f0f9ff;
   border-radius: 8px 8px 0 0;
-}
-
-/* Tabla de órdenes */
-.orders-table-wrapper {
-  overflow-x: auto;
-}
-
-.orders-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-  background-color: white;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.orders-table thead {
-  background-color: #f3f4f6;
-}
-
-.orders-table th,
-.orders-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-  text-align: left;
-}
-
-.orders-table tr:hover {
-  background-color: #f9fafb;
-}
-
-.product-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.product-list li {
-  margin-bottom: 0.4rem;
-}
-
-.comment {
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-/* Badges */
-.status-badge {
-  display: inline-block;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 9999px;
-  text-transform: uppercase;
-}
-
-.status-pendiente {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.status-en-proceso {
-  background-color: #dbeafe;
-  color: #1e3a8a;
-}
-
-.status-finalizado {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-/* Estado vacío */
-.empty-state {
-  text-align: center;
-  color: #9ca3af;
-  padding: 2rem 1rem;
-}
-
-.empty-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-/* Animación */
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Responsive */

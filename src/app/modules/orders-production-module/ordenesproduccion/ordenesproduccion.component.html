@@ -11,6 +11,7 @@
         <h3>{{ isEditing ? 'Editar Orden' : 'Agregar Nueva Orden' }}</h3>
         <button class="close-btn" (click)="cerrarModal()">&times;</button>
       </div>
+ HEAD
       <form [formGroup]="productionForm" (ngSubmit)="guardarOrden()">
         <div class="modal-body">
           <div class="form-group">
@@ -37,6 +38,7 @@
               <input type="text" formControlName="comments" />
 
               <button type="button" (click)="removeDetail(i)">Eliminar</button>
+
             </div>
             <button type="button" (click)="addDetail()">Agregar Producto</button>
           </div>
@@ -176,4 +178,5 @@
       </div>
     </section>
   </div>
+
 </div>

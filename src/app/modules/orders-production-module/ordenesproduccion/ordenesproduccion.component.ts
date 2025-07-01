@@ -169,6 +169,7 @@ export class ProductionComponent implements OnInit {
       `,
       confirmButtonText: 'Cerrar',
       width: 600
+
     });
   }
 
