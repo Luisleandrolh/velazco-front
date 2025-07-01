@@ -1,164 +1,105 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ProductionService } from '../service/production.service';
 
 @Component({
   selector: 'app-produccion',
   templateUrl: './produccion.component.html',
-  styleUrls: ['./produccion.component.css'],
+  styleUrls: ['./produccion.component.css']
 })
-export class ProduccionComponent {
-  pestanaActiva: 'elaboracion' | 'terminados' = 'elaboracion';
-  terminoBusqueda: string = '';
-  empleadoSeleccionado: string = '';
-  
-  // Variables para controlar los modales
-  mostrarModalDetalles = false;
-  mostrarModalEstado = false;
-  productoSeleccionado: any = null;
-  nuevoEstado: string = '';
-  
-  empleados: string[] = [
-    'Juan Pérez',
-    'María López',
-    'Carlos Gómez',
-    'Ana Rodríguez'
-  ];
-  
-  productosProduccion: any[] = [
-    {
-      id: 1,
-      nombre: 'Torta de Chocolate',
-      cantidad: '10 unidades',
-      responsable: 'Juan Pérez',
-      fechaInicio: '23/04/2023',
-      estado: 'En Producción',
-    },
-    {
-      id: 2,
-      nombre: 'Galletas de Avena',
-      cantidad: '120 unidades',
-      responsable: 'María López',
-      fechaInicio: '23/04/2023',
-      estado: 'En Producción',
-    },
-    {
-      id: 3,
-      nombre: 'Cheesecake',
-      cantidad: '8 unidades',
-      responsable: 'Carlos Gómez',
-      fechaInicio: '23/04/2023',
-      estado: 'En Producción',
-    },
-    {
-      id: 4,
-      nombre: 'Cupcakes de Vainilla',
-      cantidad: '48 unidades',
-      responsable: 'Ana Rodríguez',
-      fechaInicio: '23/04/2023',
-      estado: 'En Producción',
-    }
-  ];
+export class ProduccionComponent implements OnInit {
+  producciones: any[] = [];
+  historial: any[] = [];
+  productosDelDia: any[] = [];
 
-  productosTerminados: any[] = [
-    {
-      id: 1,
-      nombre: 'Brownies',
-      cantidad: '24 unidades',
-      responsable: 'Juan Pérez',
-      fechaTermino: '22/04/2023',
-      estado: 'Terminado',
-    },
-    {
-      id: 2,
-      nombre: 'Alfajores',
-      cantidad: '60 unidades',
-      responsable: 'María López',
-      fechaTermino: '22/04/2023',
-      estado: 'Terminado',
-    },
-    {
-      id: 3,
-      nombre: 'Pan Frances',
-      cantidad: '12 unidades',
-      responsable: 'Carlos Gómez',
-      fechaTermino: '22/04/2023',
-      estado: 'Terminado',
-    }
-  ];
+  mostrarModal: boolean = false;
 
-  productosProduccionFiltrados: any[] = [...this.productosProduccion];
-  productosTerminadosFiltrados: any[] = [...this.productosTerminados];
+  constructor(private productionService: ProductionService) {}
 
-  aplicarFiltros() {
-    const termino = this.terminoBusqueda.toLowerCase();
-    
-    this.productosProduccionFiltrados = this.productosProduccion.filter(producto => {
-      const coincideBusqueda = 
-        producto.id.toString().includes(termino) ||
-        producto.nombre.toLowerCase().includes(termino) ||
-        producto.responsable.toLowerCase().includes(termino);
-      const coincideEmpleado = this.empleadoSeleccionado === '' || 
-                             producto.responsable === this.empleadoSeleccionado;
-      return coincideBusqueda && coincideEmpleado;
-    });
+  ngOnInit(): void {
+    this.cargarProduccionDelDia();
+    this.cargarHistorial(); // borrar posiblemente ya que no muestra nada
+  }
 
-    this.productosTerminadosFiltrados = this.productosTerminados.filter(producto => {
-      const coincideBusqueda = 
-        producto.id.toString().includes(termino) ||
-        producto.nombre.toLowerCase().includes(termino) ||
-        producto.responsable.toLowerCase().includes(termino);
-      const coincideEmpleado = this.empleadoSeleccionado === '' || 
-                             producto.responsable === this.empleadoSeleccionado;
-      return coincideBusqueda && coincideEmpleado;
+  cargarProduccionDelDia(): void {
+    this.productionService.getDailyProduction().subscribe({
+      next: (data) => {
+        if (data.length > 0) {
+          this.producciones = data.map((p: any) => ({
+            ...p,
+            orderNumber: `OP-${p.id}`
+          }));
+
+          // Extraer todos los productos del día para mostrar en el modal
+          this.productosDelDia = this.producciones.flatMap((orden: any) =>
+            orden.details.map((detalle: any) => ({
+              nombre: detalle.product.name,
+              cantidad: detalle.requestedQuantity,
+              orden: `OP-${orden.id}`
+            }))
+          );
+        } else {
+          this.producciones = [];
+          this.productosDelDia = [];
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar producción del día:', err);
+      }
     });
   }
 
-  verDetalles(producto: any) {
-    this.productoSeleccionado = producto;
-    this.mostrarModalDetalles = true;
-  }
-
-  cerrarModalDetalles() {
-    this.mostrarModalDetalles = false;
-  }
-
-  actualizarEstado(producto: any) {
-    this.productoSeleccionado = producto;
-    this.nuevoEstado = producto.estado;
-    this.mostrarModalEstado = true;
-  }
-
-  cerrarModalEstado() {
-    this.mostrarModalEstado = false;
-  }
-
-  guardarEstado() {
-    // Actualizar el estado del producto
-    this.productoSeleccionado.estado = this.nuevoEstado;
-    
-    // Si el estado es "Terminado", mover a productos terminados
-    if (this.nuevoEstado === 'Terminado') {
-      this.productoSeleccionado.fechaTermino = new Date().toLocaleDateString();
-      
-      // Mover de producción a terminados
-      this.productosProduccion = this.productosProduccion.filter(
-        p => p.id !== this.productoSeleccionado.id
-      );
-      this.productosTerminados.push(this.productoSeleccionado);
+  cargarHistorial(): void {
+  this.productionService.getProductionHistory().subscribe({
+    next: (data) => {
+      // Asegura que cada orden tenga el número de orden formateado
+      this.historial = data.map((orden: any) => ({
+        ...orden,
+        orderNumber: `OP-${orden.id}`
+      }));
+    },
+    error: (err) => {
+      console.error('Error al cargar historial de producción', err);
     }
-    
-    // Actualizar las listas filtradas
-    this.aplicarFiltros();
-    this.cerrarModalEstado();
+  });
+}
+
+
+  abrirModalIniciar(): void {
+    this.mostrarModal = true;
   }
 
-  calcularFechaTermino(): string {
-    const fecha = new Date();
-    fecha.setHours(fecha.getHours() + 4); // Ejemplo: 4 horas después
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-    const año = fecha.getFullYear();
-    return `${dia}/${mes}/${año}`;
+  cerrarModalIniciar(): void {
+    this.mostrarModal = false;
   }
+
+  iniciarProduccion(): void {
+  const idsPendientes = this.producciones
+    .filter(p => p.status === 'PENDIENTE')
+    .map(p => p.id);
+
+  let completadas = 0;
+
+  idsPendientes.forEach(id => {
+    this.productionService.iniciarProduccion(id).subscribe({
+      next: () => {
+        completadas++;
+        // Cuando todos los PUT terminen, recargar listas
+        if (completadas === idsPendientes.length) {
+          this.cargarProduccionDelDia();  // recargar producciones del día
+          this.cargarHistorial();         // recargar historial con los nuevos EN_PROCESO
+        }
+      },
+      error: (err) => {
+        console.error(`❌ Error al iniciar producción con ID ${id}`, err);
+      }
+    });
+  });
+
+  this.cerrarModalIniciar(); // cerrar modal inmediatamente
+}
+
+tieneOrdenesEnProceso(): boolean {
+  return this.historial?.some(o => o.status === 'EN_PROCESO');
+}
+
 }
