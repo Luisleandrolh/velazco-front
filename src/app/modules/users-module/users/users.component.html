@@ -27,8 +27,6 @@
           <th>Usuario</th>
           <th>Email</th>
           <th>Rol</th>
-          <th>Contraseña</th>
-          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -39,12 +37,7 @@
           </td>
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
-          <td>{{ user.password }}</td>
-          <td>
-            <button (click)="showUserDetails(user)" class="action-btn">
-              Ver Detalles
-            </button>
-          </td>
+          
         </tr>
       </tbody>
     </table>
@@ -104,59 +97,9 @@
         </select>
       </div>
       
-      <div class="form-section">
-        <h2>Teléfono</h2>
-        <input 
-          type="tel" 
-          placeholder="Ej: 555-123-4567" 
-          [(ngModel)]="newUser.phone"
-          class="form-input"
-        >
-      </div>
-      
       <div class="modal-actions">
         <button (click)="closeModal()" class="cancel-btn">Cancelar</button>
         <button (click)="createUser()" class="create-btn">Crear Usuario</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Vista de detalles de usuario (modal) -->
-  <div *ngIf="showModal && currentView === 'details' && selectedUser" class="modal-overlay">
-    <div class="modal-content">
-      <h1>Detalles del Usuario</h1>
-      <p>Información y permisos del usuario en el sistema</p>
-      
-      <div class="user-details-grid">
-        <div class="detail-header">Información</div>
-        <div class="detail-header">Datos</div>
-        
-        <div class="detail-label">Nombre Completo</div>
-        <div class="detail-value">{{ selectedUser.name }}</div>
-        
-        <div class="detail-label">Correo Electrónico</div>
-        <div class="detail-value">{{ selectedUser.email }}</div>
-        
-        <div class="detail-label">Contraseña</div>
-        <div class="detail-value">
-          {{ selectedUser.password }}
-          <button (click)="togglePasswordVisibility()" class="password-toggle-btn">
-            {{ showPassword ? 'Ocultar' : 'Mostrar' }}
-          </button>
-        </div>
-        
-        <div class="detail-label">Rol</div>
-        <div class="detail-value">{{ selectedUser.role }}</div>
-        
-        <div class="detail-label">Cargo</div>
-        <div class="detail-value">{{ selectedUser.position }}</div>
-        
-        <div class="detail-label">Teléfono</div>
-        <div class="detail-value">{{ selectedUser.phone }}</div>
-      </div>
-      
-      <div class="modal-actions">
-        <button (click)="closeModal()" class="cancel-btn">Cerrar</button>
       </div>
     </div>
   </div>

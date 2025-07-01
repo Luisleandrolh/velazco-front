@@ -1,3 +1,5 @@
+
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -33,9 +35,10 @@ export class OrdenProduccionService {
   deleteProduction(id: number): Observable<any> {
     return this.http.delete(`${BASE_URL}/productions/${id}`, AUTH_HEADER);
   }
+  getHistorialProductions(): Observable<any> {
+    return this.http.get(`${BASE_URL}/productions/historial`, AUTH_HEADER);
+  }
+
   
 }
-
-
-
 
