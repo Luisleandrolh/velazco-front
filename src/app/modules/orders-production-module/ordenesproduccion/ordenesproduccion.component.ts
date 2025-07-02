@@ -53,10 +53,10 @@ loadHistorial(): void {
     this.historial = data
       .filter((orden: any) => orden.status?.toUpperCase() !== 'PENDIENTE')
       .map((orden: any) => ({
-        id: orden.orderNumber,                     // Lo que muestras en tu tabla como id
-        productionDate: orden.date,               // Lo que muestras como productionDate
+        id: orden.orderNumber,                
+        productionDate: orden.date,            
         status: orden.status,
-        assignedTo: { name: orden.responsible },  // Asignado, por si lo usas
+        assignedTo: { name: orden.responsible }, 
         details: orden.products.map((p: any) => ({
           product: { name: p.productName },
           requestedQuantity: p.requestedQuantity,
@@ -77,7 +77,7 @@ loadHistorial(): void {
     this.isEditing = false;
     this.ordenEditando = null;
     this.initForm();
-    this.details.push(this.createDetail()); // Agrega al menos un detalle por defecto
+    this.details.push(this.createDetail()); 
     this.modalVisible = true;
   }
 
@@ -85,7 +85,7 @@ loadHistorial(): void {
     this.isEditing = true;
     this.ordenEditando = order;
     this.initForm();
-    this.patchForm(); // Se aplica después de inicializar el formulario
+    this.patchForm();
     this.modalVisible = true;
   }
 
@@ -97,27 +97,26 @@ loadHistorial(): void {
   initForm(): void {
     this.productionForm = this.fb.group({
       productionDate: ['', Validators.required],
-      assignedToId: [null],  // Este campo puede quedarse vacío si no tienes usuarios
+      assignedToId: [null],  
       status: ['PENDIENTE'],
       comments: [''],
       details: this.fb.array([])  // Inicializar la lista de detalles
     });
   }
 
-  patchForm(): void {
+  patchForm(): void { //carga los datos de la orden en el formulario 
     if (!this.ordenEditando) return;
 
-    this.productionForm.patchValue({
+    this.productionForm.patchValue({  
       productionDate: this.ordenEditando.productionDate,
       assignedToId: this.ordenEditando.assignedTo?.id || null,
       status: this.ordenEditando.status,
-      comments: this.ordenEditando.comments || '' // Comentario general
+      comments: this.ordenEditando.comments || '' 
     });
 
     this.details.clear();
 
     this.ordenEditando.details.forEach((d: any) => {
-      // Solo enviar productId y cantidad, sin comentarios en detalles
       this.details.push(this.fb.group({
         productId: [d.product.id, Validators.required],
         requestedQuantity: [Number(d.requestedQuantity), [Validators.required, Validators.min(1)]]
@@ -160,7 +159,7 @@ loadHistorial(): void {
       productionDate: formValue.productionDate,
       assignedToId: formValue.assignedToId || null,
       status: 'PENDIENTE',
-      comments: formValue.comments || '', // Comentario general
+      comments: formValue.comments || '', 
       details: formValue.details.map((detail: any) => ({
         productId: Number(detail.productId),
         requestedQuantity: Number(detail.requestedQuantity)
@@ -178,7 +177,7 @@ loadHistorial(): void {
     next: () => {
       Swal.fire('Éxito', `Orden ${this.isEditing ? 'actualizada' : 'creada'} correctamente.`, 'success');
       this.loadProductions();
-      this.loadHistorial(); // Actualizar ambos listados
+      this.loadHistorial(); 
       this.cerrarModal();
     },
     error: (err) => {

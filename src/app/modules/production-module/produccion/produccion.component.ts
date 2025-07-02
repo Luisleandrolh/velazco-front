@@ -62,7 +62,7 @@ export class ProduccionComponent implements OnInit {
         }));
       },
       error: (err) => {
-        console.error('❌ Error al cargar órdenes en proceso:', err);
+        console.error('Error al cargar órdenes en proceso:', err);
       }
     });
   }
@@ -103,7 +103,7 @@ export class ProduccionComponent implements OnInit {
         this.cargarenProceso();
       },
       error: (err) => {
-        console.error(`❌ Error al finalizar producción con ID ${orden.id}:`, err);
+        console.error(`Error al finalizar producción con ID ${orden.id}:`, err);
       }
     });
   }
@@ -135,7 +135,7 @@ export class ProduccionComponent implements OnInit {
     );
 
     if (!existeProducto) {
-      alert("⚠️ El producto seleccionado no pertenece a esta orden de producción.");
+      alert(" El producto seleccionado no pertenece a esta orden de producción.");
       return;
     }
 
@@ -160,7 +160,7 @@ export class ProduccionComponent implements OnInit {
         this.cerrarModal();
       },
       error: (err) => {
-        console.error(`❌ Error al marcar incompleto producción ${orden.id}:`, err);
+        console.error(` Error al marcar incompleto producción ${orden.id}:`, err);
       }
     });
   }

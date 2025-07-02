@@ -4,12 +4,11 @@
     <p class="subtitle">Repostería Velazco</p>
   </header>
 
-  <!-- Modal para agregar/editar orden -->
   <p-dialog [(visible)]="modalVisible" [modal]="true" [style]="{width: '500px'}" 
         [header]="isEditing ? 'Editar Orden' : 'Nueva Orden'" [draggable]="false">
   <form *ngIf="productionForm" [formGroup]="productionForm" (ngSubmit)="guardarOrden()">
     <div class="form-container">
-      <!-- Fecha y Asignado -->
+
       <div class="form-section">
         <div class="form-row">
           <div class="form-group full-width">
