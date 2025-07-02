@@ -25,7 +25,16 @@ export class ProductionService {
   }
 
   // Iniciar producción
-  iniciarProduccion(id: number): Observable<any> {
-    return this.http.put(`${BASE_URL}/productions/${id}/iniciar`, {}, AUTH_HEADER);
-  }
+  // src/app/modules/production-module/service/production.service.ts
+
+iniciarProduccion(id: number): Observable<any> {
+  return this.http.patch(
+    `${BASE_URL}/productions/${id}/status`,
+    { nuevoEstado: 'EN_PROCESO' },
+    AUTH_HEADER
+  );
+}
+
+
+
 }

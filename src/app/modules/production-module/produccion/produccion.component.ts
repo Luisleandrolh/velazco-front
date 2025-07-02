@@ -83,10 +83,9 @@ export class ProduccionComponent implements OnInit {
     this.productionService.iniciarProduccion(id).subscribe({
       next: () => {
         completadas++;
-        // Cuando todos los PUT terminen, recargar listas
         if (completadas === idsPendientes.length) {
-          this.cargarProduccionDelDia();  // recargar producciones del día
-          this.cargarHistorial();         // recargar historial con los nuevos EN_PROCESO
+          this.cargarProduccionDelDia();  // actualiza las pendientes
+          this.cargarHistorial();         // actualiza los EN_PROCESO
         }
       },
       error: (err) => {
@@ -95,8 +94,9 @@ export class ProduccionComponent implements OnInit {
     });
   });
 
-  this.cerrarModalIniciar(); // cerrar modal inmediatamente
+  this.cerrarModalIniciar();
 }
+
 
 tieneOrdenesEnProceso(): boolean {
   return this.historial?.some(o => o.status === 'EN_PROCESO');
