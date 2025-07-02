@@ -72,15 +72,16 @@ export class ProductionComponent implements OnInit {
   initForm(): void {
     this.productionForm = this.fb.group({
       productionDate: ['', Validators.required],
-      assignedToId: [null],
+      assignedToId: [null],  // Este campo puede quedarse vacío si no tienes usuarios
       status: ['PENDIENTE'],
-      details: this.fb.array([])
+      details: this.fb.array([])  // Inicializar la lista de detalles
     });
   }
 
   patchForm(): void {
     if (!this.ordenEditando) return;
 
+    // Parchamos los datos del formulario con los valores de la orden que se está editando
     this.productionForm.patchValue({
       productionDate: this.ordenEditando.productionDate,
       assignedToId: this.ordenEditando.assignedTo?.id || null,
@@ -89,6 +90,7 @@ export class ProductionComponent implements OnInit {
 
     this.details.clear();
 
+    // Llenar los detalles del formulario con los datos de la orden
     this.ordenEditando.details.forEach((d: any) => {
       this.details.push(this.fb.group({
         productId: [d.product.id, Validators.required],
@@ -127,7 +129,7 @@ export class ProductionComponent implements OnInit {
 
     const value = this.productionForm.value;
 
-    // Ajustar los detalles para que coincidan con la estructura esperada
+    // Ajustar los detalles para que coincidan con la estructura esperada por el backend
     const updatedValue = {
       ...value,
       details: value.details.map((detail: any) => ({
@@ -139,26 +141,27 @@ export class ProductionComponent implements OnInit {
 
     console.log('Enviando datos al backend:', updatedValue); // Depuración
 
+    // Si estamos editando, hacemos la solicitud PUT
     if (this.isEditing && this.ordenEditando?.id) {
-     this.service.updateProduction(this.ordenEditando.id, updatedValue).subscribe({
-  next: (response) => {
-    console.log('Respuesta de actualización:', response);
-    this.loadProductions();
-    Swal.fire('Actualizado', 'La orden ha sido actualizada.', 'success');
-    this.cerrarModal();
-  },
-  error: (err) => {
-    console.error('Error al actualizar:', err);
-    Swal.fire('Error', 'No se pudo actualizar la orden.', 'error');
-  }
-});
-
+      this.service.updateProduction(this.ordenEditando.id, updatedValue).subscribe({
+        next: (response) => {
+          console.log('Respuesta de actualización:', response);
+          this.loadProductions(); // Recargar las órdenes
+          Swal.fire('Actualizado', 'La orden ha sido actualizada.', 'success');
+          this.cerrarModal(); // Cerrar el modal
+        },
+        error: (err) => {
+          console.error('Error al actualizar:', err);
+          Swal.fire('Error', 'No se pudo actualizar la orden.', 'error');
+        }
+      });
     } else {
+      // Si estamos creando una nueva orden, hacemos la solicitud POST
       this.service.createProduction(updatedValue).subscribe({
         next: () => {
-          this.loadProductions();
+          this.loadProductions(); // Recargar las órdenes
           Swal.fire('Creado', 'La orden ha sido creada.', 'success');
-          this.cerrarModal();
+          this.cerrarModal(); // Cerrar el modal
         },
         error: (err) => {
           console.error('Error al crear:', err);
