@@ -6,7 +6,7 @@ describe('InventarioVistaComponent', () => {
   let component: InventarioVistaComponent;
   let fixture: ComponentFixture<InventarioVistaComponent>;
 
-  beforeEach(async () => {
+  beforeEach(async () => { 
     await TestBed.configureTestingModule({
       declarations: [ InventarioVistaComponent ]
     })

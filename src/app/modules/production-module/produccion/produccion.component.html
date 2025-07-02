@@ -1,214 +1,84 @@
 <div class="container-fluid mt-3">
-  <!-- Título y controles -->
+  <!-- Encabezado -->
   <div class="mb-4">
-    <h1 class="mb-3">Producción</h1>
-    
-    <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
-      <!-- Buscador -->
-      <div class="input-group" style="width: 250px;">
-        <input 
-          type="text" 
-          class="form-control" 
-          placeholder="Buscar por ID o nombre..." 
-          [(ngModel)]="terminoBusqueda" 
-          (input)="aplicarFiltros()"
-        >
-        <span class="input-group-text"><i class="bi bi-search"></i></span>
-      </div>
-      
-      <!-- Filtro -->
-      <div class="d-flex align-items-center gap-2">
-        <label class="form-label mb-0">Filtrar por:</label>
-        <select 
-          class="form-select" 
-          style="width: 180px;"
-          [(ngModel)]="empleadoSeleccionado" 
-          (change)="aplicarFiltros()"
-        >
-          <option value="">Todos</option>
-          <option *ngFor="let empleado of empleados" [value]="empleado">{{empleado}}</option>
-        </select>
-      </div>
-    </div>
+    <h1 class="mb-1">Producción</h1>
+    <p class="text-muted">Gestión de órdenes del día y en proceso</p>
   </div>
 
-  <!-- Pestañas -->
-  <nav mat-tab-nav-bar class="minimal-tabs">
-    <a mat-tab-link
-       [active]="pestanaActiva === 'elaboracion'"
-       (click)="pestanaActiva = 'elaboracion'">
-      En Elaboración
-    </a>
-    <a mat-tab-link
-       [active]="pestanaActiva === 'terminados'"
-       (click)="pestanaActiva = 'terminados'">
-      Terminados
-    </a>
-  </nav>
-
-  <div class="tab-content mt-3">
-
-    <div *ngIf="pestanaActiva === 'elaboracion'">
-      <h2 class="h4">Productos en Elaboración</h2>
-      <p class="text-muted mb-3">Lista de productos actualmente en proceso de elaboración</p>
-      
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead class="table-light">
-            <tr>
-              <th>ID</th>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Responsable</th>
-              <th>Fecha Inicio</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let producto of productosProduccionFiltrados">
-              <td>{{producto.id}}</td>
-              <td><strong>{{producto.nombre}}</strong></td>
-              <td>{{producto.cantidad}}</td>
-              <td>{{producto.responsable}}</td>
-              <td>{{producto.fechaInicio}}</td>
-              <td>
-                <span class="badge bg-warning text-dark">{{producto.estado}}</span>
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <button mat-icon-button 
-                          style="color: #5985E1"
-                          matTooltip="Ver detalles"
-                          aria-label="Ver detalles del producto"
-                          (click)="verDetalles(producto)">
-                    <mat-icon>visibility</mat-icon>
-                  </button>
-                  <button *ngIf="pestanaActiva === 'elaboracion'"
-                          mat-icon-button 
-                          color="accent"
-                          matTooltip="Actualizar estado"
-                          aria-label="Actualizar estado del producto"
-                          (click)="actualizarEstado(producto)">
-                    <mat-icon>sync</mat-icon>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div *ngIf="pestanaActiva === 'terminados'">
-      <h2 class="h4">Productos Terminados</h2>
-      <p class="text-muted mb-3">Productos que han completado el proceso de elaboración</p>
-      
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead class="table-light">
-            <tr>
-              <th>ID</th>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Responsable</th>
-              <th>Fecha Término</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let producto of productosTerminadosFiltrados">
-              <td>{{producto.id}}</td>
-              <td><strong>{{producto.nombre}}</strong></td>
-              <td>{{producto.cantidad}}</td>
-              <td>{{producto.responsable}}</td>
-              <td>{{producto.fechaTermino}}</td>
-              <td>
-                <span class="badge bg-success">{{producto.estado}}</span>
-              </td>
-              <td>
-                <button mat-icon-button 
-                        style="color: #5985E1"
-                        matTooltip="Ver detalles"
-                        aria-label="Ver detalles del producto"
-                        (click)="verDetalles(producto)">
-                  <mat-icon>visibility</mat-icon>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-<!-- Modal Ver Detalles -->
-<div class="modal-backdrop" *ngIf="mostrarModalDetalles" (click)="cerrarModalDetalles()"></div>
-
-<div class="modal-container" *ngIf="mostrarModalDetalles">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Detalles de Producción</h2>
-      <button mat-icon-button (click)="cerrarModalDetalles()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-    
-    <div class="modal-body">
-      <h3>{{productoSeleccionado.nombre}}</h3>
-      
-      <div class="info-section">
-        <h4>Información General</h4>
-        <p><strong>Cantidad:</strong> {{productoSeleccionado.cantidad}}</p>
-        <p><strong>Responsable:</strong> {{productoSeleccionado.responsable}}</p>
-        <p><strong>Fecha de inicio:</strong> {{productoSeleccionado.fechaInicio || productoSeleccionado.fechaTermino}}</p>
-        
-        <div *ngIf="productoSeleccionado.estado === 'En Producción'">
-          <p><strong>Fecha estimada de término:</strong> {{calcularFechaTermino()}}</p>
+  <!-- Tabs -->
+  <mat-tab-group>
+    <!-- TAB: Orden Pendiente -->
+    <mat-tab label="Orden Pendiente">
+      <div *ngIf="producciones.length > 0; else sinProduccion">
+        <div class="table-responsive mt-3">
+          <table class="table table-hover w-100">
+            <thead class="table-light">
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let orden of producciones">
+                <tr *ngFor="let detalle of orden.details; let i = index">
+                  <td>
+                    {{ detalle.product.name }}<br />
+                    <small class="text-muted">Orden #{{ orden.orderNumber }}</small>
+                  </td>
+                  <td>{{ detalle.requestedQuantity }} unidades</td>
+                  <td *ngIf="i === 0" [attr.rowspan]="orden.details.length">
+                    <button
+                      mat-raised-button
+                      color="primary"
+                      (click)="iniciarOrdenProduccion(orden.id)"
+                      [disabled]="orden.status !== 'PENDIENTE'"
+                    >
+                      <mat-icon>play_arrow</mat-icon> Iniciar
+                    </button>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
         </div>
       </div>
-      
-      <div class="info-section">
-        <h4>Estado de Producción</h4>
-        <span class="badge" 
-              [class.bg-warning]="productoSeleccionado.estado === 'En Producción'"
-              [class.bg-success]="productoSeleccionado.estado === 'Terminado'">
-          {{productoSeleccionado.estado}}
-        </span>
-      </div>
+      <ng-template #sinProduccion>
+        <p class="text-muted mt-3">No hay órdenes de producción pendientes para hoy.</p>
+      </ng-template>
+    </mat-tab>
+
+    <!-- TAB: En Producción -->
+    <mat-tab label="En Producción">
+  <div *ngIf="tieneOrdenesEnProceso(); else sinEnProceso">
+    <div class="table-responsive mt-3">
+      <table class="table table-hover w-100">
+        <thead class="table-light">
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let orden of historial">
+            <ng-container *ngIf="orden.status === 'EN_PROCESO'">
+              <tr *ngFor="let detalle of orden.details">
+                <td>
+                  {{ detalle.product.name }}<br />
+                  <small class="text-muted">Orden #{{ orden.orderNumber }}</small>
+                </td>
+                <td>{{ detalle.requestedQuantity }} unidades</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </tbody>
+      </table>
     </div>
   </div>
-</div>
+  <ng-template #sinEnProceso>
+    <p class="text-muted mt-3">No hay órdenes en proceso actualmente.</p>
+  </ng-template>
+</mat-tab>
 
-<!-- Modal Actualizar Estado -->
-<div class="modal-backdrop" *ngIf="mostrarModalEstado" (click)="cerrarModalEstado()"></div>
-
-<div class="modal-container" *ngIf="mostrarModalEstado">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Actualizar Estado de Producción</h2>
-      <button mat-icon-button (click)="cerrarModalEstado()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-    
-    <div class="modal-body">
-      <h3>{{productoSeleccionado.nombre}}</h3>
-      
-      <div class="form-group">
-        <h4>Estado</h4>
-        <mat-radio-group [(ngModel)]="nuevoEstado">
-          <mat-radio-button value="En Producción">En Producción</mat-radio-button>
-          <mat-radio-button value="Terminado">Terminado</mat-radio-button>
-        </mat-radio-group>
-      </div>
-      
-      <div class="modal-actions">
-        <button mat-button (click)="cerrarModalEstado()">Cancelar</button>
-        <button mat-raised-button color="primary" (click)="guardarEstado()">Guardar Cambios</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+  </mat-tab-group>
 </div>

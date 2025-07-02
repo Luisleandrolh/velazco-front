@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -38,4 +38,29 @@ export class DeliveriesModuleService {
     const url = `${this.apiUrl}/${id}/confirm-dispatch`;
     return this.http.post(url, body);
   }
+
+  filtrarPedidos(
+    status: string,
+    orderId?: number,
+    clientName?: string,
+    page: number = 0,
+    size: number = 10
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('status', status)
+      .set('page', page.toString())
+      .set('size', size.toString());
+  
+    if (orderId !== undefined) {
+      params = params.set('orderId', orderId.toString());
+    }
+  
+    if (clientName) {
+      params = params.set('clientName', clientName);
+    }
+  
+    const url = `${this.apiUrl}/api/orders/filter`;
+    return this.http.get(url, { params });
+  }
+  
 }

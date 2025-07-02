@@ -3,39 +3,46 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 const BASE_URL = 'https://velazco-backend-develop.up.railway.app/api';
-const AUTH_HEADER = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ3NDI3MDg1LCJleHAiOjE3NTg0MjcwODV9.CX_46TcslLoORPiVkoRw1Ig0uFYNfg6HnNGlMeJohl0'
-  })
-};
 
 @Injectable({ providedIn: 'root' })
 export class OrdenProduccionService {
   constructor(private http: HttpClient) {}
 
-  getAllProductions(): Observable<any> {
-    return this.http.get(`${BASE_URL}/productions`, AUTH_HEADER);
+  private getAuthHeaders() {
+    const token = localStorage.getItem('auth_token'); // Obtener token de localStorage
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      })
+    };
   }
 
-  getProducts(): Observable<any> {
-    return this.http.get(`${BASE_URL}/products`, AUTH_HEADER);
+  // Órdenes
+  getPendingProductions(): Observable<any> {
+    return this.http.get(`${BASE_URL}/productions/pending`, this.getAuthHeaders());
+  }
+
+  getHistorialProductions(): Observable<any> {
+    return this.http.get(`${BASE_URL}/productions/historial`, this.getAuthHeaders());
   }
 
   createProduction(production: any): Observable<any> {
-    return this.http.post(`${BASE_URL}/productions`, production, AUTH_HEADER);
+    return this.http.post(`${BASE_URL}/productions`, production, this.getAuthHeaders());
   }
 
   updateProduction(id: number, production: any): Observable<any> {
-    return this.http.put(`${BASE_URL}/productions/${id}`, production, AUTH_HEADER);
+    return this.http.put(`${BASE_URL}/productions/${id}`, production, this.getAuthHeaders());
   }
+
 
   deleteProduction(id: number): Observable<any> {
-    return this.http.delete(`${BASE_URL}/productions/${id}`, AUTH_HEADER);
+    return this.http.delete(`${BASE_URL}/productions/${id}`, this.getAuthHeaders());
   }
-  
+
+  // Productos
+  getProducts(): Observable<any> {
+    return this.http.get(`${BASE_URL}/products`, this.getAuthHeaders());
+  }
+
 }
-
-
-
-
