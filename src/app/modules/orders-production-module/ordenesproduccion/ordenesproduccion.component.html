@@ -162,8 +162,8 @@
           </ng-template>
           <ng-template pTemplate="body" let-h>
             <tr>
-              <td>#{{ h.id }}</td>
-              <td>{{ h.productionDate | date:'dd/MM/yyyy' }}</td>
+              <td>#{{ h.orderNumber}}</td>
+              <td>{{ h.date | date:'dd/MM/yyyy' }}</td>
               <td>
                 <p-tag [value]="h.status.replace('_', ' ')" 
                        [severity]="getStatusSeverity(h.status)"></p-tag>

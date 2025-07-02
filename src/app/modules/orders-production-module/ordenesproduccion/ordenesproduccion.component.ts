@@ -3,11 +3,28 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { OrdenProduccionService } from '../services/ordenes.service';
 import Swal from 'sweetalert2';
 
+interface OrdenHistorial {
+  id: string;                 // orderNumber en la API
+  productionDate: string;     // date en la API
+  status: string;
+  assignedTo?: string;        // responsible en la API
+  comments?: string;          // Comentarios generales
+  details: {
+    product: { 
+      name: string;
+      id?: string;           // Opcional
+    };
+    requestedQuantity: number;
+    producedQuantity: number;
+    comments?: string;
+  }[];
+}
 @Component({
   selector: 'app-production',
   templateUrl: './ordenesproduccion.component.html',
   styleUrls: ['./ordenesproduccion.component.css']
 })
+
 export class ProductionComponent implements OnInit {
   productions: any[] = [];
   historial: any[] = [];
@@ -25,6 +42,7 @@ export class ProductionComponent implements OnInit {
     comments: [''], 
     details: this.fb.array([])
   });
+  
   
   constructor(
     private service: OrdenProduccionService,
@@ -64,6 +82,7 @@ loadHistorial(): void {
           comments: p.comments || ''
         }))
       }));
+
   });
 }
 
@@ -195,28 +214,35 @@ loadHistorial(): void {
   });
 }
 
-verDetalles(orden: any): void {
+ verDetalles(orden: any): void {
+  // Verifica y normaliza los productos/detalles
+  const productos = orden.details || orden.products || [];
+  
   Swal.fire({
-    title: `Orden ${orden.id}`,
+    title: `Orden #${orden.id || orden.orderNumber || 'N/A'}`,
     html: `
-      <p><strong>Fecha:</strong> ${new Date(orden.productionDate).toLocaleDateString()}</p>
-      <p><strong>Estado:</strong> ${orden.status}</p>
-      ${orden.comments ? `<p><strong>Comentarios:</strong> ${orden.comments}</p>` : ''}
-      <p><strong>Productos:</strong></p>
-      <ul style="text-align: left">
-        ${orden.details.map((d: any) =>
-          `<li><strong>${d.product.name}</strong> - Solicitados: ${d.requestedQuantity}, 
-           Producidos: ${d.producedQuantity || 0}
-           ${d.comments ? ` | Comentario: ${d.comments}` : ''}</li>`
-        ).join('')}
-      </ul>
+      <div style="text-align: left;">
+        <p><strong>Fecha:</strong> ${orden.productionDate || orden.date ? new Date(orden.productionDate || orden.date).toLocaleDateString() : 'No especificada'}</p>
+        <p><strong>Estado:</strong> ${orden.status || 'Sin estado'}</p>
+        ${orden.comments ? `<p><strong>Comentarios:</strong> ${orden.comments}</p>` : ''}
+        
+        <p><strong>Productos:</strong></p>
+        <ul style="padding-left: 20px;">
+          ${productos.length > 0 ? 
+            productos.map((p: any) => 
+              `<li>${p.product?.name || p.productName || 'Producto'} (${p.requestedQuantity || 0})</li>`
+            ).join('') 
+            : '<li>No hay productos registrados</li>'
+          }
+        </ul>
+      </div>
     `,
     confirmButtonText: 'Cerrar',
-    width: 600
+    width: 500
   });
 }
 
-
+  
   onDelete(id: number): void {
     Swal.fire({
       title: '¿Estás seguro?',
