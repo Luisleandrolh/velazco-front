@@ -58,26 +58,13 @@ export class UsersService {
     );
   }
 
-  // Elimina un usuario
-// Definición del método deleteUser que recibe un id (string) y retorna un Observable vacío (void)
-deleteUser(id: string): Observable<void> {
-
-  // Realiza una petición HTTP DELETE al endpoint específico para el usuario (apiUrl + /id)
-  // El tipo genérico <void> indica que no se espera contenido en la respuesta
-  return this.http.delete<void>(`${this.apiUrl}/${id}`)
-
-    // Pipe permite encadenar operadores RxJS para manipular el Observable
-    .pipe(
-
-      // Operador catchError para interceptar y manejar errores
+  deleteUser(id: string): Observable<void> {
+    // Realiza una petición HTTP DELETE al endpoint específico para el usuario
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
-
-        // Registra el error en la consola para debugging
         console.error('Error deleting user:', error);
-
-        // Retorna un nuevo Observable que emite el error usando throwError
-        // Se usa una función factory (() => error) para creación lazy del error
         return throwError(() => error);
       })
     );
+  }
 }
