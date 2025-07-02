@@ -22,7 +22,7 @@ export class UsersService {
     );
   }
 
-  createUser(user: Omit<User, 'id'>): Observable<User> {
+  createUser(user: User): Observable<User> {
     return this.http.post<User>(this.apiUrl, user).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error creating user:', error);

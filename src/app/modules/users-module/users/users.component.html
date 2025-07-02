@@ -45,12 +45,12 @@
       <tbody>
         <tr *ngFor="let user of filteredUsers">
           <td>
-            <div class="user-avatar">{{ user.ui.initials }}</div>
+            <div class="user-avatar"> {{ user.name.charAt(0).toUpperCase() }}</div>
             {{ user.name }}
           </td>
           <td>{{ user.email }}</td>
-          <td>{{ user.ui.displayRole }}</td>
-          <td>{{ user.active ? 'Activo' : 'Inactivo' }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ user.active }}</td>
           <td class="actions-cell">
             <button (click)="showUserDetails(user)" class="action-btn">
               Editar
@@ -118,23 +118,14 @@
       <div class="form-section">
         <h2>Rol</h2>
         <select [(ngModel)]="newUser.roleId" class="form-select">
-          <option value="8007JF9Z5AZM8091">Producción</option>
-          <option value="7007JF9Z5AZM8091">Administrador</option>
-          <option value="6007JF9Z5AZM8091">Cajero</option>
-          <option value="5007JF9Z5AZM8091">Entregas</option>
+          <option value="1">Administrador</option>
+          <option value="4">Produccion</option>
+          <option value="2">Cajero</option>
+          <option value="3">Entregas</option>
         </select>
       </div>
       
-      <div class="form-section">
-        <h2>Teléfono</h2>
-        <input 
-          type="tel" 
-          placeholder="Ej: 555-123-4567" 
-          [(ngModel)]="newUser.phone"
-          class="form-input"
-        >
-      </div>
-      
+
       <div class="form-section">
         <h2>Estado</h2>
         <label>
@@ -196,7 +187,7 @@
         
         <div class="detail-label">Teléfono</div>
         <div class="detail-value">
-          <input type="tel" [(ngModel)]="selectedUser.phone" class="form-input">
+          <input type="tel"  class="form-input">
         </div>
         
         <div class="detail-label">Estado</div>
