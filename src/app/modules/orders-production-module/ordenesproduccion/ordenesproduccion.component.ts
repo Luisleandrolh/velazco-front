@@ -48,11 +48,24 @@ export class ProductionComponent implements OnInit {
   });
 }
 
-  loadHistorial(): void {
-    this.service.getHistorialProductions().subscribe(data => {
-      this.historial = data.filter((orden: any) => orden.status?.toUpperCase() !== 'PENDIENTE');
-    });
-  }
+loadHistorial(): void {
+  this.service.getHistorialProductions().subscribe(data => {
+    this.historial = data
+      .filter((orden: any) => orden.status?.toUpperCase() !== 'PENDIENTE')
+      .map((orden: any) => ({
+        id: orden.orderNumber,                     // Lo que muestras en tu tabla como id
+        productionDate: orden.date,               // Lo que muestras como productionDate
+        status: orden.status,
+        assignedTo: { name: orden.responsible },  // Asignado, por si lo usas
+        details: orden.products.map((p: any) => ({
+          product: { name: p.productName },
+          requestedQuantity: p.requestedQuantity,
+          producedQuantity: p.producedQuantity,
+          comments: p.comments || ''
+        }))
+      }));
+  });
+}
 
   loadProducts(): void {
     this.service.getProducts().subscribe(data => {
@@ -183,23 +196,27 @@ export class ProductionComponent implements OnInit {
   });
 }
 
- verDetalles(orden: any): void {
-    Swal.fire({
-      title: `Orden #${orden.id}`,
-      html: `
-        <p><strong>Fecha:</strong> ${new Date(orden.productionDate).toLocaleDateString()}</p>
-        <p><strong>Estado:</strong> ${orden.status}</p>
-        ${orden.comments ? `<p><strong>Comentarios:</strong> ${orden.comments}</p>` : ''}
-        <p><strong>Productos:</strong></p>
-        <ul style="text-align: left">
-          ${orden.details.map((d: any) =>
-            `<li><strong>${d.product.name}</strong> (${d.requestedQuantity})</li>`).join('')}
-        </ul>
-      `,
-      confirmButtonText: 'Cerrar',
-      width: 600
-    });
-  }
+verDetalles(orden: any): void {
+  Swal.fire({
+    title: `Orden ${orden.id}`,
+    html: `
+      <p><strong>Fecha:</strong> ${new Date(orden.productionDate).toLocaleDateString()}</p>
+      <p><strong>Estado:</strong> ${orden.status}</p>
+      ${orden.comments ? `<p><strong>Comentarios:</strong> ${orden.comments}</p>` : ''}
+      <p><strong>Productos:</strong></p>
+      <ul style="text-align: left">
+        ${orden.details.map((d: any) =>
+          `<li><strong>${d.product.name}</strong> - Solicitados: ${d.requestedQuantity}, 
+           Producidos: ${d.producedQuantity || 0}
+           ${d.comments ? ` | Comentario: ${d.comments}` : ''}</li>`
+        ).join('')}
+      </ul>
+    `,
+    confirmButtonText: 'Cerrar',
+    width: 600
+  });
+}
+
 
   onDelete(id: number): void {
     Swal.fire({
