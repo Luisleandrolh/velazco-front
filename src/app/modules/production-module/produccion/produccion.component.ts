@@ -49,7 +49,7 @@ export class ProduccionComponent implements OnInit {
     });
   }
 
-  tieneOrdenesEnProceso(): boolean {
+  OrdenesEnProceso(): boolean {
     return this.enProceso.some(o => o.status === 'EN_PROCESO');
   }
 
