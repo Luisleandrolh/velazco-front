@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { OrdersProductionModuleRoutingModule } from './orders-production-module-routing.module';
 import { ProductionComponent } from './ordenesproduccion/ordenesproduccion.component';
 
-// PrimeNG Modules (solo si los usas realmente)
+// PrimeNG Modules
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
@@ -17,6 +17,13 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TabViewModule } from 'primeng/tabview';
 import { CardModule } from 'primeng/card';
 import { MessagesModule } from 'primeng/messages';
+import { TagModule } from 'primeng/tag'; // Para los badges de estado
+import { TooltipModule } from 'primeng/tooltip'; // Para tooltips en botones
+import { DividerModule } from 'primeng/divider'; // Para separadores visuales
+import { BadgeModule } from 'primeng/badge'; // Para notificaciones/contadores
+import { ProgressSpinnerModule } from 'primeng/progressspinner'; // Para loaders
+import { ToastModule } from 'primeng/toast'; // Para notificaciones toast
+import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Para diálogos de confirmación
 
 @NgModule({
   declarations: [
@@ -27,7 +34,8 @@ import { MessagesModule } from 'primeng/messages';
     ReactiveFormsModule,
     FormsModule,
     OrdersProductionModuleRoutingModule,
-    // PrimeNG
+    
+    // PrimeNG Modules
     ButtonModule,
     RippleModule,
     TableModule,
@@ -38,7 +46,14 @@ import { MessagesModule } from 'primeng/messages';
     InputNumberModule,
     TabViewModule,
     CardModule,
-    MessagesModule
+    MessagesModule,
+    TagModule,
+    TooltipModule,
+    DividerModule,
+    BadgeModule,
+    ProgressSpinnerModule,
+    ToastModule,
+    ConfirmDialogModule
   ]
 })
 export class OrdersProductionModuleModule {}

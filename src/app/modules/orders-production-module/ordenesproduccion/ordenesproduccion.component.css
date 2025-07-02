@@ -1,283 +1,435 @@
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Tipografía y estructura */
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f9fafb;
-  color: #333;
-  line-height: 1.5;
-}
-
-/* Layout general */
+/* Estilos generales */
 .container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 2rem 1rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Cabecera */
 .page-header {
+  margin-bottom: 2.5rem;
   text-align: center;
-  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eaeaea;
 }
 
 .page-header h1 {
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: #111827;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .page-header .subtitle {
   font-size: 1rem;
-  color: #6b7280;
+  color: #7f8c8d;
+  font-style: italic;
 }
 
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-container {
-  background: white;
-  padding: 2rem;
-  width: 500px;
-  max-height: 80vh;
-  overflow-y: auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Estilos para las pestañas */
+.p-tabview .p-tabview-nav {
+  border-bottom: 1px solid #e0e0e0;
   margin-bottom: 1.5rem;
 }
 
-.modal-header h3 {
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.close-btn {
-  background: none;
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
   border: none;
-  font-size: 1.5rem;
-  color: #333;
-  cursor: pointer;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Input y Select */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  font-size: 1rem;
+  background: transparent;
+  color: #7f8c8d;
   font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #4b5563;
+  padding: 1rem 1.5rem;
+  transition: all 0.3s ease;
 }
 
-input[type="text"],
-input[type="date"],
-select,
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  color: #3498db;
+  border-bottom: 2px solid #3498db;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
+  color: #3498db;
+  background: rgba(52, 152, 219, 0.05);
+}
+
+/* Estilos para las tarjetas */
+.p-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  border: 1px solid #f0f0f0;
+  background: #fff;
+}
+
+.p-card .p-card-title {
+  font-size: 1.4rem;
+  color: #2c3e50;
+  font-weight: 500;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Estilos para el estado vacío */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #95a5a6;
+  background: #f9f9f9;
+  border-radius: 6px;
+  margin: 1rem;
+}
+
+.empty-state span {
+  display: block;
+  font-size: 1.2rem;
+  margin: 1rem 0 0.5rem;
+  color: #7f8c8d;
+}
+
+.empty-state small {
+  font-size: 0.9rem;
+  color: #bdc3c7;
+}
+
+/* Estilos para la tabla */
+.p-datatable {
+  font-size: 0.95rem;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: #f8f9fa;
+  color: #34495e;
+  font-weight: 500;
+  border-bottom: 2px solid #e9ecef;
+  padding: 1rem;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  transition: background-color 0.2s;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #f8f9fa;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Estilos para la lista de productos */
+.product-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.product-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.product-list li:last-child {
+  border-bottom: none;
+}
+
+.product-list .comment {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-top: 0.25rem;
+}
+
+/* Estilos para los botones */
+.p-button {
+  transition: all 0.2s;
+}
+
+.p-button-text {
+  color: #3498db;
+}
+
+.p-button-text:hover {
+  background: rgba(52, 152, 219, 0.1) !important;
+}
+
+.p-button-danger {
+  background: #e74c3c;
+  border-color: #e74c3c;
+}
+
+
+.order-comment {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
 textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background-color: #f9fafb;
-  font-size: 1rem;
-  color: #333;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  min-height: 80px;
+  resize: vertical;
+}
+/* Estilos para el modal */
+.p-dialog {
+  border-radius: 10px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+  border: none;
 }
 
-input[type="text"]:focus,
-input[type="date"]:focus,
-select:focus,
-textarea:focus {
-  border-color: #2563eb;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-  outline: none;
+.p-dialog .p-dialog-header {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 1.25rem;
+}
+
+.p-dialog .p-dialog-title {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.p-dialog .p-dialog-content {
+  padding: 1.5rem;
+  background: #fcfcfc;
+}
+
+.p-dialog .p-dialog-footer {
+  border-top: 1px solid #f0f0f0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Estilos para los campos del formulario */
+.p-field {
+  margin-bottom: 1.5rem;
+}
+
+.p-field label {
+  font-weight: 500;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.p-inputtext, .p-dropdown, .p-calendar, .p-inputnumber {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s;
+}
+
+.p-inputtext:enabled:hover, 
+.p-dropdown:not(.p-disabled):hover, 
+.p-calendar:not(.p-disabled):hover, 
+.p-inputnumber:not(.p-disabled):hover {
+  border-color: #bdc3c7;
+}
+
+.p-inputtext:enabled:focus, 
+.p-dropdown:not(.p-disabled).p-focus, 
+.p-calendar:not(.p-disabled).p-focus, 
+.p-inputnumber:not(.p-disabled).p-focus {
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.2);
+  border-color: #3498db;
+}
+
+.p-error {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Estilos para las filas de detalle */
+.detail-row {
+  padding: 1.25rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #f0f0f0;
+}
+
+/* Estilos para etiquetas de estado */
+.p-tag {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.p-tag.p-tag-success {
+  background: #2ecc71;
+  color: white;
+}
+
+.p-tag.p-tag-warning {
+  background: #f39c12;
+  color: white;
+}
+
+.p-tag.p-tag-danger {
+  background: #e74c3c;
+  color: white;
+}
+
+.p-tag.p-tag-info {
+  background: #3498db;
+  color: white;
+}
+/* Estilos del modal */
+.p-dialog {
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.p-dialog .p-dialog-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.p-dialog .p-dialog-content {
+  padding: 1.5rem;
+}
+
+/* Estructura del formulario */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.products-section {
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+/* Filas y grupos */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-end;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.full-width {
+  flex: 0 0 100%;
+}
+
+.quantity-group {
+  flex: 0 0 120px;
+}
+
+/* Elementos del formulario */
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.p-inputtext, .p-dropdown, .p-calendar, .p-inputnumber {
+  width: 100%;
+}
+
+.p-inputtext, .p-dropdown, .p-inputnumber {
+  padding: 0.5rem 0.75rem;
 }
 
 /* Botones */
-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 1rem;
+.remove-btn {
+  color: #e74c3c !important;
+  margin-left: auto;
 }
 
-.save-btn {
-  background-color: #2563eb;
-  color: white;
-}
-
-.save-btn:hover {
-  background-color: #1d4ed8;
-}
-
-.save-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
-}
-
-.cancel-btn {
-  background-color: #f3f4f6;
-  color: #374151;
-  margin-right: 1rem;
-}
-
-.cancel-btn:hover {
-  background-color: #e5e7eb;
-}
-
-.cancel-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.3);
-}
-
-button:focus {
-  outline: none;
-}
-
-/* Detalles de Producto */
-.details-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* Tabla */
-.orders-table-wrapper {
-  overflow-x: auto;
-}
-
-.orders-table {
+.add-product-btn {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-  background-color: white;
-  border-radius: 12px;
+  margin-top: 1rem;
+  color: #3498db !important;
 }
 
-.orders-table thead {
-  background-color: #f3f4f6;
-}
-
-.orders-table th,
-.orders-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.orders-table tr:hover {
-  background-color: #f9fafb;
-}
-
-/* Pestañas */
-.tabs {
+.dialog-footer {
   display: flex;
-  margin-bottom: 2rem;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid #f0f0f0;
 }
 
-.tabs button {
-  background: none;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  color: #2563eb;
-  transition: background-color 0.3s ease;
+/* Validación */
+.error-message {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
 }
 
-.tabs button:hover {
-  background-color: #f3f4f6;
-  border-radius: 8px;
-}
-
-.tabs button.active {
-  background-color: #2563eb;
-  color: white;
-  border-radius: 8px;
-}
-
-/* Estado vacío */
-.empty-state {
-  text-align: center;
-  color: #9ca3af;
-  padding: 2rem 1rem;
-}
-
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-/* Animación */
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+/* Adaptación móvil */
+@media (max-width: 600px) {
+  .p-dialog {
+    width: 95% !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-group, .quantity-group {
+    width: 100%;
   }
 }
-
-/* Responsive */
+/* Estilos responsivos */
 @media (max-width: 768px) {
-  .modal-container {
-    width: 90%;
-    padding: 1.5rem;
+  .container {
+    padding: 1rem;
   }
-
-  .form-group {
-    margin-bottom: 1rem;
+  
+  .page-header h1 {
+    font-size: 1.8rem;
   }
-
-  .tabs {
+  
+  .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .detail-row .p-grid {
     flex-direction: column;
   }
-
-  .tabs button {
-    margin-bottom: 0.5rem;
+  
+  .detail-row .p-col {
+    width: 100%;
+    margin-bottom: 1rem;
   }
-}  
+  
+  .detail-row .p-col:last-child {
+    margin-bottom: 0;
+  }
+  
+  .p-dialog {
+    width: 95% !important;
+    max-width: 95% !important;
+  }
+}

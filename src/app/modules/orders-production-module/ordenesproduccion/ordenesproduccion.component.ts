@@ -13,28 +13,40 @@ export class ProductionComponent implements OnInit {
   historial: any[] = [];
   products: any[] = [];
   activeTab: 'pendientes' | 'historial' = 'pendientes';
+   activeTabIndex: number = 0;
 
   modalVisible = false;
   isEditing = false;
   ordenEditando: any = null;
-  productionForm!: FormGroup;
-
+  productionForm: FormGroup = this.fb.group({
+    productionDate: ['', Validators.required],
+    assignedToId: [null],
+    status: ['PENDIENTE'],
+    comments: [''], 
+    details: this.fb.array([])
+  });
+  
   constructor(
     private service: OrdenProduccionService,
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
-    this.loadProductions();
-    this.loadHistorial();
-    this.loadProducts();
-  }
+  this.initForm();  // Inicializa primero el formulario
+  this.loadProductions();
+  this.loadHistorial();
+  this.loadProducts();
+}
 
-  loadProductions(): void {
-    this.service.getAllProductions().subscribe(data => {
-      this.productions = data;
-    });
+  onTabChange(event: any) {
+    this.activeTabIndex = event.index;
   }
+  loadProductions(): void {
+  this.service.getPendingProductions().subscribe({
+    next: (data) => this.productions = data,
+    error: (err) => console.error('Error:', err)
+  });
+}
 
   loadHistorial(): void {
     this.service.getHistorialProductions().subscribe(data => {
@@ -74,6 +86,7 @@ export class ProductionComponent implements OnInit {
       productionDate: ['', Validators.required],
       assignedToId: [null],  // Este campo puede quedarse vacío si no tienes usuarios
       status: ['PENDIENTE'],
+      comments: [''],
       details: this.fb.array([])  // Inicializar la lista de detalles
     });
   }
@@ -81,36 +94,38 @@ export class ProductionComponent implements OnInit {
   patchForm(): void {
     if (!this.ordenEditando) return;
 
-    // Parchamos los datos del formulario con los valores de la orden que se está editando
     this.productionForm.patchValue({
       productionDate: this.ordenEditando.productionDate,
       assignedToId: this.ordenEditando.assignedTo?.id || null,
-      status: this.ordenEditando.status
+      status: this.ordenEditando.status,
+      comments: this.ordenEditando.comments || '' // Comentario general
     });
 
     this.details.clear();
 
-    // Llenar los detalles del formulario con los datos de la orden
     this.ordenEditando.details.forEach((d: any) => {
+      // Solo enviar productId y cantidad, sin comentarios en detalles
       this.details.push(this.fb.group({
         productId: [d.product.id, Validators.required],
-        requestedQuantity: [Number(d.requestedQuantity), [Validators.required, Validators.min(1)]],
-        comments: [d.comments || '']
+        requestedQuantity: [Number(d.requestedQuantity), [Validators.required, Validators.min(1)]]
       }));
     });
   }
 
   get details(): FormArray {
-    return this.productionForm.get('details') as FormArray;
+  if (!this.productionForm) {
+    this.initForm();
   }
+  return this.productionForm?.get('details') as FormArray || this.fb.array([]);
+}
 
   createDetail(): FormGroup {
     return this.fb.group({
       productId: ['', Validators.required],
-      requestedQuantity: [null, [Validators.required, Validators.min(1)]],
-      comments: ['']
+      requestedQuantity: [null, [Validators.required, Validators.min(1)]]
     });
   }
+
 
   addDetail(): void {
     this.details.push(this.createDetail());
@@ -121,66 +136,64 @@ export class ProductionComponent implements OnInit {
   }
 
   guardarOrden(): void {
-    if (this.productionForm.invalid) {
-      console.log('Formulario inválido:', this.productionForm.value);
+   if (this.productionForm.invalid) {
       Swal.fire('Error', 'Por favor completa todos los campos obligatorios.', 'warning');
       return;
     }
 
-    const value = this.productionForm.value;
+    const formValue = this.productionForm.value;
 
-    // Ajustar los detalles para que coincidan con la estructura esperada por el backend
-    const updatedValue = {
-      ...value,
-      details: value.details.map((detail: any) => ({
-        productId: detail.productId,
-        requestedQuantity: detail.requestedQuantity,
-        comments: detail.comments || '' // Asignar comentarios vacíos si no se proporcionan
+    const requestData = {
+      productionDate: formValue.productionDate,
+      assignedToId: formValue.assignedToId || null,
+      status: 'PENDIENTE',
+      comments: formValue.comments || '', // Comentario general
+      details: formValue.details.map((detail: any) => ({
+        productId: Number(detail.productId),
+        requestedQuantity: Number(detail.requestedQuantity)
       }))
     };
 
-    console.log('Enviando datos al backend:', updatedValue); // Depuración
+    console.log('Datos a enviar:', JSON.stringify(requestData, null, 2));
 
-    // Si estamos editando, hacemos la solicitud PUT
-    if (this.isEditing && this.ordenEditando?.id) {
-      this.service.updateProduction(this.ordenEditando.id, updatedValue).subscribe({
-        next: (response) => {
-          console.log('Respuesta de actualización:', response);
-          this.loadProductions(); // Recargar las órdenes
-          Swal.fire('Actualizado', 'La orden ha sido actualizada.', 'success');
-          this.cerrarModal(); // Cerrar el modal
-        },
-        error: (err) => {
-          console.error('Error al actualizar:', err);
-          Swal.fire('Error', 'No se pudo actualizar la orden.', 'error');
-        }
-      });
-    } else {
-      // Si estamos creando una nueva orden, hacemos la solicitud POST
-      this.service.createProduction(updatedValue).subscribe({
-        next: () => {
-          this.loadProductions(); // Recargar las órdenes
-          Swal.fire('Creado', 'La orden ha sido creada.', 'success');
-          this.cerrarModal(); // Cerrar el modal
-        },
-        error: (err) => {
-          console.error('Error al crear:', err);
-          Swal.fire('Error', 'No se pudo crear la orden.', 'error');
-        }
-      });
+  // Manejar creación/actualización
+  const observable = this.isEditing && this.ordenEditando?.id
+    ? this.service.updateProduction(this.ordenEditando.id, requestData)
+    : this.service.createProduction(requestData);
+
+  observable.subscribe({
+    next: () => {
+      Swal.fire('Éxito', `Orden ${this.isEditing ? 'actualizada' : 'creada'} correctamente.`, 'success');
+      this.loadProductions();
+      this.loadHistorial(); // Actualizar ambos listados
+      this.cerrarModal();
+    },
+    error: (err) => {
+      console.error('Error completo:', err);
+      let errorMessage = `No se pudo ${this.isEditing ? 'actualizar' : 'crear'} la orden.`;
+      
+      if (err.error?.message) {
+        errorMessage += ` Error: ${err.error.message}`;
+      } else if (err.status === 500) {
+        errorMessage += ' Error interno del servidor.';
+      }
+
+      Swal.fire('Error', errorMessage, 'error');
     }
-  }
+  });
+}
 
-  verDetalles(orden: any): void {
+ verDetalles(orden: any): void {
     Swal.fire({
       title: `Orden #${orden.id}`,
       html: `
         <p><strong>Fecha:</strong> ${new Date(orden.productionDate).toLocaleDateString()}</p>
         <p><strong>Estado:</strong> ${orden.status}</p>
+        ${orden.comments ? `<p><strong>Comentarios:</strong> ${orden.comments}</p>` : ''}
         <p><strong>Productos:</strong></p>
         <ul style="text-align: left">
           ${orden.details.map((d: any) =>
-            `<li><strong>${d.product.name}</strong> (${d.requestedQuantity})<br><small>📝 ${d.comments || 'Sin comentario'}</small></li>`).join('')}
+            `<li><strong>${d.product.name}</strong> (${d.requestedQuantity})</li>`).join('')}
         </ul>
       `,
       confirmButtonText: 'Cerrar',
@@ -211,5 +224,13 @@ export class ProductionComponent implements OnInit {
         });
       }
     });
+  }
+  getStatusSeverity(status: string): string {
+    const statusUpper = status.toUpperCase();
+    if (statusUpper.includes('PENDIENTE')) return 'warning';
+    if (statusUpper.includes('COMPLETAD')) return 'success';
+    if (statusUpper.includes('CANCELAD')) return 'danger';
+    if (statusUpper.includes('PROCESO')) return 'info';
+    return 'secondary';
   }
 }
