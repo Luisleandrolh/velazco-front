@@ -28,12 +28,8 @@
                   </td>
                   <td>{{ detalle.requestedQuantity }} unidades</td>
                   <td *ngIf="i === 0" [attr.rowspan]="orden.details.length">
-                    <button
-                      mat-raised-button
-                      color="primary"
-                      (click)="iniciarOrdenProduccion(orden.id)"
-                      [disabled]="orden.status !== 'PENDIENTE'"
-                    >
+                    <button mat-raised-button color="primary" (click)="iniciarOrdenProduccion(orden.id)"
+                      [disabled]="orden.status !== 'PENDIENTE'">
                       <mat-icon>play_arrow</mat-icon> Iniciar
                     </button>
                   </td>
@@ -50,35 +46,65 @@
 
     <!-- TAB: En Producción -->
     <mat-tab label="En Producción">
-  <div *ngIf="tieneOrdenesEnProceso(); else sinEnProceso">
-    <div class="table-responsive mt-3">
-      <table class="table table-hover w-100">
-        <thead class="table-light">
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let orden of historial">
-            <ng-container *ngIf="orden.status === 'EN_PROCESO'">
-              <tr *ngFor="let detalle of orden.details">
-                <td>
-                  {{ detalle.product.name }}<br />
-                  <small class="text-muted">Orden #{{ orden.orderNumber }}</small>
-                </td>
-                <td>{{ detalle.requestedQuantity }} unidades</td>
+      <div *ngIf="tieneOrdenesEnProceso(); else sinEnProceso">
+        <div class="table-responsive mt-3">
+          <table class="table table-hover w-100">
+            <thead class="table-light">
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Acciones</th>
               </tr>
-            </ng-container>
-          </ng-container>
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let orden of enProceso">
+                <ng-container *ngIf="orden.status === 'EN_PROCESO'">
+                  <tr *ngFor="let detalle of orden.details">
+                    <td>
+                      {{ detalle.product.name }}<br />
+                      <small class="text-muted">Orden #{{ orden.orderNumber }}</small>
+                    </td>
+                    <td>{{ detalle.requestedQuantity }} unidades</td>
+                    <td>
+                      <button class="btn btn-finalizar" (click)="finalizarProduccion(orden)">
+                        <mat-icon>check_circle</mat-icon> Finalizar
+                      </button>
+
+                      <button class="btn btn-incompleto" (click)="marcarIncompletoUI(orden, detalle)">
+                        <mat-icon>error_outline</mat-icon> Incompleto
+                      </button>
+
+                    </td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <ng-template #sinEnProceso>
+        <p class="text-muted mt-3">No hay órdenes en proceso actualmente.</p>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- Formulario para marcar como INCOMPLETO -->
+  <div *ngIf="mostrarFormularioIncompleto" class="modal-backdrop custom-modal-backdrop">
+    <div class="custom-modal-content">
+      <h4>Marcar producción como Incompleta</h4>
+      <div class="form-group mt-3">
+        <label>Motivo:</label>
+        <textarea class="form-control" [(ngModel)]="motivoIncompleto" placeholder="Describe el motivo"
+          rows="3"></textarea>
+      </div>
+      <div class="form-group mt-3">
+        <label>Cantidad Producida:</label>
+        <input type="number" class="form-control" [(ngModel)]="cantidadProducida" min="0" />
+      </div>
+      <div class="d-flex justify-content-end mt-4">
+        <button class="btn btn-secondary me-2" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn btn-primary"
+          (click)="marcarIncompleto(ordenSeleccionada, detalleSeleccionado)">Confirmar</button>
+      </div>
     </div>
   </div>
-  <ng-template #sinEnProceso>
-    <p class="text-muted mt-3">No hay órdenes en proceso actualmente.</p>
-  </ng-template>
-</mat-tab>
-
-  </mat-tab-group>
-</div>
