@@ -9,11 +9,10 @@ import { Component } from '@angular/core';
   templateUrl: './pages.component.html',
 
   // Archivo CSS con los estilos específicos para este componente
-  styleUrls: ['./pages.component.css']
+  styleUrls: ['./pages.component.css'],
 })
 
 // Clase del componente, exportada para que Angular pueda instanciarla y usarla en las vistas
 export class PagesComponent {
   // Actualmente está vacío, pero aquí iría la lógica del componente (variables, métodos, hooks como ngOnInit, etc.)
 }
-
