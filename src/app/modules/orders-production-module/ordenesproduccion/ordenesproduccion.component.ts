@@ -3,11 +3,28 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { OrdenProduccionService } from '../services/ordenes.service';
 import Swal from 'sweetalert2';
 
+interface OrdenHistorial {
+  id: string;                 // orderNumber en la API
+  productionDate: string;     // date en la API
+  status: string;
+  assignedTo?: string;        // responsible en la API
+  comments?: string;          // Comentarios generales
+  details: {
+    product: { 
+      name: string;
+      id?: string;           // Opcional
+    };
+    requestedQuantity: number;
+    producedQuantity: number;
+    comments?: string;
+  }[];
+}
 @Component({
   selector: 'app-production',
   templateUrl: './ordenesproduccion.component.html',
   styleUrls: ['./ordenesproduccion.component.css']
 })
+
 export class ProductionComponent implements OnInit {
   productions: any[] = [];
   historial: any[] = [];
@@ -25,6 +42,7 @@ export class ProductionComponent implements OnInit {
     comments: [''], 
     details: this.fb.array([])
   });
+  
   
   constructor(
     private service: OrdenProduccionService,
@@ -48,11 +66,18 @@ export class ProductionComponent implements OnInit {
   });
 }
 
-  loadHistorial(): void {
-    this.service.getHistorialProductions().subscribe(data => {
-      this.historial = data.filter((orden: any) => orden.status?.toUpperCase() !== 'PENDIENTE');
-    });
-  }
+loadHistorial(): void {
+  this.service.getHistorialProductions().subscribe({
+    next: (data) => {
+      this.historial = data;
+      console.log('Datos del historial:', this.historial); // Para depuración
+    },
+    error: (err) => {
+      console.error('Error al cargar historial:', err);
+      Swal.fire('Error', 'No se pudo cargar el historial', 'error');
+    }
+  });
+}
 
   loadProducts(): void {
     this.service.getProducts().subscribe(data => {
@@ -184,23 +209,34 @@ export class ProductionComponent implements OnInit {
 }
 
  verDetalles(orden: any): void {
-    Swal.fire({
-      title: `Orden #${orden.id}`,
-      html: `
-        <p><strong>Fecha:</strong> ${new Date(orden.productionDate).toLocaleDateString()}</p>
-        <p><strong>Estado:</strong> ${orden.status}</p>
+  // Verifica y normaliza los productos/detalles
+  const productos = orden.details || orden.products || [];
+  
+  Swal.fire({
+    title: `Orden #${orden.id || orden.orderNumber || 'N/A'}`,
+    html: `
+      <div style="text-align: left;">
+        <p><strong>Fecha:</strong> ${orden.productionDate || orden.date ? new Date(orden.productionDate || orden.date).toLocaleDateString() : 'No especificada'}</p>
+        <p><strong>Estado:</strong> ${orden.status || 'Sin estado'}</p>
         ${orden.comments ? `<p><strong>Comentarios:</strong> ${orden.comments}</p>` : ''}
+        
         <p><strong>Productos:</strong></p>
-        <ul style="text-align: left">
-          ${orden.details.map((d: any) =>
-            `<li><strong>${d.product.name}</strong> (${d.requestedQuantity})</li>`).join('')}
+        <ul style="padding-left: 20px;">
+          ${productos.length > 0 ? 
+            productos.map((p: any) => 
+              `<li>${p.product?.name || p.productName || 'Producto'} (${p.requestedQuantity || 0})</li>`
+            ).join('') 
+            : '<li>No hay productos registrados</li>'
+          }
         </ul>
-      `,
-      confirmButtonText: 'Cerrar',
-      width: 600
-    });
-  }
+      </div>
+    `,
+    confirmButtonText: 'Cerrar',
+    width: 500
+  });
+}
 
+  
   onDelete(id: number): void {
     Swal.fire({
       title: '¿Estás seguro?',
