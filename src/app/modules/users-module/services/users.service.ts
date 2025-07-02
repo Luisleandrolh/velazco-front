@@ -81,3 +81,4 @@ deleteUser(id: string): Observable<void> {
       })
     );
 }
+}

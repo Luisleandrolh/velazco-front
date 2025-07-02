@@ -4,89 +4,180 @@
     <p class="subtitle">Repostería Velazco</p>
   </header>
 
-  <p-dialog [(visible)]="modalVisible" [modal]="true" [style]="{width: '500px'}" 
-        [header]="isEditing ? 'Editar Orden' : 'Nueva Orden'" [draggable]="false">
-  <form *ngIf="productionForm" [formGroup]="productionForm" (ngSubmit)="guardarOrden()">
-    <div class="form-container">
+  <!-- Modal de Detalles de la Orden -->
+  <p-dialog header="Detalles de Orden de Producción" [(visible)]="detailModalVisible" [modal]="true" 
+            [style]="{width: '60vw'}" [closable]="true" [draggable]="false" [resizable]="false">
+    <div *ngIf="selectedOrder" class="order-details-container">
+      <div class="order-header">
+        <h2>Orden {{selectedOrder.id || selectedOrder.orderNumber}}</h2>
+      </div>
 
-      <div class="form-section">
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label>Fecha Producción *</label>
-            <p-calendar formControlName="productionDate" [showIcon]="true" 
-                        dateFormat="dd/mm/yy" [required]="true" inputId="productionDate"
-                        placeholder="Seleccione fecha"></p-calendar>
-            <small *ngIf="productionForm.get('productionDate')?.invalid && 
-                         productionForm.get('productionDate')?.touched" 
-                   class="error-message">Campo obligatorio</small>
-          </div>
+      <div class="order-info-grid">
+        <div class="info-section">
+          <h3>Información General</h3>
+          <p><strong>Fecha:</strong> {{ selectedOrder.productionDate | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Prioridad:</strong> {{ selectedOrder.priority || 'Media' }}</p>
+          <p><strong>Responsable:</strong> {{ selectedOrder.responsible || selectedOrder.assignedTo?.name || 'No asignado' }}</p>
         </div>
 
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label>Asignado a</label>
-            <input pInputText formControlName="assignedToId" placeholder="Opcional"/>
+        <div class="status-section">
+          <h3>Estado de la Orden</h3>
+          <p><strong>Estado actual:</strong> 
+            <span class="status-badge" [ngClass]="getStatusClass(selectedOrder.status)">
+              {{ selectedOrder.status.replace('_', ' ') }}
+            </span>
+          </p>
+
+          <div class="completion-summary">
+            <h4>Resumen de Finalización</h4>
+            <div class="summary-grid">
+              <div>
+                <p><strong>Completados:</strong> {{ completedProducts }}</p>
+                <p><strong>Incompletos:</strong> {{ incompleteProducts }}</p>
+              </div>
+              <div>
+                <p><strong>Total producido:</strong> {{ totalProduced }}/{{ totalRequested }}</p>
+                <p><strong>Eficiencia:</strong> {{ efficiency }}%</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Comentarios generales -->
-      <div class="form-section">
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label>Comentarios Generales</label>
-            <textarea pInputTextarea formControlName="comments" 
-                      placeholder="Notas sobre la orden completa"></textarea>
-          </div>
-        </div>
+      <div class="divider"></div>
+
+      <div class="instructions-section">
+        <h3>Instrucciones de la Orden</h3>
+        <p *ngIf="selectedOrder.comments">{{ selectedOrder.comments }}</p>
+        <p *ngIf="!selectedOrder.comments" class="no-comments">No hay instrucciones para esta orden.</p>
       </div>
 
-      <!-- Detalles de productos -->
-      <div formArrayName="details" class="products-section">
-        <div *ngFor="let detail of details.controls; let i = index" [formGroupName]="i" class="product-row">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Producto *</label>
-              <p-dropdown [options]="products" formControlName="productId" optionLabel="name" 
-                          optionValue="id" placeholder="Seleccione" [required]="true"></p-dropdown>
-              <small *ngIf="detail.get('productId')?.invalid && detail.get('productId')?.touched" 
-                     class="error-message">Seleccione un producto</small>
-            </div>
+      <div class="divider"></div>
 
-            <div class="form-group quantity-group">
-              <label>Cantidad *</label>
-              <p-inputNumber formControlName="requestedQuantity" [min]="1" mode="decimal" 
-                            placeholder="Cantidad"></p-inputNumber>
-              <small *ngIf="detail.get('requestedQuantity')?.invalid && 
-                           detail.get('requestedQuantity')?.touched" 
-                     class="error-message">Mínimo 1</small>
+      <div class="products-section">
+        <h3>Productos y Resultados</h3>
+        <div class="products-table">
+          <div *ngFor="let product of selectedOrder.details || selectedOrder.products" class="product-row">
+            <div class="product-info">
+              <strong>{{ product.product?.name || product.productName }}</strong>
+              <span>{{ product.producedQuantity }}/{{ product.requestedQuantity }} unidades</span>
             </div>
-
-            <button type="button" pButton icon="pi pi-trash" class="p-button-text remove-btn"
-                    (click)="removeDetail(i)"></button>
+            <div class="product-status">
+              <span *ngIf="product.producedQuantity === product.requestedQuantity" class="status-completed">
+                <i class="pi pi-check-circle"></i> Completado
+              </span>
+              <span *ngIf="product.producedQuantity < product.requestedQuantity" class="status-incomplete">
+                <i class="pi pi-exclamation-circle"></i> Incompleto
+              </span>
+            </div>
           </div>
         </div>
-
-        <button type="button" pButton icon="pi pi-plus" label="Agregar producto" 
-                class="p-button-text add-product-btn" (click)="addDetail()"></button>
       </div>
     </div>
-
-    <p-footer class="dialog-footer">
-      <button pButton type="button" label="Cancelar" class="p-button-text"
-              (click)="cerrarModal()"></button>
-      <button pButton type="submit" [label]="isEditing ? 'Actualizar' : 'Guardar'" 
-              [disabled]="productionForm.invalid" icon="pi pi-check"></button>
+    <p-footer>
+      <button pButton label="Cerrar" icon="pi pi-times" (click)="detailModalVisible = false" 
+              class="p-button-text"></button>
     </p-footer>
-  </form>
-</p-dialog>
+  </p-dialog>
+
+  <!-- Modal de Formulario Mejorado -->
+  <p-dialog [(visible)]="modalVisible" [modal]="true" [style]="{width: '600px'}" 
+            [header]="isEditing ? 'Editar Orden' : 'Nueva Orden'" [draggable]="false" [resizable]="false">
+    <form *ngIf="productionForm" [formGroup]="productionForm" (ngSubmit)="guardarOrden()" class="form-modal-container">
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="pi pi-info-circle"></i> Información Básica
+        </h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="productionDate">Fecha Producción *</label>
+            <p-calendar formControlName="productionDate" [showIcon]="true" 
+                        dateFormat="dd/mm/yy" [required]="true" inputId="productionDate"
+                        placeholder="Seleccione fecha" [style]="{width: '100%'}"></p-calendar>
+            <small *ngIf="productionForm.get('productionDate')?.invalid && 
+                         productionForm.get('productionDate')?.touched" 
+                   class="error-message">
+              <i class="pi pi-exclamation-circle"></i> Campo obligatorio
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="assignedToId">Asignado a</label>
+            <input pInputText formControlName="assignedToId" id="assignedToId" 
+                   placeholder="Nombre del responsable"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="pi pi-comment"></i> Comentarios Generales
+        </h3>
+        <div class="form-group full-width">
+          <textarea pInputTextarea formControlName="comments" rows="3"
+                    placeholder="Notas importantes sobre la orden"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="pi pi-shopping-cart"></i> Productos
+        </h3>
+        <div formArrayName="details" class="products-form-section">
+          <div *ngFor="let detail of details.controls; let i = index" [formGroupName]="i" class="product-form-row">
+            <div class="product-form-grid">
+              <div class="form-group">
+                <label [for]="'productId_' + i">Producto *</label>
+                <p-dropdown [options]="products" formControlName="productId" optionLabel="name" 
+                            optionValue="id" [placeholder]="'Seleccione producto'" [required]="true"
+                            [id]="'productId_' + i" [style]="{width: '100%'}"></p-dropdown>
+                <small *ngIf="detail.get('productId')?.invalid && detail.get('productId')?.touched" 
+                       class="error-message">
+                  <i class="pi pi-exclamation-circle"></i> Seleccione un producto
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'quantity_' + i">Cantidad *</label>
+                <p-inputNumber formControlName="requestedQuantity" [min]="1" mode="decimal" 
+                              [id]="'quantity_' + i" [style]="{width: '100%'}"
+                              placeholder="Cantidad"></p-inputNumber>
+                <small *ngIf="detail.get('requestedQuantity')?.invalid && 
+                             detail.get('requestedQuantity')?.touched" 
+                       class="error-message">
+                  <i class="pi pi-exclamation-circle"></i> Mínimo 1 unidad
+                </small>
+              </div>
+
+              <div class="form-group remove-btn-container">
+                <button type="button" pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger"
+                        pTooltip="Eliminar producto" tooltipPosition="top"
+                        (click)="removeDetail(i)"></button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" pButton icon="pi pi-plus" label="Agregar producto" 
+                  class="p-button-text p-button-sm add-product-btn" (click)="addDetail()"></button>
+        </div>
+      </div>
+
+      <p-footer class="dialog-footer">
+        <button pButton type="button" label="Cancelar" class="p-button-text"
+                (click)="cerrarModal()"></button>
+        <button pButton type="submit" [label]="isEditing ? 'Actualizar Orden' : 'Crear Orden'" 
+                [disabled]="productionForm.invalid" icon="pi pi-check" 
+                class="p-button-raised"></button>
+      </p-footer>
+    </form>
+  </p-dialog>
 
   <!-- Tabs -->
   <p-tabView [(activeIndex)]="activeTabIndex">
     <p-tabPanel header="Pendientes" leftIcon="pi pi-hourglass">
       <div class="p-mb-4">
         <button pButton pRipple icon="pi pi-plus" label="Agregar Nueva Orden" 
-                (click)="abrirModalNuevaOrden()"></button>
+                class="p-button-raised" (click)="abrirModalNuevaOrden()"></button>
       </div>
 
       <p-card header="Órdenes Pendientes">
@@ -115,17 +206,16 @@
                 <p-tag [value]="order.status.replace('_', ' ')" 
                        [severity]="getStatusSeverity(order.status)"></p-tag>
               </td>
-             <td>
-  <ul class="product-list">
-    <li *ngFor="let d of order.details">
-      <strong>{{ d.product.name }}</strong> ({{ d.requestedQuantity }})
-    </li>
-  </ul>
-  <!-- Comentarios generales -->
-  <div *ngIf="order.comments" class="order-comment">
-    <strong>Comentarios:</strong> {{ order.comments }}
-  </div>
-</td>
+              <td>
+                <ul class="product-list">
+                  <li *ngFor="let d of order.details">
+                    <strong>{{ d.product.name }}</strong> ({{ d.requestedQuantity }})
+                  </li>
+                </ul>
+                <div *ngIf="order.comments" class="order-comment">
+                  <strong>Comentarios:</strong> {{ order.comments }}
+                </div>
+              </td>
               <td>
                 <div class="p-d-flex p-flex-wrap p-gap-2">
                   <button pButton pRipple icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" 
@@ -154,19 +244,30 @@
                  *ngIf="historial.length > 0">
           <ng-template pTemplate="header">
             <tr>
-              <th>ID</th>
+              <th>Orden</th>
               <th>Fecha</th>
+              <th>Productos</th>
+              <th>Responsable</th>
               <th>Estado</th>
               <th style="width: 100px">Acciones</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-h>
             <tr>
-              <td>#{{ h.orderNumber}}</td>
-              <td>{{ h.date | date:'dd/MM/yyyy' }}</td>
+              <td>#{{ h.id || h.orderNumber }}</td>
+              <td>{{ h.productionDate | date:'dd/MM/yyyy' }}</td>
               <td>
-                <p-tag [value]="h.status.replace('_', ' ')" 
-                       [severity]="getStatusSeverity(h.status)"></p-tag>
+                <ul class="product-list">
+                  <li *ngFor="let product of h.details">
+                    <strong>{{ product.product.name }}</strong> 
+                    ({{ product.requestedQuantity }} solicitados, 
+                    {{ product.producedQuantity }} producidos)
+                  </li>
+                </ul>
+              </td>
+              <td>{{ h.assignedTo?.name || 'Sin asignar' }}</td>
+              <td>
+                <p-tag [value]="h.status.replace('_', ' ')" [severity]="getStatusSeverity(h.status)"></p-tag>
               </td>
               <td>
                 <button pButton pRipple icon="pi pi-eye" pTooltip="Ver detalles" tooltipPosition="top" 
