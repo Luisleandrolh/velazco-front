@@ -10,9 +10,7 @@ export class AppComponent implements OnInit {
   title = 'angular';
   langs: string[] = ['en', 'es'];
 
-  constructor(
-    public translate: TranslateService
-  ) {
+  constructor(public translate: TranslateService) {
     translate.addLangs(this.langs);
 
     const currentLang = this.getUsersLocale('en').split('-');
@@ -27,8 +25,7 @@ export class AppComponent implements OnInit {
     this.translate.use(lang);
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   getUsersLocale(defaultValue: string): string {
     if (

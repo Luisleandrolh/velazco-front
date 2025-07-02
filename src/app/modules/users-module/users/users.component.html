@@ -1,6 +1,17 @@
 <div class="users-container">
+  <!-- Mensajes de error -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+    <button (click)="error = null">×</button>
+  </div>
+
+  <!-- Spinner de carga -->
+  <div *ngIf="loading" class="loading-spinner">
+    Cargando...
+  </div>
+
   <!-- Vista principal de lista de usuarios -->
-  <div *ngIf="currentView === 'list'" class="users-list-view">
+  <div *ngIf="currentView === 'list' && !loading" class="users-list-view">
     <h1>Usuarios y Roles</h1>
     
     <div class="search-bar">
@@ -18,7 +29,7 @@
     </div>
     
     <button (click)="showCreateView()" class="create-user-btn">
-    + Nuevo Usuario
+      + Nuevo Usuario
     </button>
     
     <table class="users-table">
@@ -27,22 +38,25 @@
           <th>Usuario</th>
           <th>Email</th>
           <th>Rol</th>
-          <th>Contraseña</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let user of filteredUsers">
           <td>
-            <div class="user-avatar">{{ getInitials(user.name) }}</div>
+            <div class="user-avatar">{{ user.ui.initials }}</div>
             {{ user.name }}
           </td>
           <td>{{ user.email }}</td>
-          <td>{{ user.role }}</td>
-          <td>{{ user.password }}</td>
-          <td>
+          <td>{{ user.ui.displayRole }}</td>
+          <td>{{ user.active ? 'Activo' : 'Inactivo' }}</td>
+          <td class="actions-cell">
             <button (click)="showUserDetails(user)" class="action-btn">
-              Ver Detalles
+              Editar
+            </button>
+<button (click)="deleteUser(user.id!)" class="action-btn delete-btn" *ngIf="user.id">
+                Eliminar
             </button>
           </td>
         </tr>
@@ -54,7 +68,6 @@
   <div *ngIf="showModal && currentView === 'create'" class="modal-overlay">
     <div class="modal-content">
       <h1>Crear Nuevo Usuario</h1>
-      
       
       <div class="form-section">
         <h2>Nombre Completo</h2>
@@ -75,7 +88,11 @@
           [(ngModel)]="newUser.email"
           class="form-input"
           required
+          pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
         >
+        <small *ngIf="newUser.email && !validateEmail(newUser.email)" class="error-text">
+          Ingrese un correo válido
+        </small>
       </div>
       
       <div class="form-section">
@@ -83,24 +100,28 @@
         <div class="password-input-container">
           <input 
             [type]="showPassword ? 'text' : 'password'" 
-            placeholder="Ingrese una contraseña segura" 
+            placeholder="Mínimo 8 caracteres" 
             [(ngModel)]="newUser.password"
             class="form-input"
             required
+            minlength="8"
           >
           <button (click)="togglePasswordVisibility()" class="password-toggle-btn">
             {{ showPassword ? 'Ocultar' : 'Mostrar' }}
           </button>
         </div>
+        <small *ngIf="newUser.password && newUser.password.length < 8" class="error-text">
+          La contraseña debe tener al menos 8 caracteres
+        </small>
       </div>
       
       <div class="form-section">
         <h2>Rol</h2>
-        <select [(ngModel)]="newUser.role" class="form-select">
-          <option value="Producción">Producción</option>
-          <option value="Administrador">Administrador</option>
-          <option value="Cajero">Cajero</option>
-          <option value="Entregas">Entregas</option>
+        <select [(ngModel)]="newUser.roleId" class="form-select">
+          <option value="8007JF9Z5AZM8091">Producción</option>
+          <option value="7007JF9Z5AZM8091">Administrador</option>
+          <option value="6007JF9Z5AZM8091">Cajero</option>
+          <option value="5007JF9Z5AZM8091">Entregas</option>
         </select>
       </div>
       
@@ -114,17 +135,27 @@
         >
       </div>
       
+      <div class="form-section">
+        <h2>Estado</h2>
+        <label>
+          <input type="checkbox" [(ngModel)]="newUser.active">
+          Usuario activo
+        </label>
+      </div>
+      
       <div class="modal-actions">
         <button (click)="closeModal()" class="cancel-btn">Cancelar</button>
-        <button (click)="createUser()" class="create-btn">Crear Usuario</button>
+        <button (click)="createUser()" class="create-btn" [disabled]="loading">
+          {{ loading ? 'Creando...' : 'Crear Usuario' }}
+        </button>
       </div>
     </div>
   </div>
   
-  <!-- Vista de detalles de usuario (modal) -->
+  <!-- Vista de detalles/edición de usuario (modal) -->
   <div *ngIf="showModal && currentView === 'details' && selectedUser" class="modal-overlay">
     <div class="modal-content">
-      <h1>Detalles del Usuario</h1>
+      <h1>Editar Usuario</h1>
       <p>Información y permisos del usuario en el sistema</p>
       
       <div class="user-details-grid">
@@ -132,32 +163,57 @@
         <div class="detail-header">Datos</div>
         
         <div class="detail-label">Nombre Completo</div>
-        <div class="detail-value">{{ selectedUser.name }}</div>
+        <div class="detail-value">
+          <input type="text" [(ngModel)]="selectedUser.name" class="form-input">
+        </div>
         
         <div class="detail-label">Correo Electrónico</div>
-        <div class="detail-value">{{ selectedUser.email }}</div>
+        <div class="detail-value">
+          <input type="email" [(ngModel)]="selectedUser.email" class="form-input">
+        </div>
         
         <div class="detail-label">Contraseña</div>
         <div class="detail-value">
-          {{ selectedUser.password }}
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            [(ngModel)]="selectedUser.password"
+            class="form-input"
+          >
           <button (click)="togglePasswordVisibility()" class="password-toggle-btn">
             {{ showPassword ? 'Ocultar' : 'Mostrar' }}
           </button>
         </div>
         
         <div class="detail-label">Rol</div>
-        <div class="detail-value">{{ selectedUser.role }}</div>
-        
-        <div class="detail-label">Cargo</div>
-        <div class="detail-value">{{ selectedUser.position }}</div>
+        <div class="detail-value">
+          <select [(ngModel)]="selectedUser.roleId" class="form-select">
+            <option value="8007JF9Z5AZM8091">Producción</option>
+            <option value="7007JF9Z5AZM8091">Administrador</option>
+            <option value="6007JF9Z5AZM8091">Cajero</option>
+            <option value="5007JF9Z5AZM8091">Entregas</option>
+          </select>
+        </div>
         
         <div class="detail-label">Teléfono</div>
-        <div class="detail-value">{{ selectedUser.phone }}</div>
+        <div class="detail-value">
+          <input type="tel" [(ngModel)]="selectedUser.phone" class="form-input">
+        </div>
+        
+        <div class="detail-label">Estado</div>
+        <div class="detail-value">
+          <label>
+            <input type="checkbox" [(ngModel)]="selectedUser.active">
+            {{ selectedUser.active ? 'Activo' : 'Inactivo' }}
+          </label>
+        </div>
       </div>
       
       <div class="modal-actions">
-        <button (click)="closeModal()" class="cancel-btn">Cerrar</button>
+        <button (click)="closeModal()" class="cancel-btn">Cancelar</button>
+        <button (click)="updateUser()" class="save-btn" [disabled]="loading">
+          {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+        </button>
       </div>
     </div>
   </div>
-</div>
+</div>  

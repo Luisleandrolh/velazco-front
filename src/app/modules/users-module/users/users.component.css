@@ -254,3 +254,47 @@ h1 {
   font-size: 13px;
   font-weight: 500;
 }
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: none;
+  border: none;
+  color: #c62828;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.delete-btn {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.delete-btn:hover {
+  background-color: #ffcdd2;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
