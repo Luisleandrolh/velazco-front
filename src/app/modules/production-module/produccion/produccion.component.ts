@@ -20,7 +20,7 @@ export class ProduccionComponent implements OnInit {
   constructor(
     private productionService: ProductionService,
     private dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.cargarOrdenDelDia();
@@ -141,64 +141,7 @@ export class ProduccionComponent implements OnInit {
         this.cargarOrdenDelDia();
       },
       error: (err) => {
-        console.error(`Error al finalizar producción con ID ${orden.id}:`, err);
-      }
-    });
-  }
-
-  marcarIncompletoUI(orden: any, detalle: any): void {
-    this.ordenSeleccionada = orden;
-    this.detalleSeleccionado = detalle;
-    this.motivoIncompleto = '';
-    this.cantidadProducida = 0;
-    this.mostrarFormularioIncompleto = true;
-  }
-
-  cerrarModal(): void {
-    this.mostrarFormularioIncompleto = false;
-    this.motivoIncompleto = '';
-    this.cantidadProducida = 0;
-    this.ordenSeleccionada = null;
-    this.detalleSeleccionado = null;
-  }
-
-  marcarIncompleto(orden: any, detalle: any): void {
-    if (!this.motivoIncompleto || this.cantidadProducida == null) {
-      alert('Debes completar todos los campos');
-      return;
-    }
-
-    const existeProducto = orden.details.some(
-      (d: any) => d.product.id === detalle.product.id
-    );
-
-    if (!existeProducto) {
-      alert(" El producto seleccionado no pertenece a esta orden de producción.");
-      return;
-    }
-
-    if (this.cantidadProducida > detalle.requestedQuantity) {
-      alert('La cantidad producida no puede ser mayor que la solicitada.');
-      return;
-    }
-
-    const body = {
-      productos: [
-        {
-          productId: detalle.product.id,
-          producedQuantity: this.cantidadProducida,
-          motivoIncompleto: this.motivoIncompleto
-        }
-      ]
-    };
-
-    this.productionService.finalizarProduccion(orden.id, body).subscribe({
-      next: () => {
-        this.cargarenProceso();
-        this.cerrarModal();
-      },
-      error: (err) => {
-        console.error(` Error al marcar incompleto producción ${orden.id}:`, err);
+        console.error('Error al finalizar producción:', err);
       }
     });
   }

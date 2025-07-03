@@ -1,5 +1,4 @@
 <div class="container-fluid mt-3">
-  <!-- ENCABEZADO -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
       <h1 class="mb-1">Producción</h1>
@@ -13,12 +12,13 @@
       <span *ngIf="ordenDelDia?.status" class="estado-label" [ngClass]="{
         'estado-pendiente': ordenDelDia.status === 'PENDIENTE',
         'estado-enproceso': ordenDelDia.status === 'EN_PROCESO',
-        'estado-finalizado': ordenDelDia.status === 'FINALIZADO'
+        'estado-finalizado': ordenDelDia.status === 'COMPLETO'
+        
       }">
         {{
         ordenDelDia.status === 'PENDIENTE' ? 'Pendiente' :
         ordenDelDia.status === 'EN_PROCESO' ? 'En Produccion' :
-        ordenDelDia.status === 'FINALIZADO' ? 'Finalizado' : ''
+        ordenDelDia.status === 'COMPLETO' ? 'Finalizada' : ''
         }}
       </span>
 
@@ -42,9 +42,10 @@
   </div>
 
 
-  <mat-tab-group>
+  <mat-tab-group (selectedIndexChange)="cambiarPestana($event)">
+
    
-    <mat-tab label="Orden Pendiente">
+    <mat-tab label="Ordenes">
       <div *ngIf="ordenDelDia?.details?.length > 0; else sinProduccion">
         <div class="table-responsive mt-3">
           <table class="table table-hover w-100">

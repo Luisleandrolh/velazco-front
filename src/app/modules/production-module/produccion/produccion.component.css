@@ -54,9 +54,9 @@ h1 {
 
 /* Verde - Finalizado */
 .estado-finalizado {
-  color: #28a745;
-  background-color: #d4edda;
-  border-color: #28a745;
+  color: #004b11;
+  background-color: rgba(78, 255, 102, 0.216);
+  border-color: #5d5d5d1e;
 }
 
 /* Texto debajo del título */
