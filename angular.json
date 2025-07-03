@@ -114,7 +114,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "dist/angular/server",
+"outputPath": "dist/velazco-front/browser",
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json"
           },
