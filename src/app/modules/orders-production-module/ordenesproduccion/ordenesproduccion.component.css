@@ -504,3 +504,12 @@
   background: linear-gradient(to right, #f6f7f8 8%, #e9ecef 18%, #f6f7f8 33%);
   background-size: 800px 104px;
 }
+
+.incomplete-comment-message {
+  background-color: #fff4e5;
+  border-left: 5px solid #f90;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}

@@ -1,3 +1,5 @@
+
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { OrdenProduccionService } from '../services/ordenes.service';
@@ -314,3 +316,5 @@ console.log('Detalles seleccionados:', this.selectedOrder);
     this.activeTabIndex = event.index;
   }
 }
+
+
