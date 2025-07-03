@@ -9,7 +9,7 @@ export class OrdenProduccionService {
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders() {
-    const token = localStorage.getItem('auth_token'); // Obtener token de localStorage
+    const token = localStorage.getItem('auth_token'); 
     return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

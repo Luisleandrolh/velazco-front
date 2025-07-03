@@ -16,7 +16,7 @@ interface OrdenHistorial {
     };
     requestedQuantity: number;
     producedQuantity: number;
-    comments?: string;
+    comments?: string; 
   }[];
 }
 
@@ -25,6 +25,7 @@ interface OrdenHistorial {
   templateUrl: './ordenesproduccion.component.html',
   styleUrls: ['./ordenesproduccion.component.css']
 })
+
 export class ProductionComponent implements OnInit {
   // Propiedades para el estado del componente
   productions: any[] = [];
@@ -240,7 +241,9 @@ export class ProductionComponent implements OnInit {
         productId: Number(detail.productId),
         requestedQuantity: Number(detail.requestedQuantity)
       }))
+
     };
+
 
     const observable = this.isEditing && this.ordenEditando?.id
       ? this.service.updateProduction(this.ordenEditando.id, requestData)
