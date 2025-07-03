@@ -16,24 +16,26 @@ interface OrdenHistorial {
     };
     requestedQuantity: number;
     producedQuantity: number;
-    comments?: string; 
+    comments?: string;
   }[];
 }
-
+interface User {
+  id: number;
+  name: string;
+  // Agrega otras propiedades si es necesario
+}
 @Component({
   selector: 'app-production',
   templateUrl: './ordenesproduccion.component.html',
   styleUrls: ['./ordenesproduccion.component.css']
 })
-
 export class ProductionComponent implements OnInit {
   // Propiedades para el estado del componente
   productions: any[] = [];
   historial: any[] = [];
   products: any[] = [];
   activeTabIndex: number = 0;
-  
-  // Propiedades para los modales
+  users: User[] = [];  // Propiedades para los modales
   modalVisible = false;
   detailModalVisible = false;
   isEditing = false;
@@ -76,25 +78,36 @@ export class ProductionComponent implements OnInit {
     });
   }
 
-  loadHistorial(): void {
-    this.service.getHistorialProductions().subscribe(data => {
-      this.historial = data
-        .filter((orden: any) => orden.status?.toUpperCase() !== 'PENDIENTE')
-        .map((orden: any) => ({
-          id: orden.orderNumber,
-          productionDate: orden.date,
-          status: orden.status,
-          assignedTo: { name: orden.responsible },
-          details: orden.products.map((p: any) => ({
-            product: { name: p.productName },
-            requestedQuantity: p.requestedQuantity,
-            producedQuantity: p.producedQuantity,
-            comments: p.comments || ''
-          })),
-        }));
-    });
-  }
+ loadHistorial(): void {
+  this.service.getHistorialProductions().subscribe(data => {
+    this.historial = data
+      .filter((orden: any) => orden.status?.toUpperCase() !== 'PENDIENTE')
+      .map((orden: any) => ({
+        id: orden.orderNumber,
+        productionDate: orden.date,
+        status: orden.status,
+        assignedTo: { name: orden.responsible },
+        
+        details: orden.products.map((p: any) => ({
+          product: { name: p.productName },
+          requestedQuantity: p.requestedQuantity,
+          producedQuantity: p.producedQuantity,
+          comments: p.comments || ''
+        })),
+      }));
+  });
+}
 
+  loadUsers(): void {
+  this.service.getUSers().subscribe( 
+    (data: User[]) => {
+      this.users = data;
+    },
+    (error: any) => {  // <-- Añade tipo explícito para el error
+      console.error('Error al cargar usuarios', error);
+    }
+  );
+}
   loadProducts(): void {
     this.service.getProducts().subscribe(data => {
       this.products = data;
@@ -157,6 +170,7 @@ export class ProductionComponent implements OnInit {
     this.initForm();
     this.addDetail();
     this.modalVisible = true;
+    this.loadUsers(); // Cargar usuarios al abrir el modal
   }
 
   editarOrden(order: any): void {
@@ -175,19 +189,20 @@ export class ProductionComponent implements OnInit {
   // ================ MÉTODOS PARA DETALLES DE ORDEN ================
    verDetalles(order: any): void {
     this.selectedOrder = {
-      ...order,
-      // Normalizamos los datos para que funcionen con cualquier estructura
-      id: order.id || order.orderNumber,
-      productionDate: order.productionDate || order.date,
-      responsible: order.responsible || order.assignedTo?.name,
-      details: order.details || order.products?.map((p: any) => ({
-        product: {
-          name: p.product?.name || p.productName
-        },
-        requestedQuantity: p.requestedQuantity,
-        producedQuantity: p.producedQuantity || 0
-      })) || []
-    };
+  ...order,
+  id: order.id || order.orderNumber,
+  productionDate: order.productionDate || order.date,
+  responsible: order.responsible || order.assignedTo?.name,
+  comments: order.comments || '', // ✅ ESTA LÍNEA ES CLAVE
+  details: order.details || order.products?.map((p: any) => ({
+    product: {
+      name: p.product?.name || p.productName
+    },
+    requestedQuantity: p.requestedQuantity,
+    producedQuantity: p.producedQuantity || 0
+  })) || []
+};
+console.log('Detalles seleccionados:', this.selectedOrder);
     
     this.calculateSummary(this.selectedOrder);
     this.detailModalVisible = true;
@@ -241,9 +256,7 @@ export class ProductionComponent implements OnInit {
         productId: Number(detail.productId),
         requestedQuantity: Number(detail.requestedQuantity)
       }))
-
     };
-
 
     const observable = this.isEditing && this.ordenEditando?.id
       ? this.service.updateProduction(this.ordenEditando.id, requestData)

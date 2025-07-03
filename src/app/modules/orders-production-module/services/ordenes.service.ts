@@ -18,6 +18,7 @@ export class OrdenProduccionService {
     };
   }
 
+  
   // Órdenes
   getPendingProductions(): Observable<any> {
     return this.http.get(`${BASE_URL}/productions/pending`, this.getAuthHeaders());
@@ -44,5 +45,18 @@ export class OrdenProduccionService {
   getProducts(): Observable<any> {
     return this.http.get(`${BASE_URL}/products`, this.getAuthHeaders());
   }
+  
+   finalizeProduction(id: number): Observable<any> {
+    return this.http.patch(
+      `${BASE_URL}/productions/${id}/finalizar`, 
+      {}, 
+      this.getAuthHeaders()
+    );
+  }
+  // Usuarios
+  getUSers(): Observable<any> {
+    return this.http.get(`${BASE_URL}/users`, this.getAuthHeaders());
+  }
+
 
 }
