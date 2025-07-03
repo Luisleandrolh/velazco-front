@@ -83,9 +83,12 @@ export class UsersComponent implements OnInit {
 
   // Método para mostrar detalles de un usuario específico
   showUserDetails(user: User): void {
-    this.currentView = 'details'; // Cambia a vista de detalles
-    this.showModal = true; // Muestra el modal
-    this.selectedUser = { ...user }; // Copia el usuario (para no modificar el original)
+    this.currentView = 'details';
+    this.showModal = true;
+    this.selectedUser = {
+      ...user,
+      roleId: user.roleId || '1', // Asigna '1' (Administrador) si roleId es null/undefined
+    };
   }
 
   // Método para cerrar el modal y volver a la vista de lista
