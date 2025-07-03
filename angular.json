@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular": {
+    "velazco-front": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -16,29 +16,29 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
-         "options": {
-  "outputPath": "dist/angular/browser",
-  "index": "src/index.html",
-  "main": "src/main.ts",
-  "polyfills": "src/polyfills.ts",
-  "tsConfig": "tsconfig.app.json",
-  "assets": ["src/favicon.ico", "src/assets"],
-  "styles": [
-    "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-    "node_modules/primeicons/primeicons.css",
-    "node_modules/primeng/resources/themes/saga-blue/theme.css",
-    "node_modules/primeng/resources/primeng.min.css",
-    "src/styles.css"
-  ],
-  "scripts": [],
-  "allowedCommonJsDependencies": [
-    "canvg",
-    "rgbcolor",
-    "raf",
-    "core-js",
-    "sweetalert2"
-  ]
-},
+          "options": {
+            "outputPath": "dist/velazco-front/browser",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/saga-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "src/styles.css"
+            ],
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "canvg",
+              "rgbcolor",
+              "raf",
+              "core-js",
+              "sweetalert2"
+            ]
+          },
           "configurations": {
             "production": {
               "budgets": [
@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "angular:build:production"
+              "browserTarget": "velazco-front:build:production"
             },
             "development": {
-              "browserTarget": "angular:build:development"
+              "browserTarget": "velazco-front:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular:build"
+            "browserTarget": "velazco-front:build"
           }
         },
         "test": {
@@ -114,7 +114,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "dist/angular/server",
+            "outputPath": "dist/velazco-front/server",
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json"
           },
@@ -141,12 +141,12 @@
           "builder": "@nguniversal/builders:ssr-dev-server",
           "configurations": {
             "development": {
-              "browserTarget": "angular:build:development",
-              "serverTarget": "angular:server:development"
+              "browserTarget": "velazco-front:build:development",
+              "serverTarget": "velazco-front:server:development"
             },
             "production": {
-              "browserTarget": "angular:build:production",
-              "serverTarget": "angular:server:production"
+              "browserTarget": "velazco-front:build:production",
+              "serverTarget": "velazco-front:server:production"
             }
           },
           "defaultConfiguration": "development"
@@ -154,18 +154,16 @@
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {
-            "routes": [
-              "/"
-            ]
+            "routes": ["/"]
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular:build:production",
-              "serverTarget": "angular:server:production"
+              "browserTarget": "velazco-front:build:production",
+              "serverTarget": "velazco-front:server:production"
             },
             "development": {
-              "browserTarget": "angular:build:development",
-              "serverTarget": "angular:server:development"
+              "browserTarget": "velazco-front:build:development",
+              "serverTarget": "velazco-front:server:development"
             }
           },
           "defaultConfiguration": "production"
