@@ -41,9 +41,9 @@
 
   </div>
 
-  <!-- TABS -->
-  <mat-tab-group (selectedIndexChange)="cambiarPestana($event)">
-    <!-- TAB ORDEN PENDIENTE -->
+
+  <mat-tab-group>
+   
     <mat-tab label="Orden Pendiente">
       <div *ngIf="ordenDelDia?.details?.length > 0; else sinProduccion">
         <div class="table-responsive mt-3">

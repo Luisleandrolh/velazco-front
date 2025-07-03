@@ -1,136 +1,135 @@
+
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { OrdenProduccionService } from '../services/ordenes.service';
 import Swal from 'sweetalert2';
 
+interface OrdenHistorial {
+  id: string;
+  productionDate: string;
+  status: string;
+  assignedTo?: string;
+  comments?: string;
+  details: {
+    product: { 
+      name: string;
+      id?: string;
+    };
+    requestedQuantity: number;
+    producedQuantity: number;
+    comments?: string;
+  }[];
+}
+interface User {
+  id: number;
+  name: string;
+  // Agrega otras propiedades si es necesario
+}
 @Component({
   selector: 'app-production',
   templateUrl: './ordenesproduccion.component.html',
   styleUrls: ['./ordenesproduccion.component.css']
 })
 export class ProductionComponent implements OnInit {
+  // Propiedades para el estado del componente
   productions: any[] = [];
   historial: any[] = [];
   products: any[] = [];
-  activeTab: 'pendientes' | 'historial' = 'pendientes';
-   activeTabIndex: number = 0;
-
+  activeTabIndex: number = 0;
+  users: User[] = [];  // Propiedades para los modales
   modalVisible = false;
+  detailModalVisible = false;
   isEditing = false;
   ordenEditando: any = null;
+  selectedOrder: any = null;
+  
+  // Propiedades para el resumen de detalles
+  completedProducts: number = 0;
+  incompleteProducts: number = 0;
+  totalRequested: number = 0;
+  totalProduced: number = 0;
+  efficiency: string = '0';
+  
+  // Formulario reactivo
   productionForm: FormGroup = this.fb.group({
     productionDate: ['', Validators.required],
     assignedToId: [null],
     status: ['PENDIENTE'],
-    comments: [''], 
-    details: this.fb.array([])
+    comments: [''],
+    details: this.fb.array([]),
   });
-  
+
   constructor(
     private service: OrdenProduccionService,
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
-  this.initForm();  // Inicializa primero el formulario
-  this.loadProductions();
-  this.loadHistorial();
-  this.loadProducts();
-}
-
-  onTabChange(event: any) {
-    this.activeTabIndex = event.index;
+    this.initForm();
+    this.loadProductions();
+    this.loadHistorial();
+    this.loadProducts();
   }
-  loadProductions(): void {
-  this.service.getPendingProductions().subscribe({
-    next: (data) => this.productions = data,
-    error: (err) => console.error('Error:', err)
-  });
-}
 
-loadHistorial(): void {
+  // ================ MÉTODOS PARA CARGAR DATOS ================
+  loadProductions(): void {
+    this.service.getPendingProductions().subscribe({
+      next: (data) => this.productions = data,
+      error: (err) => console.error('Error:', err)
+    });
+  }
+
+ loadHistorial(): void {
   this.service.getHistorialProductions().subscribe(data => {
     this.historial = data
       .filter((orden: any) => orden.status?.toUpperCase() !== 'PENDIENTE')
       .map((orden: any) => ({
-        id: orden.orderNumber,                     // Lo que muestras en tu tabla como id
-        productionDate: orden.date,               // Lo que muestras como productionDate
+        id: orden.orderNumber,
+        productionDate: orden.date,
         status: orden.status,
-        assignedTo: { name: orden.responsible },  // Asignado, por si lo usas
+        assignedTo: { name: orden.responsible },
+        
         details: orden.products.map((p: any) => ({
           product: { name: p.productName },
           requestedQuantity: p.requestedQuantity,
           producedQuantity: p.producedQuantity,
           comments: p.comments || ''
-        }))
+        })),
       }));
   });
 }
 
+  loadUsers(): void {
+  this.service.getUSers().subscribe( 
+    (data: User[]) => {
+      this.users = data;
+    },
+    (error: any) => {  // <-- Añade tipo explícito para el error
+      console.error('Error al cargar usuarios', error);
+    }
+  );
+}
   loadProducts(): void {
     this.service.getProducts().subscribe(data => {
       this.products = data;
     });
   }
 
-  abrirModalNuevaOrden(): void {
-    this.isEditing = false;
-    this.ordenEditando = null;
-    this.initForm();
-    this.details.push(this.createDetail()); // Agrega al menos un detalle por defecto
-    this.modalVisible = true;
-  }
-
-  editarOrden(order: any): void {
-    this.isEditing = true;
-    this.ordenEditando = order;
-    this.initForm();
-    this.patchForm(); // Se aplica después de inicializar el formulario
-    this.modalVisible = true;
-  }
-
-  cerrarModal(): void {
-    this.modalVisible = false;
-    this.ordenEditando = null;
-  }
-
+  // ================ MÉTODOS PARA EL FORMULARIO ================
   initForm(): void {
     this.productionForm = this.fb.group({
       productionDate: ['', Validators.required],
-      assignedToId: [null],  // Este campo puede quedarse vacío si no tienes usuarios
+      assignedToId: [null],
       status: ['PENDIENTE'],
       comments: [''],
-      details: this.fb.array([])  // Inicializar la lista de detalles
-    });
-  }
-
-  patchForm(): void {
-    if (!this.ordenEditando) return;
-
-    this.productionForm.patchValue({
-      productionDate: this.ordenEditando.productionDate,
-      assignedToId: this.ordenEditando.assignedTo?.id || null,
-      status: this.ordenEditando.status,
-      comments: this.ordenEditando.comments || '' // Comentario general
-    });
-
-    this.details.clear();
-
-    this.ordenEditando.details.forEach((d: any) => {
-      // Solo enviar productId y cantidad, sin comentarios en detalles
-      this.details.push(this.fb.group({
-        productId: [d.product.id, Validators.required],
-        requestedQuantity: [Number(d.requestedQuantity), [Validators.required, Validators.min(1)]]
-      }));
+      details: this.fb.array([])
     });
   }
 
   get details(): FormArray {
-  if (!this.productionForm) {
-    this.initForm();
+    return this.productionForm.get('details') as FormArray;
   }
-  return this.productionForm?.get('details') as FormArray || this.fb.array([]);
-}
 
   createDetail(): FormGroup {
     return this.fb.group({
@@ -138,7 +137,6 @@ loadHistorial(): void {
       requestedQuantity: [null, [Validators.required, Validators.min(1)]]
     });
   }
-
 
   addDetail(): void {
     this.details.push(this.createDetail());
@@ -148,75 +146,141 @@ loadHistorial(): void {
     this.details.removeAt(index);
   }
 
+  patchForm(): void {
+    if (!this.ordenEditando) return;
+    
+    this.productionForm.patchValue({
+      productionDate: this.ordenEditando.productionDate,
+      assignedToId: this.ordenEditando.assignedTo?.id || null,
+      status: this.ordenEditando.status,
+      comments: this.ordenEditando.comments || ''
+    });
+
+    this.details.clear();
+    this.ordenEditando.details.forEach((d: any) => {
+      this.details.push(this.fb.group({
+        productId: [d.product.id, Validators.required],
+        requestedQuantity: [Number(d.requestedQuantity), [Validators.required, Validators.min(1)]]
+      }));
+    });
+  }
+
+  // ================ MÉTODOS PARA LOS MODALES ================
+  abrirModalNuevaOrden(): void {
+    this.isEditing = false;
+    this.ordenEditando = null;
+    this.initForm();
+    this.addDetail();
+    this.modalVisible = true;
+    this.loadUsers(); // Cargar usuarios al abrir el modal
+  }
+
+  editarOrden(order: any): void {
+    this.isEditing = true;
+    this.ordenEditando = order;
+    this.initForm();
+    this.patchForm();
+    this.modalVisible = true;
+  }
+
+  cerrarModal(): void {
+    this.modalVisible = false;
+    this.ordenEditando = null;
+  }
+
+  // ================ MÉTODOS PARA DETALLES DE ORDEN ================
+   verDetalles(order: any): void {
+    this.selectedOrder = {
+  ...order,
+  id: order.id || order.orderNumber,
+  productionDate: order.productionDate || order.date,
+  responsible: order.responsible || order.assignedTo?.name,
+  comments: order.comments || '', // ✅ ESTA LÍNEA ES CLAVE
+  details: order.details || order.products?.map((p: any) => ({
+    product: {
+      name: p.product?.name || p.productName
+    },
+    requestedQuantity: p.requestedQuantity,
+    producedQuantity: p.producedQuantity || 0
+  })) || []
+};
+console.log('Detalles seleccionados:', this.selectedOrder);
+    
+    this.calculateSummary(this.selectedOrder);
+    this.detailModalVisible = true;
+  }
+
+  // Método para calcular el resumen actualizado
+  calculateSummary(order: any): void {
+    const details = order.details || [];
+    const completedProducts = details.filter((product: any) => 
+      product.producedQuantity === product.requestedQuantity).length;
+    const incompleteProducts = details.filter((product: any) => 
+      product.producedQuantity < product.requestedQuantity).length;
+
+    const totalRequested = details.reduce((sum: number, product: any) => 
+      sum + product.requestedQuantity, 0);
+    const totalProduced = details.reduce((sum: number, product: any) => 
+      sum + (product.producedQuantity || 0), 0);
+    const efficiency = totalRequested > 0 ? 
+      ((totalProduced / totalRequested) * 100).toFixed(2) : '0';
+
+    this.completedProducts = completedProducts;
+    this.incompleteProducts = incompleteProducts;
+    this.totalRequested = totalRequested;
+    this.totalProduced = totalProduced;
+    this.efficiency = efficiency;
+  }
+
+  // Método para obtener clase CSS según estado
+  getStatusClass(status: string): string {
+    const statusUpper = status?.toUpperCase() || '';
+    if (statusUpper.includes('COMPLETAD')) return 'status-completed';
+    if (statusUpper.includes('CANCELAD')) return 'status-danger';
+    if (statusUpper.includes('PROCESO')) return 'status-info';
+    if (statusUpper.includes('PENDIENTE')) return 'status-warning';
+    return 'status-secondary';
+  }
+  // ================ MÉTODOS CRUD ================
   guardarOrden(): void {
-   if (this.productionForm.invalid) {
+    if (this.productionForm.invalid) {
       Swal.fire('Error', 'Por favor completa todos los campos obligatorios.', 'warning');
       return;
     }
 
     const formValue = this.productionForm.value;
-
     const requestData = {
       productionDate: formValue.productionDate,
       assignedToId: formValue.assignedToId || null,
       status: 'PENDIENTE',
-      comments: formValue.comments || '', // Comentario general
+      comments: formValue.comments || '',
       details: formValue.details.map((detail: any) => ({
         productId: Number(detail.productId),
         requestedQuantity: Number(detail.requestedQuantity)
       }))
     };
 
-    console.log('Datos a enviar:', JSON.stringify(requestData, null, 2));
+    const observable = this.isEditing && this.ordenEditando?.id
+      ? this.service.updateProduction(this.ordenEditando.id, requestData)
+      : this.service.createProduction(requestData);
 
-  // Manejar creación/actualización
-  const observable = this.isEditing && this.ordenEditando?.id
-    ? this.service.updateProduction(this.ordenEditando.id, requestData)
-    : this.service.createProduction(requestData);
-
-  observable.subscribe({
-    next: () => {
-      Swal.fire('Éxito', `Orden ${this.isEditing ? 'actualizada' : 'creada'} correctamente.`, 'success');
-      this.loadProductions();
-      this.loadHistorial(); // Actualizar ambos listados
-      this.cerrarModal();
-    },
-    error: (err) => {
-      console.error('Error completo:', err);
-      let errorMessage = `No se pudo ${this.isEditing ? 'actualizar' : 'crear'} la orden.`;
-      
-      if (err.error?.message) {
-        errorMessage += ` Error: ${err.error.message}`;
-      } else if (err.status === 500) {
-        errorMessage += ' Error interno del servidor.';
+    observable.subscribe({
+      next: () => {
+        Swal.fire('Éxito', `Orden ${this.isEditing ? 'actualizada' : 'creada'} correctamente.`, 'success');
+        this.loadProductions();
+        this.loadHistorial();
+        this.cerrarModal();
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        let errorMessage = `No se pudo ${this.isEditing ? 'actualizar' : 'crear'} la orden.`;
+        if (err.error?.message) {
+          errorMessage += ` Error: ${err.error.message}`;
+        }
+        Swal.fire('Error', errorMessage, 'error');
       }
-
-      Swal.fire('Error', errorMessage, 'error');
-    }
-  });
-}
-
-verDetalles(orden: any): void {
-  Swal.fire({
-    title: `Orden ${orden.id}`,
-    html: `
-      <p><strong>Fecha:</strong> ${new Date(orden.productionDate).toLocaleDateString()}</p>
-      <p><strong>Estado:</strong> ${orden.status}</p>
-      ${orden.comments ? `<p><strong>Comentarios:</strong> ${orden.comments}</p>` : ''}
-      <p><strong>Productos:</strong></p>
-      <ul style="text-align: left">
-        ${orden.details.map((d: any) =>
-          `<li><strong>${d.product.name}</strong> - Solicitados: ${d.requestedQuantity}, 
-           Producidos: ${d.producedQuantity || 0}
-           ${d.comments ? ` | Comentario: ${d.comments}` : ''}</li>`
-        ).join('')}
-      </ul>
-    `,
-    confirmButtonText: 'Cerrar',
-    width: 600
-  });
-}
-
+    });
+  }
 
   onDelete(id: number): void {
     Swal.fire({
@@ -232,16 +296,13 @@ verDetalles(orden: any): void {
       if (result.isConfirmed) {
         this.service.deleteProduction(id).subscribe(() => {
           this.loadProductions();
-          Swal.fire({
-            icon: 'success',
-            title: 'Eliminado',
-            text: 'La orden ha sido eliminada correctamente.',
-            confirmButtonColor: '#3085d6'
-          });
+          Swal.fire('Eliminado', 'La orden ha sido eliminada correctamente.', 'success');
         });
       }
     });
   }
+
+  // ================ MÉTODOS AUXILIARES ================
   getStatusSeverity(status: string): string {
     const statusUpper = status.toUpperCase();
     if (statusUpper.includes('PENDIENTE')) return 'warning';
@@ -250,4 +311,10 @@ verDetalles(orden: any): void {
     if (statusUpper.includes('PROCESO')) return 'info';
     return 'secondary';
   }
+
+  onTabChange(event: any) {
+    this.activeTabIndex = event.index;
+  }
 }
+
+
