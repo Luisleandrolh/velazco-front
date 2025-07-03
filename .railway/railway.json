@@ -3,6 +3,6 @@
     "builder": "DOCKERFILE"
   },
   "deploy": {
-    "startCommand": null
+    "startCommand": "nginx -g 'daemon off;'"
   }
 }
