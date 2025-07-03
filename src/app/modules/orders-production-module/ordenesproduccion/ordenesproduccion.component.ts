@@ -101,7 +101,7 @@ export class ProductionComponent implements OnInit {
 }
 
   loadUsers(): void {
-  this.service.getUSers().subscribe( 
+  this.service.getUsers().subscribe( 
     (data: User[]) => {
       this.users = data;
     },
