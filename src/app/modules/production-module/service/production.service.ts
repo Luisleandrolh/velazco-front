@@ -8,11 +8,13 @@ const BASE_URL = 'https://velazco-backend-develop.up.railway.app/api';
   providedIn: 'root'
 })
 export class ProductionService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getDailyProduction(): Observable<any> {
-    return this.http.get(`${BASE_URL}/productions/pending`);
+  getProduccionDelDia(): Observable<any> {
+    return this.http.get(`${BASE_URL}/productions/daily`);
   }
+
+
 
   getProduccionesEnProceso(): Observable<any> {
     return this.http.get(`${BASE_URL}/productions/in-process`);
@@ -25,6 +27,6 @@ export class ProductionService {
   }
 
   finalizarProduccion(id: number, body: any): Observable<any> {
-  return this.http.patch(`${BASE_URL}/productions/${id}/finalizar`, body);
-}
+    return this.http.patch(`${BASE_URL}/productions/${id}/finalizar`, body);
+  }
 }

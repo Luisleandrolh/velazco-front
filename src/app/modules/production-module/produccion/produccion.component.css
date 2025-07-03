@@ -10,7 +10,7 @@ h1 {
   font-size: 1.8rem;
   font-weight: 600;
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 /* Badge para estado */
@@ -25,6 +25,59 @@ h1 {
 .badge.bg-warning {
   background-color: #fff3cd !important;
   color: #856404 !important;
+}
+
+/* Etiqueta de estado personalizada */
+.estado-label {
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 450;
+  border-radius: 20px;
+  display: inline-block;
+  border: 1px solid transparent;
+}
+
+
+/* Rojo - Pendiente */
+.estado-pendiente {
+  color: #000000;
+  background-color: #6e6e6e15;
+  border-color: #00000031;
+}
+
+/* Naranja - En proceso */
+.estado-enproceso {
+  color: #000877;
+  background-color: #578bfc33;
+  border-color: #49494910;
+}
+
+/* Verde - Finalizado */
+.estado-finalizado {
+  color: #28a745;
+  background-color: #d4edda;
+  border-color: #28a745;
+}
+
+/* Texto debajo del título */
+.text-muted {
+  color: #6c757d !important;
+  font-size: 0.9rem;
+}
+
+/* Botones dinámicos del encabezado */
+.d-flex.justify-content-between button[mat-raised-button] {
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.d-flex.justify-content-between mat-icon {
+  font-size: 20px;
 }
 
 /* Tabla */
@@ -52,46 +105,16 @@ h1 {
   background-color: #f1f3f5;
 }
 
-/* Estilo personalizado para mat-raised-button con color primario */
-::ng-deep button[mat-raised-button][color="primary"] {
-  padding: 10px 20px;
+/* Tabs (Material) */
+::ng-deep .mat-tab-group {
+  margin-top: 1rem;
+}
+
+::ng-deep .mat-tab-label {
   font-size: 0.95rem;
-  font-weight: 500;
-  text-transform: none;
-  background-color: #2196f3; /* Azul por defecto */
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background-color 0.25s ease-in-out, box-shadow 0.25s;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Hover suave */
-::ng-deep button[mat-raised-button][color="primary"]:hover:not([disabled]) {
-  background-color: #1976d2; /* tono más oscuro del azul por defecto */
-  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Ícono dentro del botón */
-::ng-deep button[mat-raised-button][color="primary"] mat-icon {
-  font-size: 20px;
-  vertical-align: middle;
-}
-
-/* Botones de acción */
-button[mat-raised-button] {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  text-transform: none;
-}
-
-button[mat-raised-button] mat-icon {
-  font-size: 18px;
-}
-
-/* Estilos para botones personalizados */
+/* Botones estilo Bootstrap personalizados */
 .btn {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
@@ -107,33 +130,28 @@ button[mat-raised-button] mat-icon {
 .btn:hover {
   background-color: #f1f1f1;
 }
+
 .btn-primary {
   color: white;
   background-color: #007bff;
   border-color: #007bff;
 }
+
 .btn-primary:hover {
   background-color: #0056b3;
 }
+
 .btn-secondary {
   color: #6c757d;
   background-color: #f8f9fa;
   border-color: #ced4da;
 }
+
 .btn-secondary:hover {
-  background-color: #79797949;
+  background-color: #d6d8db;
 }
 
-.btn-success {
-  color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-success:hover {
-  background-color: #e9f7ef;
-}
-
-/* NUEVOS: Botones Finalizar e Incompleto */
+/* Botones especiales */
 .btn-finalizar {
   background-color: #007bff;
   color: white;
@@ -159,30 +177,35 @@ button[mat-raised-button] mat-icon {
   margin-left: 1rem;
 }
 
-/* Botones deshabilitados */
+.btn-iniciar {
+  background-color: #2196f3 !important; /* Azul */
+  color: white !important;
+}
+
+.btn-iniciar:hover {
+  background-color: #1976d2 !important;
+}
+
+.btn-finalizar {
+  background-color: #28a745 !important; /* Verde */
+  color: white !important;
+}
+
+.btn-finalizar:hover {
+  background-color: #218838 !important;
+}
+
+
+/* Deshabilitados */
 button[disabled],
 .btn[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* Tabs (Material) */
-::ng-deep .mat-tab-group {
-  margin-top: 1rem;
-}
-
-::ng-deep .mat-tab-label {
-  font-size: 0.95rem;
-}
-
-/* Texto pequeño bajo productos */
-.text-muted {
-  color: #6c757d !important;
-  font-size: 0.85rem;
-}
-
-/* Modal genérico */
-.modal-backdrop {
+/* Modal backdrop */
+.modal-backdrop,
+.custom-modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -195,97 +218,7 @@ button[disabled],
   justify-content: center;
 }
 
-.modal-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1051;
-  width: 90%;
-  max-width: 600px;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-}
-
-.modal-header {
-  padding: 16px 24px;
-  background: linear-gradient(135deg, #646363 0%, #757575 100%);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.modal-body {
-  padding: 24px;
-}
-
-.info-section {
-  margin-bottom: 20px;
-}
-
-.info-section h4 {
-  color: #141414;
-  margin-top: 0;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-}
-
-.info-section h4::before {
-  content: "";
-  display: inline-block;
-  width: 4px;
-  height: 16px;
-  background: #5985E1;
-  margin-right: 8px;
-  border-radius: 2px;
-}
-
-.info-section p {
-  margin-bottom: 8px;
-  color: #555;
-}
-
-.info-section p strong {
-  color: #333;
-  font-weight: 500;
-  min-width: 160px;
-  display: inline-block;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 16px 24px;
-  border-top: 1px solid #eee;
-}
-
-/* ✅ Modal personalizado para "marcar como incompleto" */
-.custom-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1050;
-}
-
+/* Modal personalizado */
 .custom-modal-content {
   background-color: white;
   padding: 1.5rem;
@@ -293,6 +226,15 @@ button[disabled],
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
   width: 400px;
   max-width: 90%;
+}
+
+/* Mat-dialog */
+::ng-deep mat-dialog-content {
+  padding-top: 0 !important;
+}
+
+::ng-deep mat-dialog-actions {
+  padding-bottom: 1rem;
 }
 
 /* Responsive */
@@ -304,14 +246,6 @@ button[disabled],
 
   h1 {
     font-size: 1.5rem;
-  }
-
-  .modal-container {
-    width: 95%;
-  }
-
-  .info-section p strong {
-    min-width: 120px;
   }
 
   .custom-modal-content {

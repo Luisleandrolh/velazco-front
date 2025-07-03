@@ -6,6 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog'; 
+import { MatCardModule } from '@angular/material/card';
 
 import { ProductionModuleRoutingModule } from './production-module-routing.module';
 import { ProduccionComponent } from './produccion/produccion.component';
@@ -23,7 +27,11 @@ import { ProduccionComponent } from './produccion/produccion.component';
     MatTooltipModule,
     MatTabsModule,
     MatRadioModule,
-    FormsModule
+    FormsModule,
+    MatInputModule,
+    MatFormFieldModule, 
+    MatDialogModule,
+    MatCardModule
   ]
 })
 export class ProductionModuleModule { }
