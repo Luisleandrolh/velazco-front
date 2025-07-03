@@ -206,16 +206,21 @@
                 <p-tag [value]="order.status.replace('_', ' ')" 
                        [severity]="getStatusSeverity(order.status)"></p-tag>
               </td>
-              <td>
-                <ul class="product-list">
-                  <li *ngFor="let d of order.details">
-                    <strong>{{ d.product.name }}</strong> ({{ d.requestedQuantity }})
-                  </li>
-                </ul>
-                <div *ngIf="order.comments" class="order-comment">
-                  <strong>Comentarios:</strong> {{ order.comments }}
-                </div>
-              </td>
+             <td>
+  <ul class="product-list">
+    <li *ngFor="let d of order.details.slice(0, 2)">
+      <strong>{{ d.product.name }}</strong> ({{ d.requestedQuantity }})
+    </li>
+  </ul>
+  <button *ngIf="order.details.length > 2" pButton type="button" label="Ver más"
+          class="p-button-text p-button-sm" (click)="verDetalles(order)">
+  </button>
+
+  <div *ngIf="order.comments" class="order-comment">
+    <strong>Comentarios:</strong> {{ order.comments }}
+  </div>
+</td>
+
               <td>
                 <div class="p-d-flex p-flex-wrap p-gap-2">
                   <button pButton pRipple icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" 
