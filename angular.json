@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "velazco-front": {
+    "angular": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/velazco-front/browser",
+            "outputPath": "dist/angular/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "velazco-front:build:production"
+              "browserTarget": "angular:build:production"
             },
             "development": {
-              "browserTarget": "velazco-front:build:development"
+              "browserTarget": "angular:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "velazco-front:build"
+            "browserTarget": "angular:build"
           }
         },
         "test": {
@@ -114,7 +114,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "dist/velazco-front/server",
+            "outputPath": "dist/angular/server",
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json"
           },
@@ -141,12 +141,12 @@
           "builder": "@nguniversal/builders:ssr-dev-server",
           "configurations": {
             "development": {
-              "browserTarget": "velazco-front:build:development",
-              "serverTarget": "velazco-front:server:development"
+              "browserTarget": "angular:build:development",
+              "serverTarget": "angular:server:development"
             },
             "production": {
-              "browserTarget": "velazco-front:build:production",
-              "serverTarget": "velazco-front:server:production"
+              "browserTarget": "angular:build:production",
+              "serverTarget": "angular:server:production"
             }
           },
           "defaultConfiguration": "development"
@@ -158,12 +158,12 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "velazco-front:build:production",
-              "serverTarget": "velazco-front:server:production"
+              "browserTarget": "angular:build:production",
+              "serverTarget": "angular:server:production"
             },
             "development": {
-              "browserTarget": "velazco-front:build:development",
-              "serverTarget": "velazco-front:server:development"
+              "browserTarget": "angular:build:development",
+              "serverTarget": "angular:server:development"
             }
           },
           "defaultConfiguration": "production"
