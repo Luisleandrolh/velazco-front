@@ -1,84 +1,64 @@
-/* Contenedor info general */
-.info-general p {
+.dialog-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.dialog-content {
+  padding-top: 12px;
+}
+
+.pedido-info p {
   margin: 4px 0;
-  font-size: 1rem;
-  color: #2c3e50;
+  font-size: 14px;
+  color: #444;
 }
 
-/* Clase para colores de estado */
-.estado-pendiente {
-  color: #d97706; /* naranja */
-  font-weight: 600;
+.detalle-titulo {
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: #333;
 }
 
-.estado-pagado {
-  color: #16a34a; /* verde */
-  font-weight: 600;
-}
-
-.estado-cancelado {
-  color: #dc2626; /* rojo */
-  font-weight: 600;
-}
-
-/* Detalles tabla */
-.detalles {
-  margin-top: 1.5rem;
-}
-
-.detalles h3 {
-  margin-bottom: 0.75rem;
-  color: #1e293b;
-  font-weight: 600;
-  border-bottom: 2px solid #3b82f6;
-  padding-bottom: 0.2rem;
-}
-
-/* Tabla estilizada */
 .detalles-tabla {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
-  color: #334155;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.05);
-  border-radius: 8px;
-  overflow: hidden;
+  margin-bottom: 16px;
+  font-size: 14px;
 }
 
-.detalles-tabla thead tr {
-  background-color: #3b82f6; /* azul */
-  color: white;
-  text-align: left;
+.detalles-tabla thead {
+  background-color: #f5f5f5;
 }
 
-.detalles-tabla th, .detalles-tabla td {
+.detalles-tabla th,
+.detalles-tabla td {
   padding: 10px 12px;
-  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.detalles-tabla tbody tr:hover {
-  background-color: #e0e7ff; /* ligero azul */
-}
-
-/* Alineaciones de columnas */
-.centrado {
-  text-align: center;
-}
-
-.derecha {
-  text-align: right;
-}
-
-/* Texto cuando no hay detalles */
-.sin-detalles p {
+.sin-detalles {
+  margin-top: 12px;
   font-style: italic;
-  color: #64748b;
-  margin-top: 1rem;
-  font-size: 0.95rem;
+  color: #888;
 }
 
-/* Botones */
-mat-dialog-actions button {
-  min-width: 100px;
-  font-weight: 600;
+/* Chips de estado reutilizados */
+.chip-pendiente {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.chip-pagado {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.chip-cancelado {
+  background-color: #f8d7da;
+  color: #721c24;
 }

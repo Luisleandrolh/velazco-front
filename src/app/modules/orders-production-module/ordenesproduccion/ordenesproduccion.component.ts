@@ -24,34 +24,32 @@ interface OrdenHistorial {
 interface User {
   id: number;
   name: string;
-  // Agrega otras propiedades si es necesario
 }
+
 @Component({
   selector: 'app-production',
   templateUrl: './ordenesproduccion.component.html',
   styleUrls: ['./ordenesproduccion.component.css']
 })
 export class ProductionComponent implements OnInit {
-  // Propiedades para el estado del componente
   productions: any[] = [];
   historial: any[] = [];
   products: any[] = [];
   activeTabIndex: number = 0;
-  users: User[] = [];  // Propiedades para los modales
+  users: User[] = [];  
   modalVisible = false;
   detailModalVisible = false;
   isEditing = false;
   ordenEditando: any = null;
   selectedOrder: any = null;
   
-  // Propiedades para el resumen de detalles
+  // Propiedades detalles
   completedProducts: number = 0;
   incompleteProducts: number = 0;
   totalRequested: number = 0;
   totalProduced: number = 0;
   efficiency: string = '0';
   
-  // Formulario reactivo
   productionForm: FormGroup = this.fb.group({
     productionDate: ['', Validators.required],
     assignedToId: [null],
@@ -72,7 +70,6 @@ export class ProductionComponent implements OnInit {
     this.loadProducts();
   }
 
-  // ================ MÉTODOS PARA CARGAR DATOS ================
   loadProductions(): void {
     this.service.getPendingProductions().subscribe({
       next: (data) => this.productions = data,
@@ -105,7 +102,7 @@ export class ProductionComponent implements OnInit {
     (data: User[]) => {
       this.users = data;
     },
-    (error: any) => {  // <-- Añade tipo explícito para el error
+    (error: any) => {  
       console.error('Error al cargar usuarios', error);
     }
   );
@@ -116,7 +113,6 @@ export class ProductionComponent implements OnInit {
     });
   }
 
-  // ================ MÉTODOS PARA EL FORMULARIO ================
   initForm(): void {
     this.productionForm = this.fb.group({
       productionDate: ['', Validators.required],
@@ -165,14 +161,14 @@ export class ProductionComponent implements OnInit {
     });
   }
 
-  // ================ MÉTODOS PARA LOS MODALES ================
+
   abrirModalNuevaOrden(): void {
     this.isEditing = false;
     this.ordenEditando = null;
     this.initForm();
     this.addDetail();
     this.modalVisible = true;
-    this.loadUsers(); // Cargar usuarios al abrir el modal
+    this.loadUsers(); 
   }
 
   editarOrden(order: any): void {
@@ -188,14 +184,13 @@ export class ProductionComponent implements OnInit {
     this.ordenEditando = null;
   }
 
-  // ================ MÉTODOS PARA DETALLES DE ORDEN ================
    verDetalles(order: any): void {
     this.selectedOrder = {
   ...order,
   id: order.id || order.orderNumber,
   productionDate: order.productionDate || order.date,
   responsible: order.responsible || order.assignedTo?.name,
-  comments: order.comments || '', // ✅ ESTA LÍNEA ES CLAVE
+  comments: order.comments || '', 
   details: order.details || order.products?.map((p: any) => ({
     product: {
       name: p.product?.name || p.productName
@@ -210,7 +205,8 @@ console.log('Detalles seleccionados:', this.selectedOrder);
     this.detailModalVisible = true;
   }
 
-  // Método para calcular el resumen actualizado
+ 
+
   calculateSummary(order: any): void {
     const details = order.details || [];
     const completedProducts = details.filter((product: any) => 
@@ -232,7 +228,6 @@ console.log('Detalles seleccionados:', this.selectedOrder);
     this.efficiency = efficiency;
   }
 
-  // Método para obtener clase CSS según estado
   getStatusClass(status: string): string {
     const statusUpper = status?.toUpperCase() || '';
     if (statusUpper.includes('COMPLETAD')) return 'status-completed';
@@ -241,7 +236,9 @@ console.log('Detalles seleccionados:', this.selectedOrder);
     if (statusUpper.includes('PENDIENTE')) return 'status-warning';
     return 'status-secondary';
   }
-  // ================ MÉTODOS CRUD ================
+
+
+  //  MÉTODOS CRUD 
   guardarOrden(): void {
     if (this.productionForm.invalid) {
       Swal.fire('Error', 'Por favor completa todos los campos obligatorios.', 'warning');
@@ -302,7 +299,7 @@ console.log('Detalles seleccionados:', this.selectedOrder);
     });
   }
 
-  // ================ MÉTODOS AUXILIARES ================
+
   getStatusSeverity(status: string): string {
     const statusUpper = status.toUpperCase();
     if (statusUpper.includes('PENDIENTE')) return 'warning';

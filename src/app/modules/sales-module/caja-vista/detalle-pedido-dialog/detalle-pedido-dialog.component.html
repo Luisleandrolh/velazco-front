@@ -1,15 +1,25 @@
-<h2 mat-dialog-title>Detalles del Pedido</h2>
+<h2 mat-dialog-title class="dialog-title">🧾 Detalles del Pedido</h2>
 
-<mat-dialog-content class="mat-typography">
-  <p><strong>Código:</strong> {{ pedido.codigo }}</p>
-  <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
-  <p><strong>Total:</strong> ${{ pedido.total.toFixed(2) }}</p>
-  <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
-  <p><strong>Hora:</strong> {{ pedido.hora }}</p>
-  <p><strong>Estado:</strong> {{ pedido.estado }}</p>
+<mat-dialog-content class="dialog-content mat-typography">
+  <div class="pedido-info">
+    <p><strong>Código:</strong> {{ pedido.codigo }}</p>
+    <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
+    <p><strong>Total:</strong> S/. {{ pedido.total.toFixed(2) }}</p>
+    <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
+    <p><strong>Hora:</strong> {{ pedido.hora }}</p>
+    <p><strong>Estado:</strong> 
+      <mat-chip [ngClass]="{
+        'chip-pendiente': pedido.estado === 'Pendiente',
+        'chip-pagado': pedido.estado === 'Pagado',
+        'chip-cancelado': pedido.estado === 'Cancelado'
+      }">
+        {{ pedido.estado }}
+      </mat-chip>
+    </p>
+  </div>
 
-  <div *ngIf="pedido.details && pedido.details.length > 0" class="detalles">
-    <h3>Detalles del Pedido</h3>
+  <div *ngIf="pedido.details?.length" class="detalles">
+    <h3 class="detalle-titulo">🛒 Productos del Pedido</h3>
     <table class="detalles-tabla">
       <thead>
         <tr>
@@ -23,19 +33,20 @@
         <tr *ngFor="let item of pedido.details">
           <td>{{ item.product.name }}</td>
           <td>{{ item.quantity }}</td>
-          <td>${{ item.unitPrice.toFixed(2) }}</td>
-          <td>${{ (item.unitPrice * item.quantity).toFixed(2) }}</td>
+          <td>S/. {{ item.unitPrice.toFixed(2) }}</td>
+          <td>S/. {{ (item.unitPrice * item.quantity).toFixed(2) }}</td>
         </tr>
       </tbody>
     </table>
   </div>
-  <div *ngIf="!pedido.details?.length">
+
+  <div *ngIf="!pedido.details?.length" class="sin-detalles">
     <p><em>No hay detalles disponibles para este pedido.</em></p>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="cerrar()">Cerrar</button>
+  <button mat-stroked-button (click)="cerrar()">Cerrar</button>
   <button *ngIf="pedido.estado === 'Pagado'" mat-flat-button color="primary" (click)="imprimir()">
     Imprimir Boleta
   </button>

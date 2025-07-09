@@ -6,10 +6,10 @@ const BASE_URL = 'https://velazco-backend-develop.up.railway.app/api';
 
 @Injectable({ providedIn: 'root' })
 export class OrdenProduccionService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private getAuthHeaders() {
-    const token = localStorage.getItem('auth_token'); 
+    const token = localStorage.getItem('auth_token');
     return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -18,8 +18,7 @@ export class OrdenProduccionService {
     };
   }
 
-  
-  // Órdenes
+
   getPendingProductions(): Observable<any> {
     return this.http.get(`${BASE_URL}/productions/pending`, this.getAuthHeaders());
   }
@@ -41,19 +40,17 @@ export class OrdenProduccionService {
     return this.http.delete(`${BASE_URL}/productions/${id}`, this.getAuthHeaders());
   }
 
-  // Productos
   getProducts(): Observable<any> {
     return this.http.get(`${BASE_URL}/products`, this.getAuthHeaders());
   }
-  
-   finalizeProduction(id: number): Observable<any> {
+
+  finalizeProduction(id: number): Observable<any> {
     return this.http.patch(
-      `${BASE_URL}/productions/${id}/finalizar`, 
-      {}, 
+      `${BASE_URL}/productions/${id}/finalizar`,
+      {},
       this.getAuthHeaders()
     );
   }
-  // Usuarios
   getUSers(): Observable<any> {
     return this.http.get(`${BASE_URL}/users`, this.getAuthHeaders());
   }

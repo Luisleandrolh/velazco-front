@@ -1,16 +1,13 @@
 <div class="users-container">
-  <!-- Mensajes de error -->
   <div *ngIf="error" class="error-message">
     {{ error }}
     <button (click)="error = null">×</button>
   </div>
 
-  <!-- Spinner de carga -->
   <div *ngIf="loading" class="loading-spinner">
     Cargando...
   </div>
 
-  <!-- Vista principal de lista de usuarios -->
   <div *ngIf="currentView === 'list' && !loading" class="users-list-view">
     <h1>Usuarios y Roles</h1>
     
@@ -64,7 +61,6 @@
     </table>
   </div>
   
-  <!-- Vista de creación de usuario (modal) -->
   <div *ngIf="showModal && currentView === 'create'" class="modal-overlay">
     <div class="modal-content">
       <h1>Crear Nuevo Usuario</h1>

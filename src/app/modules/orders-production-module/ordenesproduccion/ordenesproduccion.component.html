@@ -4,7 +4,6 @@
     <p class="subtitle">Repostería Velazco</p>
   </header>
 
-  <!-- Modal de Detalles de la Orden -->
   <p-dialog header="Detalles de Orden de Producción" [(visible)]="detailModalVisible" [modal]="true"
     [style]="{width: '60vw'}" [closable]="true" [draggable]="false" [resizable]="false">
     <div *ngIf="selectedOrder" class="order-details-container">
@@ -76,7 +75,6 @@
 
       <div class="instructions-section">
         <h3>Instrucciones de la Orden</h3>
-        <!-- Mostrar comentario solo si no es INCOMPLETO, ya que ahí se muestra arriba -->
         <p *ngIf="selectedOrder.comments && selectedOrder.status !== 'INCOMPLETO'">
           {{ selectedOrder.comments }}
         </p>
@@ -121,7 +119,6 @@
     </p-footer>
   </p-dialog>
 
-  <!-- Modal de Formulario Mejorado -->
   <p-dialog [(visible)]="modalVisible" [modal]="true" [style]="{width: '600px'}"
     [header]="isEditing ? 'Editar Orden' : 'Nueva Orden'" [draggable]="false" [resizable]="false">
     <form *ngIf="productionForm" [formGroup]="productionForm" (ngSubmit)="guardarOrden()" class="form-modal-container">

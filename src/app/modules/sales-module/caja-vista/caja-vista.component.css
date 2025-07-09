@@ -1,211 +1,118 @@
-/* Fondo principal */
 .container-bg {
-  background-color: #fafafa; /* Fondo claro y suave */
-  padding: 2rem 3rem;
-  color: #333;
-  font-family: 'Roboto', sans-serif;
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05); /* Sombra ligera */
-  max-width: 1400px;
-  margin: 30px auto;
+  padding: 32px;
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  max-width: 1200px;
+  margin: auto;
 }
 
-/* Título */
 .titulo {
-  color: #2c3e50;
-  font-size: 2.3rem;
-  margin-bottom: 1.5rem;
-  letter-spacing: 1px;
-  text-align: center;
-  font-weight: 500;
-}
-
-/* Subtítulo */
-.subtitulo {
-  color: #7f8c8d;
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-weight: 400;
-  font-style: italic;
-}
-
-/* Campo de búsqueda */
-.mat-form-field {
-  background-color: #fff;
-  border-radius: 8px;
-  width: 100%;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.mat-form-field input {
-  padding: 0.8rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-/* Tabs */
-.tabs {
-  background-color: #ffffff;
-  border-radius: 10px;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-/* Tarjeta de pedido */
-.pedido-card {
-  background-color: #ffffff;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 24px;
   color: #333;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-  max-width: 100%;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease;
+}
+
+.subtitulo {
+  font-size: 20px;
+  font-weight: 500;
+  color: #555;
+}
+
+.tabs {
+  margin-bottom: 16px;
+}
+
+.pedido-card {
+  margin-bottom: 16px;
+  border-left: 6px solid #1976d2;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: box-shadow 0.3s;
 }
 
 .pedido-card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-/* Estado */
 .codigo {
-  color: #2c3e50;
-  margin-bottom: 0.3rem;
-  font-size: 1.1rem;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: #2e3c47;
 }
 
 .cliente {
-  color: #7f8c8d;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
-
-.monto {
-  color: #000000;
-  font-size: 1.3rem;
+  font-size: 14px;
+  margin: 4px 0;
+  color: #666;
 }
 
 .fecha {
-  color: #95a5a6;
-  font-size: 0.9rem;
-  font-weight: 400;
+  font-size: 12px;
+  color: #999;
+  margin-top: 6px;
 }
 
-/* Chips */
+.monto {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+/* Chips de estado */
 mat-chip {
-  font-weight: 500;
-  border-radius: 20px;
-  padding: 6px 18px;
-  font-size: 1rem;
-  user-select: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 6px;
 }
 
 .chip-pendiente {
-  background-color: #f39c12;
-  color: white;
-}
-
-.chip-pendiente:hover {
-  background-color: #e67e22;
+  background-color: #fff3cd;
+  color: #856404;
 }
 
 .chip-pagado {
-  background-color: #000000;
-  color: white;
-}
-
-.chip-pagado:hover {
-  background-color: #27ae60;
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .chip-cancelado {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
-.chip-cancelado:hover {
-  background-color: #c0392b;
-}
-
-/* Botones comunes */
-button {
-  font-weight: 500;
-  border-radius: 20px;
-  padding: 0.6rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1);
-  border: none;
-  outline: none;
-  user-select: none;
-  text-transform: capitalize;
-}
-
-button:hover {
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-  transform: translateY(-3px);
-}
-
-/* Botón Pagar */
+/* Botones personalizados */
 .btn-pagar {
-  background-color: #ff9500;
-  color: white;
+  color: #388e3c;
+  border-color: #388e3c;
 }
 
-.btn-pagar:hover {
-  background-color: #ffb84d;
-}
-
-/* Botón Cancelar */
 .btn-cancelar {
-  background-color: #e74c3c;
-  color: white;
+  color: #d32f2f;
+  border-color: #d32f2f;
 }
 
-.btn-cancelar:hover {
-  background-color: #c0392b;
-}
-
-/* Botón Ver Detalles */
 .btn-detalle {
-  background-color: #3498db;
-  color: white;
+  background-color: #1976d2;
+  color: #fff;
 }
 
-.btn-detalle:hover {
-  background-color: #2980b9;
-}
-
-/* Botón Imprimir Boleta */
 .btn-boleta {
-  background-color: #1abc9c;
-  color: white;
+  background-color: #673ab7;
+  color: #fff;
 }
 
-.btn-boleta:hover {
-  background-color: #16a085;
-}
+@media screen and (max-width: 768px) {
+  .pedido-card mat-card-content {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
 
-/* Margen entre botones */
-.me-2 {
-  margin-right: 1rem;
-}
-
-/* Utilidades */
-.w-100 {
-  width: 100%;
-}
-
-.text-muted {
-  font-style: italic;
-  color: #7f8c8d;
+  .pedido-card .text-end {
+    width: 100%;
+    margin-top: 12px;
+  }
 }
