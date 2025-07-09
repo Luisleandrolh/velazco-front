@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="form-container sign-in-container">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <h1>Iniciar sesión</h1>
+
+      <div class="social-container">
+        <a href="#" class="social"><i class="fas fa-bread-slice"></i></a>
+        <a href="#" class="social"><i class="fas fa-cookie"></i></a>
+        <a href="#" class="social"><i class="fas fa-birthday-cake"></i></a>
+      </div>
+
+      <span>Usa tu Cuenta</span>
+
+      <div class="infield">
+        <input type="email" formControlName="email" placeholder="Correo" />
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error">
+          Correo inválido
+        </div>
+      </div>
+
+      <div class="infield">
+        <input type="password" formControlName="password" placeholder="Contraseña" />
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error">
+          Contraseña requerida
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">Ingresar</button>
+    </form>
+  </div>
+</div>
