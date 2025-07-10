@@ -27,6 +27,6 @@ export class ProductionService {
   }
 
   finalizarProduccion(id: number, body: any): Observable<any> {
-    return this.http.patch(`${BASE_URL}/productions/${id}/finalizar`, body);
+    return this.http.patch(`${BASE_URL}/productions/${id}/finalize`, body);
   }
 }

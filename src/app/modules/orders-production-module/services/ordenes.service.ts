@@ -25,7 +25,7 @@ export class OrdenProduccionService {
   }
 
   getHistorialProductions(): Observable<any> {
-    return this.http.get(`${BASE_URL}/productions/historial`, this.getAuthHeaders());
+    return this.http.get(`${BASE_URL}/productions/history`, this.getAuthHeaders());
   }
 
   createProduction(production: any): Observable<any> {
@@ -47,7 +47,7 @@ export class OrdenProduccionService {
   }
   // Detalles de la producción
    finalizeProduction(id: number): Observable<any> {
-    return this.http.patch(`${BASE_URL}/productions/${id}/finalizar`, this.getAuthHeaders());
+    return this.http.patch(`${BASE_URL}/productions/${id}/finalize`, this.getAuthHeaders());
   }
   // Usuarios
   getUsers(): Observable<any> {
