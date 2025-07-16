@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { InventarioServiceService } from '../services/inventario-service.service';
 import { CategoriaService } from '../services/categoria.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RealtimeService } from 'src/app/services/realtime.service';
 
 interface Producto {
   id: number;
@@ -45,7 +46,9 @@ export class InventarioVistaComponent {
   constructor(
     private serviceProducto: InventarioServiceService,
     private serviceCategory: CategoriaService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+      private realtimeService: RealtimeService
+
   ) {}
 
   mostrarAlerta(texto: string) {
@@ -59,6 +62,7 @@ export class InventarioVistaComponent {
   ngOnInit(): void {
     this.cargarProductos();
     this.cargarCategorias();
+      this.iniciarEscuchaEventosSSE();
   }
 
   get filteredProducts(): Producto[] {
@@ -70,6 +74,66 @@ export class InventarioVistaComponent {
       p.id.toString().includes(term)
     );
   }
+
+  iniciarEscuchaEventosSSE(): void {
+  const url = 'https://velazco-realtime-service-develop.up.railway.app/sse/events';
+
+  this.realtimeService.listenToEvent('product.created', url).subscribe({
+    next: (event) => {
+      this.productos.push(this.mapProducto(event.data));
+      this.mostrarAlerta('🆕 Producto creado en tiempo real');
+    }
+  });
+
+  this.realtimeService.listenToEvent('product.updated', url).subscribe({
+    next: (event) => {
+      const i = this.productos.findIndex(p => p.id === event.data.id);
+      if (i !== -1) this.productos[i] = this.mapProducto(event.data);
+      this.mostrarAlerta('✏️ Producto actualizado en tiempo real');
+    }
+  });
+
+  this.realtimeService.listenToEvent('product.deleted', url).subscribe({
+    next: (event) => {
+      this.productos = this.productos.filter(p => p.id !== event.data.id);
+      this.mostrarAlerta('🗑️ Producto eliminado en tiempo real');
+    }
+  });
+
+  this.realtimeService.listenToEvent('product.stock.changed', url).subscribe({
+    next: (event) => {
+      const idx = this.productos.findIndex(p => p.id === event.data.productId);
+      if (idx !== -1) {
+        this.productos[idx].stock = event.data.newStock;
+        this.mostrarAlerta('📦 Stock actualizado en tiempo real');
+      }
+    }
+  });
+
+  this.realtimeService.listenToEvent('category.created', url).subscribe({
+    next: (event) => {
+      this.categorias.push(event.data);
+      this.mostrarAlerta('📁 Categoría creada');
+    }
+  });
+
+  this.realtimeService.listenToEvent('category.updated', url).subscribe({
+    next: (event) => {
+      const i = this.categorias.findIndex(c => c.id === event.data.id);
+      if (i !== -1) this.categorias[i] = event.data;
+      this.mostrarAlerta('📁 Categoría actualizada');
+    }
+  });
+
+  this.realtimeService.listenToEvent('category.deleted', url).subscribe({
+    next: (event) => {
+      this.categorias = this.categorias.filter(c => c.id !== event.data.id);
+      this.mostrarAlerta('📁 Categoría eliminada');
+    }
+  });
+}
+
+
 
   abrirModalEdicion(producto: Producto): void {
     this.isEditing = true;
