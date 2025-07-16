@@ -10,7 +10,7 @@
   <!-- Modules Grid -->
   <div class="modules-grid">
     <!-- Dashboard -->
-    <div class="module-card">
+    <div *ngIf="userProfile?.role === 'Administrador'"  class="module-card">
       <div class="card-icon-section bg-blue">
         <div class="icon-container bg-blue-dark">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -21,7 +21,7 @@
       <div class="card-content">
         <h3 class="card-title text-blue">Dashboard</h3>
         <p class="card-description">Visualiza métricas y estadísticas importantes del negocio</p>
-        <a routerLink="/dashboard-module/dashboard" class="btn btn-blue">
+        <a routerLink="/pages/dashboard-module/dashboard" class="btn btn-blue">
           Acceder
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Inventario -->
-    <div class="module-card">
+    <div *ngIf="userProfile?.role === 'Administrador'" class="module-card">
       <div class="card-icon-section bg-green">
         <div class="icon-container bg-green-dark">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -44,7 +44,7 @@
       <div class="card-content">
         <h3 class="card-title text-green">Inventario</h3>
         <p class="card-description">Administra el catálogo completo y control de inventario</p>
-        <a routerLink="/inventario-module/inventario" class="btn btn-green">
+        <a routerLink="/pages/inventario-module/inventario" class="btn btn-green">
           Acceder
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -54,7 +54,7 @@
     </div>
 
     <!-- Pedidos en Tienda -->
-    <div class="module-card">
+    <div *ngIf="userProfile?.role === 'Administrador'||userProfile?.role === 'Vendedor'" class="module-card">
       <div class="card-icon-section bg-red">
         <div class="icon-container bg-red-dark">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -67,7 +67,7 @@
       <div class="card-content">
         <h3 class="card-title text-red">Pedidos en Tienda</h3>
         <p class="card-description">Gestiona los pedidos realizados en el local</p>
-        <a routerLink="/orders-module/pedidos" class="btn btn-red">
+        <a routerLink="/pages/orders-module/pedidos" class="btn btn-red">
           Acceder
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -77,7 +77,7 @@
     </div>
 
     <!-- Caja -->
-    <div class="module-card">
+    <div *ngIf="userProfile?.role === 'Administrador'||userProfile?.role === 'Cajero'"class="module-card">
       <div class="card-icon-section bg-amber">
         <div class="icon-container bg-amber-dark">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -89,7 +89,7 @@
       <div class="card-content">
         <h3 class="card-title text-amber">Caja</h3>
         <p class="card-description">Administra transacciones y cierres de caja</p>
-        <a routerLink="/sales-module/sales" class="btn btn-amber">
+        <a routerLink="/pages/sales-module/caja" class="btn btn-amber">
           Acceder
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -99,7 +99,7 @@
     </div>
 
     <!-- Entregas -->
-    <div class="module-card">
+    <div *ngIf="userProfile?.role === 'Administrador'|| userProfile?.role === 'Despachador'"  class="module-card">
       <div class="card-icon-section bg-cyan">
         <div class="icon-container bg-cyan-dark">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -113,7 +113,7 @@
       <div class="card-content">
         <h3 class="card-title text-cyan">Entregas</h3>
         <p class="card-description">Controla pedidos para llevar y entregas a domicilio</p>
-        <a routerLink="/deliveries-module/entregas-vista" class="btn btn-cyan">
+        <a routerLink="/pages/deliveries-module/entregas-vista" class="btn btn-cyan">
           Acceder
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -123,7 +123,7 @@
     </div>
 
     <!-- Producción -->
-    <div class="module-card">
+    <div *ngIf="userProfile?.role === 'Administrador'|| userProfile?.role === 'Producción'" class="module-card">
       <div class="card-icon-section bg-gray">
         <div class="icon-container bg-gray-dark">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -136,7 +136,7 @@
       <div class="card-content">
         <h3 class="card-title text-gray">Producción</h3>
         <p class="card-description">Gestiona el área de producción de alimentos</p>
-        <a routerLink="/production-module/produccion" class="btn btn-gray">
+        <a routerLink="/pages/production-module/produccion" class="btn btn-gray">
           Acceder
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -146,7 +146,7 @@
     </div>
 
     <!-- Órdenes de Producción -->
-    <div class="module-card">
+    <div *ngIf="userProfile?.role === 'Administrador'|| userProfile?.role === 'Producción'" class="module-card">
       <div class="card-icon-section bg-slate">
         <div class="icon-container bg-slate-dark">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -159,7 +159,7 @@
       <div class="card-content">
         <h3 class="card-title text-slate">Órdenes de Producción</h3>
         <p class="card-description">Crea y administra las órdenes de producción</p>
-        <a routerLink="/orders-production-module/ordenesproduccion" class="btn btn-slate">
+        <a routerLink="/pages/orders-production-module/ordenesproduccion" class="btn btn-slate">
           Acceder
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -169,7 +169,7 @@
     </div>
 
     <!-- Usuario y Roles -->
-    <div class="module-card">
+    <div *ngIf="userProfile?.role === 'Administrador'" class="module-card">
       <div class="card-icon-section bg-purple">
         <div class="icon-container bg-purple-dark">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -182,7 +182,7 @@
       <div class="card-content">
         <h3 class="card-title text-purple">Usuario y Roles</h3>
         <p class="card-description">Administra usuarios y permisos del sistema</p>
-        <a routerLink="/users-module/users" class="btn btn-purple">
+        <a routerLink="/pages/users-module/users" class="btn btn-purple">
           Acceder
           <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -193,7 +193,7 @@
   </div>
 
   <!-- Footer Stats -->
-  <div class="stats-grid">
+  <div *ngIf="userProfile?.role === 'Administrador'" class="stats-grid">
     <div class="stat-card">
       <div class="stat-number text-blue">8</div>
       <div class="stat-label">Módulos Disponibles</div>

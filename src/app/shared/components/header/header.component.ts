@@ -1,29 +1,39 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { LoginService } from '../../../../app/core/auth/service/login.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-
-@Injectable({
-  providedIn: 'root',
-})
-
 export class HeaderComponent implements OnInit {
-  public currentLang: string = "es";
   
   constructor(
-    public translate: TranslateService
+    public translate: TranslateService,
+    public loginService: LoginService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
 
   switchLang(lang: string) {
     this.translate.use(lang);
-    this.currentLang = lang;
   }
+
+ logout(): void {
+  this.loginService.logout().subscribe({
+    next: () => {
+      this.router.navigate(['/login']);
+    },
+    error: (err) => {
+      console.error('Error al cerrar sesión:', err);
+      localStorage.removeItem('token');
+      this.router.navigate(['/login']);
+  }
+  });
+}
 }

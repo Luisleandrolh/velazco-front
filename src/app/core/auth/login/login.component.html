@@ -25,7 +25,14 @@
         </div>
       </div>
 
-      <button type="submit" [disabled]="loginForm.invalid">Ingresar</button>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid || loading">
+        <span *ngIf="!loading">Ingresar</span>
+        <span *ngIf="loading">Cargando...</span>
+      </button>
     </form>
   </div>
 </div>

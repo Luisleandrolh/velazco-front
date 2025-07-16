@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoginService } from '../service/login.service';
 
 @Component({
   selector: 'app-login',
@@ -15,33 +15,34 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
+    private loginService: LoginService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
-      codigo: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
 
-  onSubmit(): void {
-    if (this.loginForm.invalid) return;
-  
-    this.loading = true;
-    this.errorMessage = '';
-  
-    const { codigo, password } = this.loginForm.value;
-  
-    this.authService.login(codigo, password).subscribe({
-      next: () => {
-        this.loading = false;
-      },
-      error: (error: { status: number; }) => {
-        this.loading = false;
-        this.errorMessage = error.status === 401 
-          ? 'Credenciales incorrectas' 
-          : 'Error en el servidor. Por favor intente nuevamente.';
-      }
-    });
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this.loading = true;
+      this.errorMessage = '';
+      const { email, password } = this.loginForm.value;
+
+      this.loginService.login(email, password).subscribe({
+        next: () => {
+          this.loading = false;
+          // Redirige a '/pages/home/welcome' tras login exitoso
+          this.router.navigate(['/pages/home/welcome']);
+        },
+        error: (error) => {
+          this.loading = false;
+          this.errorMessage = 'Credenciales incorrectas. Por favor, inténtelo de nuevo.';
+          console.error('Error en el login:', error);
+        }
+      });
+    }
   }
 }

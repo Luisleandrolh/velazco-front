@@ -9,11 +9,19 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @NgModule({
-  declarations: [HeaderComponent, SidenavComponent],
+  declarations: [
+    HeaderComponent, 
+    SidenavComponent
+  ],
   imports: [
     CommonModule,
+    MatTooltipModule,
+    MatSnackBarModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
@@ -22,6 +30,9 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
     RouterModule,
     TranslateModule,
   ],
-  exports: [HeaderComponent, SidenavComponent],
+  exports: [
+    HeaderComponent, 
+    SidenavComponent
+  ],
 })
 export class SharedModule {}

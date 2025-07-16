@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { User } from '../models/user.interface';
+import { Role } from '../models/role.interface'; 
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -39,6 +40,16 @@ export class UsersService {
       })
     );
   }
+
+getRoles(): Observable<Role[]> {
+  return this.http.get<Role[]>(`${environment.baseUrlApi}/api/roles`).pipe(
+    catchError((error: HttpErrorResponse) => {
+      console.error('Error al obtener roles:', error);
+      return throwError(() => error);
+    })
+  );
+}
+
 
   deleteUser(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(

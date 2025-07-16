@@ -1,37 +1,31 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PageUnauthorizedComponent } from './core/components/page-unauthorized/page-unauthorized.component';
-import { PageNotFoundComponent } from './core/components/page-not-found/page-not-found.component';
-import { PagesComponent } from './modules/pages.component';
-import { PagesRoutingModule } from './modules/pages-routing.module';
+import { AuthGuard } from './core/auth/guards/auth.guard';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () =>
-      import(`./modules/home/home.module`).then((m) => m.HomeModule),
+    path: 'login', 
+    loadChildren: () => import('./core/auth/auth.module').then(m => m.AuthModule)
   },
   {
-    path: '',
-    component: PagesComponent,
-    loadChildren: () =>
-      import('./modules/pages.module').then((m) => m.PagesModule),
+    path: 'pages',
+    canActivateChild: [AuthGuard],
+    loadChildren: () => import('./modules/pages.module').then(m => m.PagesModule)
   },
+
   {
-    path: 'unauthorized',
-    component: PageUnauthorizedComponent,
+    path: '', 
+    redirectTo: '/login',
+    pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: '/home/welcome',
-  },
+    redirectTo: '/login' 
+  }
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
-    PagesRoutingModule,
-  ],
-  exports: [RouterModule],
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
 export class AppRoutingModule {}

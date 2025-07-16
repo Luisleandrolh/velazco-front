@@ -47,13 +47,13 @@
           </td>
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
-          <td>{{ user.active }}</td>
+          <td>{{ user.active ? 'Activo' : 'Inactivo' }}</td>
           <td class="actions-cell">
             <button (click)="showUserDetails(user)" class="action-btn">
               Editar
             </button>
-<button (click)="deleteUser(user.id!)" class="action-btn delete-btn" *ngIf="user.id">
-                Eliminar
+            <button (click)="deleteUser(user.id!)" class="action-btn delete-btn" *ngIf="user.id">
+              Eliminar
             </button>
           </td>
         </tr>
@@ -61,6 +61,7 @@
     </table>
   </div>
   
+  <!-- Modal Crear Usuario -->
   <div *ngIf="showModal && currentView === 'create'" class="modal-overlay">
     <div class="modal-content">
       <h1>Crear Nuevo Usuario</h1>
@@ -114,13 +115,9 @@
       <div class="form-section">
         <h2>Rol</h2>
         <select [(ngModel)]="newUser.roleId" class="form-select">
-          <option value="1">Administrador</option>
-          <option value="4">Produccion</option>
-          <option value="2">Cajero</option>
-          <option value="3">Entregas</option>
+          <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.name }}</option>
         </select>
       </div>
-      
 
       <div class="form-section">
         <h2>Estado</h2>
@@ -139,7 +136,7 @@
     </div>
   </div>
   
-  <!-- Vista de detalles/edición de usuario (modal) -->
+  <!-- Modal Editar Usuario -->
   <div *ngIf="showModal && currentView === 'details' && selectedUser" class="modal-overlay">
     <div class="modal-content">
       <h1>Editar Usuario</h1>
@@ -174,10 +171,7 @@
         <div class="detail-label">Rol</div>
         <div class="detail-value">
           <select [(ngModel)]="selectedUser.roleId" class="form-select">
-            <option value="">Producción</option>
-            <option value="1">Administrador</option>
-            <option value="">Cajero</option>
-            <option value="">Entregas</option>
+            <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.name }}</option>
           </select>
         </div>
         
@@ -198,4 +192,4 @@
       </div>
     </div>
   </div>
-</div>  
+</div>

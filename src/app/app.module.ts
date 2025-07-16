@@ -7,7 +7,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { PageNotFoundComponent } from './core/components/page-not-found/page-not-found.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgChartsModule } from 'ng2-charts';
 
 import {
   HttpClient,
@@ -19,6 +18,8 @@ import { StoreModule } from '@ngrx/store';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { JwtInterceptor } from './core/auth/interceptor/jwt.interceptor';
+import { AuthModule } from './core/auth/auth.module';
+
 
 @NgModule({
   declarations: [
@@ -30,11 +31,11 @@ import { JwtInterceptor } from './core/auth/interceptor/jwt.interceptor';
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
+    AuthModule,
     BrowserAnimationsModule,
     MatToolbarModule,
     MatIconModule,
     HttpClientModule,
-       NgChartsModule,
     StoreModule.forRoot({ }),
     TranslateModule.forRoot({
       loader: {

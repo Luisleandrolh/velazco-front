@@ -45,3 +45,31 @@ mat-sidenav {
   .menu-label {
     font-size: 14px; /* o el tamaño que prefieras */
   }
+
+  
+  .white-toolbar {
+  background-color: white;
+  color: #333;
+  padding: 0 16px;
+}
+
+.maintoolbar {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.brand-name {
+  margin-left: 16px;
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.welcome-message {
+  margin: 0 16px 0 0;
+  font-size: 1rem;
+  font-weight: normal;
+}

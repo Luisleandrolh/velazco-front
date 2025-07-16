@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../services/users.service';
 import { User } from '../models/user.interface';
+import { Role } from '../models/role.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -13,11 +14,7 @@ export class UsersComponent implements OnInit {
   showModal = false;
   searchQuery = '';
   showPassword = false;
-
-  validateEmail(email: string): boolean {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
+  roles: Role[] = [];
 
   newUser: User = {
     name: '',
@@ -33,14 +30,11 @@ export class UsersComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  roleMap: Record<string, string> = {
-    '1': 'Administrador',
-  };
-
   constructor(private usersService: UsersService) {}
 
   ngOnInit(): void {
     this.loadUsers();
+    this.loadRoles();
   }
 
   loadUsers(): void {
@@ -54,8 +48,28 @@ export class UsersComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar usuarios:', error);
+        this.loading = false;
+        this.error = 'Error al cargar usuarios';
       },
     });
+  }
+
+  loadRoles(): void {
+    this.usersService.getRoles().subscribe({
+      next: (data) => {
+        this.roles = data;
+        console.log('Roles cargados:', this.roles);
+      },
+      error: (err) => {
+        console.error('Error al cargar roles:', err);
+        this.error = 'No se pudieron cargar los roles';
+      },
+    });
+  }
+
+  getRoleName(roleId: string): string {
+    const role = this.roles.find(r => r.id.toString() === roleId);
+    return role ? role.name : 'Sin rol';
   }
 
   get filteredUsers(): User[] {
@@ -91,6 +105,12 @@ export class UsersComponent implements OnInit {
   closeModal(): void {
     this.showModal = false;
     this.currentView = 'list';
+    this.selectedUser = null;
+  }
+
+  validateEmail(email: string): boolean {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   }
 
   createUser(): void {
@@ -120,7 +140,7 @@ export class UsersComponent implements OnInit {
     };
 
     this.usersService.createUser(userToCreate).subscribe({
-      next: (createdUser) => {
+      next: () => {
         this.closeModal();
         this.loading = false;
         this.loadUsers();
@@ -131,16 +151,6 @@ export class UsersComponent implements OnInit {
         this.loading = false;
       },
     });
-  }
-
-  private parseServerError(err: HttpErrorResponse): string {
-    if (err.status === 0) {
-      return 'No se pudo conectar al servidor';
-    }
-    if (err.error?.message) {
-      return err.error.message;
-    }
-    return `Error del servidor (${err.status}): ${err.statusText}`;
   }
 
   updateUser(): void {
@@ -155,8 +165,6 @@ export class UsersComponent implements OnInit {
       return;
     }
 
-    console.log('Actualizando usuario con ID:', userId);
-
     const userToUpdate: User = {
       name: this.selectedUser.name,
       email: this.selectedUser.email,
@@ -167,7 +175,7 @@ export class UsersComponent implements OnInit {
 
     this.loading = true;
     this.usersService.updateUser(userId, userToUpdate).subscribe({
-      next: (updatedUser) => {
+      next: () => {
         this.loadUsers();
         this.closeModal();
         this.loading = false;
@@ -204,5 +212,15 @@ export class UsersComponent implements OnInit {
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  private parseServerError(err: HttpErrorResponse): string {
+    if (err.status === 0) {
+      return 'No se pudo conectar al servidor';
+    }
+    if (err.error?.message) {
+      return err.error.message;
+    }
+    return `Error del servidor (${err.status}): ${err.statusText}`;
   }
 }

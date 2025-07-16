@@ -1,3 +1,4 @@
+
 <mat-toolbar class="white-toolbar">
   <div class="maintoolbar">
     <button mat-icon-button aria-label="Menu icon" (click)="toggleMenu()">
@@ -13,63 +14,65 @@
   <mat-sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="isMobile ? 'false' : 'true'">
     <mat-nav-list>
 
-      <a mat-list-item routerLink="/">
+      <a mat-list-item routerLink="/pages/home/">
         <span class="entry">
           <mat-icon>home</mat-icon>
           <span class="menu-label">Inicio</span>
         </span>
       </a>
 
-      <a mat-list-item routerLink="/dashboard-module/dashboard">
-        <span class="entry">
-          <mat-icon>assessment</mat-icon>
-          <span class="menu-label">Dashboard</span>
-        </span>
-      </a>
+     <a *ngIf="userProfile?.role === 'Administrador'" 
+   mat-list-item 
+   routerLink="/pages/dashboard-module/dashboard">
+   <span class="entry">
+     <mat-icon>assessment</mat-icon>
+     <span class="menu-label">Dashboard</span>
+   </span>
+</a>
 
-      <a mat-list-item routerLink="/inventario-module/inventario">
+      <a *ngIf="userProfile?.role === 'Administrador'" mat-list-item routerLink="/pages/inventario-module/inventario">
         <span class="entry">
           <mat-icon>cake</mat-icon>
           <span class="menu-label">Inventario</span>
         </span>
       </a>
 
-      <a mat-list-item routerLink="/orders-module/pedidos">
+      <a *ngIf="userProfile?.role === 'Administrador'|| userProfile?.role === 'Vendedor'"  mat-list-item routerLink="/pages/orders-module/pedidos">
         <span class="entry">
           <mat-icon>point_of_sale</mat-icon>
           <span class="menu-label">Pedidos en tienda</span>
         </span>
       </a>
 
-      <a mat-list-item routerLink="/sales-module/caja">
+      <a *ngIf="userProfile?.role === 'Administrador'|| userProfile?.role === 'Cajero'" mat-list-item routerLink="/pages/sales-module/caja">
         <span class="entry">
           <mat-icon>receipt_long</mat-icon>
           <span class="menu-label">Caja</span>
         </span>
       </a>
 
-      <a mat-list-item routerLink="/deliveries-module/entregas-vista">
+      <a *ngIf="userProfile?.role === 'Administrador'|| userProfile?.role === 'Despachador'" mat-list-item routerLink="/pages/deliveries-module/entregas-vista">
         <span class="entry">
           <mat-icon>delivery_dining</mat-icon>
           <span class="menu-label">Entregas</span>
         </span>
       </a>
 
-      <a mat-list-item routerLink="/production-module/produccion">
+      <a *ngIf="userProfile?.role === 'Administrador'|| userProfile?.role === 'Producción'"  mat-list-item routerLink="/pages/production-module/produccion">
         <span class="entry">
           <mat-icon>bar_chart</mat-icon>
           <span class="menu-label">Producción</span>
         </span>
       </a>
 
-      <a mat-list-item routerLink="/orders-production-module/ordenesproduccion">
+      <a *ngIf="userProfile?.role === 'Administrador'|| userProfile?.role === 'Producción'" mat-list-item routerLink="/pages/orders-production-module/ordenesproduccion">
         <span class="entry">
           <mat-icon>assignment</mat-icon>
           <span class="menu-label">Órdenes de Producción</span>
         </span>
       </a>
 
-      <a mat-list-item routerLink="/users-module/users">
+      <a *ngIf="userProfile?.role === 'Administrador'" mat-list-item routerLink="/pages/users-module/users">
         <span class="entry">
           <mat-icon>group</mat-icon>
           <span class="menu-label">Usuarios y Roles</span>
