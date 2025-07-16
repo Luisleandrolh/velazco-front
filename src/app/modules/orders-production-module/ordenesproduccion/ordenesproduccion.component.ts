@@ -4,6 +4,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { OrdenProduccionService } from '../services/ordenes.service';
 import Swal from 'sweetalert2';
+import { RealtimeService } from 'src/app/services/realtime.service';
+
 
 interface OrdenHistorial {
   id: string;
@@ -60,7 +62,8 @@ export class ProductionComponent implements OnInit {
 
   constructor(
     private service: OrdenProduccionService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private realtimeService: RealtimeService
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +71,57 @@ export class ProductionComponent implements OnInit {
     this.loadProductions();
     this.loadHistorial();
     this.loadProducts();
+    this.iniciarEscuchaProduccionTiempoReal();
   }
+
+
+
+
+  iniciarEscuchaProduccionTiempoReal(): void {
+  const url = 'https://velazco-realtime-service-develop.up.railway.app/sse/events';
+
+  const eventos = [
+    'production.created',
+    'production.updated',
+    'production.finalized',
+    'production.deleted'
+  ];
+
+  for (const tipo of eventos) {
+    this.realtimeService.listenToEvent(tipo, url).subscribe({
+      next: ({ type, data }) => {
+        console.log(`📡 Evento recibido: ${type}`, data);
+
+        // Recargar datos relevantes según el tipo de evento
+        switch (type) {
+          case 'production.created':
+            Swal.fire('📦 Nueva Orden', `Orden #${data.id} fue creada.`, 'info');
+            this.loadProductions();
+            break;
+          case 'production.updated':
+            Swal.fire('🔄 Orden Actualizada', `Orden #${data.id} fue actualizada.`, 'info');
+            this.loadProductions();
+            this.loadHistorial();
+            break;
+          case 'production.finalized':
+            Swal.fire('✅ Orden Completada', `Orden #${data.id} fue finalizada.`, 'success');
+            this.loadProductions();
+            this.loadHistorial();
+            break;
+          case 'production.deleted':
+            Swal.fire('🗑️ Orden Eliminada', `Orden #${data.id} fue eliminada.`, 'warning');
+            this.loadProductions();
+            this.loadHistorial();
+            break;
+        }
+      },
+      error: (err) => {
+        console.error(`❌ Error en SSE (${tipo}):`, err);
+      }
+    });
+  }
+}
+
 
   loadProductions(): void {
     this.service.getPendingProductions().subscribe({

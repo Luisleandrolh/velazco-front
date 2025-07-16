@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { DeliveriesModuleService } from './service/deliveries-module.service';
+import { RealtimeService } from 'src/app/services/realtime.service';
 
 export interface DeliveryOrder {  //interfaz de pedido de entrega
   id: string;
@@ -42,12 +43,43 @@ export class EntregasVistaComponent implements OnInit { //componente de entregas
   userId = 1;
   userName = 'Mateo';
 
-  constructor(private deliveryService: DeliveriesModuleService) {} //constructor que inyecta el servicio de entregas
+  constructor(private deliveryService: DeliveriesModuleService,   private realtimeService: RealtimeService
+) {} //constructor que inyecta el servicio de entregas
 
   ngOnInit(): void {  //metodo que carga los pedidos al iniciar el componente
     this.cargarPedidos();
     this.activeTabItem = this.tabItems[0];
+      this.iniciarEscuchaTiempoReal(); 
+
   }
+
+  iniciarEscuchaTiempoReal(): void {
+  const url = 'https://velazco-realtime-service-develop.up.railway.app/sse/events'; // cambia por tu URL si es distinta
+
+  this.realtimeService.listenToEvent('order.dispatch.confirmed', url).subscribe({
+    next: (event) => {
+      const { id, dispatchedAt } = event.data;
+      console.log('✅ Despacho confirmado recibido:', id);
+
+      // Recargar la lista de entregados y pendientes
+      this.cargarPedidos();
+
+      // Mostrar alerta breve
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: `Pedido #${id} fue entregado.`,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+    },
+    error: (err) => {
+      console.error('❌ Error en evento tiempo real de despacho:', err);
+    }
+  });
+}
 
   onTabChange(item: any): void { //metodo que cambia la pestaña activa
     this.activeTab = item.id;

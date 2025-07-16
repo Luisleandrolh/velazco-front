@@ -1,6 +1,8 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductionService } from '../service/production.service';
+import { RealtimeService } from 'src/app/services/realtime.service'; // Ajusta la ruta si es necesario
+
 
 @Component({
   selector: 'app-produccion',
@@ -19,13 +21,35 @@ export class ProduccionComponent implements OnInit {
 
   constructor(
     private productionService: ProductionService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+      private realtimeService: RealtimeService // 👈
+
   ) {}
 
   ngOnInit(): void {
     this.cargarOrdenDelDia();
     this.cargarenProceso();
+      this.escucharEventosProduccionTiempoReal(); // 👈
+
   }
+
+  escucharEventosProduccionTiempoReal(): void {
+  const url = 'https://velazco-realtime-service-develop.up.railway.app/sse/events';
+
+  this.realtimeService.listenToEvent('production.finalized', url).subscribe({
+    next: ({ data }) => {
+      console.log('✅ Orden finalizada (tiempo real):', data);
+
+      // Recargar datos en pantalla
+      this.cargarOrdenDelDia();
+      this.cargarenProceso();
+    },
+    error: (err) => {
+      console.error('❌ Error en SSE [production.finalized]:', err);
+    }
+  });
+}
+
 
   cambiarPestana(index: number): void {
     this.vistaActiva = index;

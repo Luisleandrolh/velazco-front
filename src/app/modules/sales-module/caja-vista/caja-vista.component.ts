@@ -4,6 +4,8 @@ import { DetallePedidoDialogComponent } from './detalle-pedido-dialog/detalle-pe
 import { OrdersModuleService } from "../../orders-module/services/orders-module.service";
 import Swal from 'sweetalert2';
 import { jsPDF } from 'jspdf';
+import { RealtimeService } from 'src/app/services/realtime.service';
+
 
 export interface Pedido {
   codigo: string;
@@ -38,11 +40,52 @@ export class CajaVistaComponent {
   constructor(
     private dialog: MatDialog,
     private orderService: OrdersModuleService,
+      private realtimeService: RealtimeService
+
   ) { }
 
   ngOnInit(): void { //iniciar la carga de pedidos
     this.cargarPedidosPorEstado();
+    this.iniciarEscuchaEventosSSE();
   }
+
+
+  iniciarEscuchaEventosSSE(): void {
+  const url = 'https://velazco-realtime-service-develop.up.railway.app/sse/events';
+
+  this.realtimeService.listenToEvent('order.started', url).subscribe({
+    next: (event) => {
+      const pedido = event.data;
+      this.mostrarAlerta(`🟢 Nueva orden iniciada: #${pedido.id}`);
+      this.cargarPedidosPorEstado(); // Actualiza la lista
+    }
+  });
+
+  this.realtimeService.listenToEvent('order.sale.confirmed', url).subscribe({
+    next: (event) => {
+      const pedidoId = event.data.id;
+      this.mostrarAlerta(`✅ Venta confirmada para orden #${pedidoId}`);
+      this.cargarPedidosPorEstado(); // Actualiza la lista
+    }
+  });
+
+  this.realtimeService.listenToEvent('order.dispatch.confirmed', url).subscribe({
+    next: (event) => {
+      const pedidoId = event.data.id;
+      this.mostrarAlerta(`🚚 Orden despachada: #${pedidoId}`);
+      this.cargarPedidosPorEstado();
+    }
+  });
+
+  this.realtimeService.listenToEvent('order.cancelled', url).subscribe({
+    next: (event) => {
+      const pedidoId = event.data.id;
+      this.mostrarAlerta(`❌ Orden cancelada: #${pedidoId}`);
+      this.cargarPedidosPorEstado();
+    }
+  });
+}
+
 
   cargarPedidosPorEstado() {
     const estadosMap = ['PENDIENTE', 'PAGADO', 'CANCELADO', 'TODOS'];
