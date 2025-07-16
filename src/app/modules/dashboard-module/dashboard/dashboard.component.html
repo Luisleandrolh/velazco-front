@@ -1,14 +1,19 @@
 <div class="dashboard-wrapper">
   <h1 class="dashboard-title">Dashboard de Ventas</h1>
-<div class="actions">
-  <button (click)="generateDailySalesPDF()">📄 Descargar PDF Diario</button>
-</div>
+
+  <div class="actions">
+    <button (click)="generateDailySalesPDF()">📄 Descargar PDF Diario</button>
+  </div>
 
   <div class="card-grid">
-    <!-- Gráfico de barras -->
+    <!-- Gráfico de barras: Ventas por Día de la Semana -->
     <div class="card">
-      <h3>Ventas Diarias</h3>
-      <canvas baseChart [data]="salesChartData" [options]="salesChartOptions" chartType="bar"></canvas>
+      <canvas
+        baseChart
+        [data]="salesByWeekdayChartData"
+        [options]="salesByWeekdayChartOptions"
+        chartType="bar">
+      </canvas>
     </div>
 
     <!-- Gráfico de pie -->
@@ -17,10 +22,14 @@
       <canvas baseChart [data]="productPieData" [options]="productPieOptions" chartType="pie"></canvas>
     </div>
 
-    <!-- Gráfico de línea -->
+    <!-- Gráfico semanal -->
     <div class="card">
-      <h3>Comparativa Semanal</h3>
-      <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" chartType="line"></canvas>
+      <canvas
+        baseChart
+        [data]="weeklyChartData"
+        [options]="weeklyChartOptions"
+        chartType="bar">
+      </canvas>
     </div>
 
     <!-- Tabla resumen -->
@@ -30,15 +39,15 @@
         <thead>
           <tr>
             <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Subtotal (S/)</th>
+            <th>Cantidad Vendida</th>
+            <th>Total Ingresos (S/)</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let prod of resumenProductos">
             <td>{{ prod.productName }}</td>
-            <td>{{ prod.quantity }}</td>
-            <td>{{ prod.subtotal | number:'1.2-2' }}</td>
+            <td>{{ prod.totalQuantitySold }}</td>
+            <td>{{ prod.totalRevenue | number: '1.2-2' }}</td>
           </tr>
         </tbody>
       </table>
