@@ -39,13 +39,25 @@ interface TopProduct {
   totalRevenue: number;
 }
 
+interface LowStockProduct {
+  id: number;
+  name: string;
+  stock: number;
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DashboardService {
-  private dailySalesUrl = 'https://velazco-backend-develop.up.railway.app/api/orders/daily-sales/details';
-  private weeklySalesUrl = 'https://velazco-backend-develop.up.railway.app/api/orders/weekly-sales/details';
-  private topProductsUrl = 'https://velazco-backend-develop.up.railway.app/api/orders/top-products/month';
+  private dailySalesUrl =
+    'https://velazco-backend-develop.up.railway.app/api/orders/daily-sales/details';
+  private weeklySalesUrl =
+    'https://velazco-backend-develop.up.railway.app/api/orders/weekly-sales/details';
+  private topProductsUrl =
+    'https://velazco-backend-develop.up.railway.app/api/orders/top-products/month';
+
+  private lowStockUrl =
+    'https://velazco-backend-develop.up.railway.app/api/products/low-stock';
 
   constructor(private http: HttpClient) {}
 
@@ -59,5 +71,9 @@ export class DashboardService {
 
   getTopProducts(): Observable<TopProduct[]> {
     return this.http.get<TopProduct[]>(this.topProductsUrl);
+  }
+
+  getLowStockProducts(): Observable<LowStockProduct[]> {
+    return this.http.get<LowStockProduct[]>(this.lowStockUrl);
   }
 }

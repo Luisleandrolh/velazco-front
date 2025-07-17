@@ -52,5 +52,35 @@
         </tbody>
       </table>
     </div>
-  </div>
+
+      <div class="card-grid">
+    <!-- Tarjeta de productos con bajo stock -->
+    <div class="card table-card">
+      <h3>Productos que necesitan reabastecimiento</h3>
+      <div *ngIf="lowStockLoading" class="loading">Cargando...</div>
+      <table *ngIf="!lowStockLoading">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Stock Actual</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of lowStockProducts">
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.stock }}</td>
+            <td>
+              <span class="stock-warning" *ngIf="product.stock < 10">¡Urgente!</span>
+              <span class="stock-alert" *ngIf="product.stock >= 10 && product.stock < 20">Alerta</span>
+            </td>
+          </tr>
+          <tr *ngIf="lowStockProducts.length === 0">
+            <td colspan="4">No hay productos con bajo stock</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 </div>

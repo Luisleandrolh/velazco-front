@@ -77,3 +77,40 @@
     grid-template-columns: 1fr;
   }
 }
+
+.loading {
+  padding: 1rem;
+  text-align: center;
+  color: #666;
+}
+
+.stock-warning {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.stock-alert {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+/* Asegúrate de que la tabla tenga estilos consistentes */
+.table-card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.table-card th, .table-card td {
+  border-bottom: 1px solid #ddd;
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.table-card th {
+  background-color: #f0f0f0;
+}
+
+.table-card td {
+  color: #444;
+}
