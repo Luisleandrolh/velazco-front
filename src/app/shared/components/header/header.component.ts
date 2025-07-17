@@ -23,17 +23,4 @@ export class HeaderComponent implements OnInit {
   switchLang(lang: string) {
     this.translate.use(lang);
   }
-
- logout(): void {
-  this.loginService.logout().subscribe({
-    next: () => {
-      this.router.navigate(['/login']);
-    },
-    error: (err) => {
-      console.error('Error al cerrar sesión:', err);
-      localStorage.removeItem('token');
-      this.router.navigate(['/login']);
-  }
-  });
-}
 }

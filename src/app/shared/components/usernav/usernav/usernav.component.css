@@ -1,0 +1,60 @@
+.user-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  .user-icon {
+    margin-right: 8px;
+}
+
+  .user-name {
+    margin: 0 4px;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.user-info-panel {
+  cursor: default;
+  opacity: 1 !important;
+  
+  .user-details {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 8px 0;
+    
+    .user-avatar {
+      font-size: 40px;
+      height: 40px;
+      width: 40px;
+      margin-right: 16px;
+      color: rgba(0, 0, 0, 0.801);
+  }
+  
+    h4 {
+      margin: 0;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+    
+    small {
+      color: rgba(0, 0, 0, 0.897);
+      font-size: 12px;
+    }
+  }
+}
+
+.mat-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+.user-menu-button {
+  margin-left: 1040px; /* Esto empuja el botón a la derecha */
+}

@@ -11,54 +11,52 @@ import { Router } from '@angular/router';
 })
 export class SidenavComponent implements OnInit {
   isMobile = true;
-  @ViewChild(MatSidenav)
-  sidenav!: MatSidenav;
-  user: string = 'prueba'
-  userProfile: any;
-
+  @ViewChild(MatSidenav) sidenav!: MatSidenav;
+  userProfile: any; // Almacena el perfil del usuario
 
   constructor(
-    private observer: BreakpointObserver, public loginService: LoginService, private router: Router
+    private observer: BreakpointObserver, 
+    public loginService: LoginService, 
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.observer.observe(['(max-width: 800px)']).subscribe((screenSize) => {
-      if (screenSize.matches) {
-        this.isMobile = true;
-      } else {
-        this.isMobile = false;
-      }
-    });
+    this.checkScreenSize();
+    this.loadUserProfile();
+  }
 
+  private checkScreenSize(): void {
+    this.observer.observe(['(max-width: 800px)']).subscribe((screenSize) => {
+      this.isMobile = screenSize.matches;
+    });
+  }
+
+  private loadUserProfile(): void {
     this.loginService.getprofile().subscribe({
       next: (profile) => {
         this.userProfile = profile;
         console.log('Perfil del usuario:', profile);
       },
       error: (err) => {
-        console.error('Error:', err);
+        console.error('Error al cargar perfil:', err);
       }
     });
   }
 
+  toggleMenu(): void {
+    this.sidenav.toggle();
+  }
 
-toggleMenu() {
-  //if(this.isMobile){
-  this.sidenav.toggle();
-  //} else {
-  // do nothing for now
-  //}
-}
-logout(): void {
-  this.loginService.logout().subscribe({
-    next: () => {
-      this.router.navigate(['/login']);
-    },
-    error: (err) => {
-      console.error('Error al cerrar sesión:', err);
-      localStorage.removeItem('token');
-      this.router.navigate(['/login']);
-    }
-  });
-}
+  logout(): void {
+    this.loginService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Error al cerrar sesión:', err);
+        localStorage.removeItem('token');
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 }

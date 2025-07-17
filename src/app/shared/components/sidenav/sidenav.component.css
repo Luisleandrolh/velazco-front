@@ -73,3 +73,16 @@ mat-sidenav {
   font-size: 1rem;
   font-weight: normal;
 }
+
+.main-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+.user-menu-button {
+  margin-left: auto; /* Esto empuja el botón a la derecha */
+}

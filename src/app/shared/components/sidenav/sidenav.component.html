@@ -4,9 +4,17 @@
     <button mat-icon-button aria-label="Menu icon" (click)="toggleMenu()">
       <mat-icon>menu</mat-icon>
     </button>
-    <div class="mainheader">
+        <div class="mainheader-container">
       <app-header></app-header>
+       
+        </div>
+
+        <div class="user-info" *ngIf="userProfile">
+          <app-usernav [userProfile]="userProfile"></app-usernav>
+          
     </div>
+
+
   </div>
 </mat-toolbar>
 

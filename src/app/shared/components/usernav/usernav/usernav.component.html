@@ -1,0 +1,28 @@
+<button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
+  <mat-icon class="user-icon">account_circle</mat-icon>
+  <span *ngIf="userProfile" class="user-name">
+    {{userProfile?.name || 'Usuario'}}
+  </span>
+  <mat-icon>arrow_drop_down</mat-icon>
+</button>
+
+<mat-menu #userMenu="matMenu" xPosition="before">
+  <!-- Panel de información del usuario -->
+  <div class="user-info-panel" mat-menu-item disabled>
+    <div class="user-details">
+      <mat-icon class="user-avatar">account_circle</mat-icon>
+      <div>
+        <h4>{{userProfile?.name || 'Usuario'}}</h4>
+        <small>Rol: {{userProfile?.role}}</small>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Cerrar sesión -->
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    <span>Cerrar sesión</span>
+  </button>
+</mat-menu>

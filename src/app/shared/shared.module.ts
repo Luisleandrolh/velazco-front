@@ -11,12 +11,15 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { UsernavComponent } from './components/usernav/usernav/usernav.component';
+import { MatMenuModule } from '@angular/material/menu'; // Añadido
+import { MatDividerModule } from '@angular/material/divider'; // Añadido
 
 @NgModule({
   declarations: [
     HeaderComponent, 
-    SidenavComponent
+    SidenavComponent, 
+    UsernavComponent
   ],
   imports: [
     CommonModule,
@@ -27,12 +30,21 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatButtonModule,
     MatSidenavModule,
     MatListModule,
+    MatMenuModule, // Añadido
+    MatDividerModule, // Añadido
     RouterModule,
     TranslateModule,
   ],
   exports: [
     HeaderComponent, 
-    SidenavComponent
+    SidenavComponent,
+    UsernavComponent, // Añadido para poder usarlo en otros módulos
+    // Exporta módulos de Angular Material que necesites compartir
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatTooltipModule
   ],
 })
 export class SharedModule {}
