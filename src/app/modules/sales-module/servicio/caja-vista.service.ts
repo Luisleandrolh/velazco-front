@@ -48,4 +48,12 @@ export class OrdersModuleService { // servicio para manejar las solicitudes http
     console.error('Error en la petición:', error);
     return throwError(() => new Error('Hubo un problema con la solicitud. Inténtelo de nuevo más tarde.'));
   }
+confirmarVenta(id: string, datosPago: any): Observable<any> {
+  const url = `${this.apiUrl}/${id}/confirm-sale`;
+  return this.http.post(url, datosPago).pipe(
+    catchError(this.handleError)
+  );
+}
+
+  
 }

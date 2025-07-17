@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Seleccionar método de pago</h2>
+<mat-dialog-content>
+  <mat-radio-group [(ngModel)]="metodoSeleccionado">
+    <mat-radio-button value="EFECTIVO">Efectivo</mat-radio-button><br />
+    <mat-radio-button value="TRANSFERENCIA">Transferencia</mat-radio-button><br />
+    <mat-radio-button value="TARJETA">Tarjeta</mat-radio-button>
+  </mat-radio-group>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancelar()">Cancelar</button>
+  <button mat-button color="primary" (click)="seleccionarMetodo()">Aceptar</button>
+</mat-dialog-actions>

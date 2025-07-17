@@ -13,13 +13,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { DetallePedidoDialogComponent } from './caja-vista/detalle-pedido-dialog/detalle-pedido-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { FiltroPedidoPipe } from './pipe/filtro-pedido.pipe'; // ajusta ruta según ubicación real
-
+import { FiltroPedidoPipe } from './pipe/filtro-pedido.pipe';
+import { MetodoPagoDialogComponent } from './caja-vista/metodo-pago-dialog/metodo-pago-dialog.component'; // ajusta ruta según ubicación real
+import { MatRadioModule } from '@angular/material/radio';
 @NgModule({
   declarations: [
     CajaVistaComponent,
     DetallePedidoDialogComponent,
      FiltroPedidoPipe,
+     MetodoPagoDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { FiltroPedidoPipe } from './pipe/filtro-pedido.pipe'; // ajusta ruta seg
     MatButtonModule,
     MatChipsModule,
     MatDialogModule,
-    
+        MatRadioModule,
+
    
   ]
 })

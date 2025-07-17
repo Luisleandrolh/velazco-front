@@ -5,6 +5,7 @@ import { OrdersModuleService } from "../../orders-module/services/orders-module.
 import Swal from 'sweetalert2';
 import { jsPDF } from 'jspdf';
 import { RealtimeService } from 'src/app/services/realtime.service';
+import { MetodoPagoDialogComponent } from "./metodo-pago-dialog/metodo-pago-dialog.component";
 
 
 export interface Pedido {
@@ -226,33 +227,42 @@ export class CajaVistaComponent {
   }
 
 pagarPedido(pedido: Pedido): void {
-  const datosPago = {
-    paymentMethod: 'efectivo',
-    totalAmount: pedido.total,
-    cashier: { //datos del cajero
-      id: 1,
-      name: ''
-    }
-  };
+  const dialogRef = this.dialog.open(MetodoPagoDialogComponent, {
+    width: '350px',
+    data: pedido
+  });
 
-  // Llamada al backend usando el método de confirmarVenta
-  this.orderService.confirmarVenta(pedido.codigo, datosPago).subscribe({
-    next: (response: any) => { //respuesta del backend
-      pedido.estado = 'Pagado'; //actualiza el estado del pedido
-      this.mostrarAlerta(`Pedido ${pedido.codigo} marcado como Pagado.`);
-      this.cargarPedidosPorEstado(); //recarga los pedidos por estado
-    },
-    error: (err: any) => {
-      console.error(`Error al pagar pedido ${pedido.codigo}:`, err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Error al procesar el pago. Intenta nuevamente.',
-        confirmButtonText: 'Aceptar'
+  dialogRef.afterClosed().subscribe((metodoSeleccionado: string | null) => {
+    if (metodoSeleccionado) {
+      const datosPago = {
+        paymentMethod: metodoSeleccionado, 
+        totalAmount: pedido.total,
+        cashier: {
+          id: 1, 
+          name: ''
+        }
+      };
+
+      this.orderService.confirmarVenta(pedido.codigo, datosPago).subscribe({
+        next: (response: any) => {
+          pedido.estado = 'Pagado';
+          this.mostrarAlerta(`Pedido ${pedido.codigo} marcado como Pagado con ${metodoSeleccionado}.`);
+          this.cargarPedidosPorEstado();
+        },
+        error: (err: any) => {
+          console.error(`Error al pagar pedido ${pedido.codigo}:`, err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al procesar el pago. Intenta nuevamente.', 
+            confirmButtonText: 'Aceptar'
+          });
+        }
       });
     }
   });
 }
+
 
 cancelarPedido(pedido: Pedido): void {
   Swal.fire({
