@@ -240,26 +240,41 @@ escucharEventosUsuariosTiempoReal(): void {
   }
 
   deleteUser(id: string): void {
-    if (!id) {
-      console.error('Intento de eliminar usuario sin ID');
-      return;
-    }
-
-    if (confirm('¿Está seguro que desea eliminar este usuario?')) {
-      this.loading = true;
-      this.usersService.deleteUser(id).subscribe({
-        next: () => {
-          this.users = this.users.filter((user) => user.id !== id);
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Error deleting user:', err);
-          this.error = 'Error al eliminar el usuario';
-          this.loading = false;
-        },
-      });
-    }
+  if (!id) {
+    console.error('Intento de eliminar usuario sin ID');
+    return;
   }
+
+  if (confirm('¿Está seguro que desea eliminar este usuario?')) {
+    this.loading = true;
+    this.usersService.deleteUser(id).subscribe({
+      next: () => {
+        this.users = this.users.filter((user) => user.id !== id);
+        this.loading = false;
+        this.error = null;
+
+        this.snackBar.open('🗑️ Usuario eliminado exitosamente', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-warn'],
+        });
+      },
+      error: (err) => {
+        console.error('Error deleting user:', err);
+
+        // ✅ Mostrar mensaje real del backend
+        this.error = this.parseServerError(err);
+
+        this.loading = false;
+
+        this.snackBar.open(`⚠️ ${this.error}`, 'Cerrar', {
+          duration: 4000,
+          panelClass: ['snackbar-error'],
+        });
+      },
+    });
+  }
+}
+
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
