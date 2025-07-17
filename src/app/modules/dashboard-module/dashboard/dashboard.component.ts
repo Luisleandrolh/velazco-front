@@ -152,6 +152,12 @@ export class DashboardComponent implements OnInit {
     },
   };
 
+  // ======== PAYMENT SUMMARY BAR CHART ========
+  barChartLabels: string[] = [];
+  barChartData: ChartData<'bar'> = { labels: [], datasets: [{ data: [], label: 'Pagos por método' }] };
+  barChartOptions: ChartOptions<'bar'> = { responsive: true, plugins: { title: { display: true, text: 'Resumen de Pagos por Método' }, legend: { position: 'top' } } };
+
+
   // ========== DATA PROPERTIES ==========
   weeklyTooltipData: WeeklyTooltip[] = [];
   resumenProductos: TopProduct[] = [];
@@ -173,8 +179,57 @@ export class DashboardComponent implements OnInit {
     this.loadWeeklySales();
     this.loadTopProducts();
     this.loadLowStockProducts();
+        this.loadPaymentSummary(); // load payment summary
+
   }
 
+
+  // ======== PAYMENT SUMMARY PIE CHART ========
+// ======== PAYMENT SUMMARY PIE CHART ========
+paymentPieData: ChartData<'pie'> = {
+  labels: [],
+  datasets: [{
+    data: [],
+    label: 'Pagos por Método',
+    backgroundColor: ['#FFD600','#F4511E','#2196F3'] // uno por método
+  }]
+};
+
+paymentPieOptions: ChartOptions<'pie'> = {
+  responsive: true,
+  plugins: {
+    title: {
+      display: true,
+      text: 'Resumen de Pagos por Método'
+    },
+    legend: {
+      position: 'bottom'    // leyenda abajo
+    },
+    tooltip: {
+      callbacks: {
+        label: ctx => {
+          const v = ctx.parsed as number;
+          const total = (ctx.chart.data.datasets[0].data as number[])
+            .reduce((sum,n) => sum + n, 0);
+          const pct = ((v/total)*100).toFixed(1);
+          return `${ctx.label}: S/ ${v} (${pct}%)`;
+        }
+      }
+    }
+  }
+};
+
+    // ========== NEW METHOD: Load Payment Summary ==========
+private loadPaymentSummary(): void {
+  this.dashboardService.getPaymentSummary().subscribe({
+    next: data => {
+      data.sort((a, b) => b.totalSales - a.totalSales);
+      this.paymentPieData.labels = data.map(d => d.paymentMethod);
+      this.paymentPieData.datasets[0].data = data.map(d => d.totalSales);
+    },
+    error: err => console.error(err)
+  });
+}
   // ========== MÉTODOS DE CARGA DE DATOS ==========
   private loadDailySales(): void {
     this.dashboardService.getDailySales().subscribe((data) => {
@@ -387,7 +442,7 @@ export class DashboardComponent implements OnInit {
   private loadLowStockProducts(): void {
     this.dashboardService.getLowStockProducts().subscribe({
       next: (products) => {
-        this.lowStockProducts = products;
+this.lowStockProducts = products.products;
         this.lowStockLoading = false;
       },
       error: (error) => {
@@ -495,4 +550,10 @@ interface LowStockProduct {
   id: number;
   name: string;
   stock: number;
+}
+
+interface PaymentSummary { // Add PaymentSummary interface here
+  paymentMethod: string;
+  totalSales: number;
+  percentage: number;
 }

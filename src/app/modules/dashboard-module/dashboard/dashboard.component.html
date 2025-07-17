@@ -83,4 +83,17 @@
         </tbody>
       </table>
     </div>
+
+    <h3 class="text-xl font-semibold mb-4"></h3>
+<div class="card">
+  <h3>Resumen de Pagos por Método</h3>
+  <canvas baseChart
+    [data]="paymentPieData"
+    [labels]="paymentPieData.labels"
+    [options]="paymentPieOptions"
+    chartType="pie">
+  </canvas>
+</div>
+
+
 </div>

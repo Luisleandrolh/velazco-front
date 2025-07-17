@@ -44,6 +44,17 @@ interface LowStockProduct {
   name: string;
   stock: number;
 }
+interface PaymentSummary {
+  paymentMethod: string;
+  totalSales: number;
+  percentage: number;
+}
+
+interface LowStockResponse {
+  count: number;
+  products: LowStockProduct[];
+}
+
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +70,10 @@ export class DashboardService {
   private lowStockUrl =
     'https://velazco-backend-develop.up.railway.app/api/products/low-stock';
 
-  constructor(private http: HttpClient) {}
+  private paymentSummaryUrl =
+    'https://velazco-backend-develop.up.railway.app/api/orders/payment-methods/summary';
+
+  constructor(private http: HttpClient) { }
 
   getDailySales(): Observable<DailySalesResponse[]> {
     return this.http.get<DailySalesResponse[]>(this.dailySalesUrl);
@@ -73,7 +87,11 @@ export class DashboardService {
     return this.http.get<TopProduct[]>(this.topProductsUrl);
   }
 
-  getLowStockProducts(): Observable<LowStockProduct[]> {
-    return this.http.get<LowStockProduct[]>(this.lowStockUrl);
+  getPaymentSummary(): Observable<PaymentSummary[]> {
+    return this.http.get<PaymentSummary[]>(this.paymentSummaryUrl);
+  }
+
+  getLowStockProducts(): Observable<LowStockResponse> {
+    return this.http.get<LowStockResponse>(this.lowStockUrl);
   }
 }
