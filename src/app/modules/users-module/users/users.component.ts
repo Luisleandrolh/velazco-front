@@ -3,6 +3,9 @@ import { UsersService } from '../services/users.service';
 import { User } from '../models/user.interface';
 import { Role } from '../models/role.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RealtimeService } from 'src/app/services/realtime.service'; // Ajusta la ruta si es diferente
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-users',
@@ -30,12 +33,60 @@ export class UsersComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService, private realtimeService: RealtimeService,  private snackBar: MatSnackBar ) { }
 
   ngOnInit(): void {
     this.loadUsers();
     this.loadRoles();
+    this.escucharEventosUsuariosTiempoReal();
+
   }
+
+
+escucharEventosUsuariosTiempoReal(): void {
+  const url = 'https://velazco-realtime-service-develop.up.railway.app/sse/events';
+
+  // Usuario creado
+  this.realtimeService.listenToEvent('user.created', url).subscribe({
+    next: ({ data }) => {
+      console.log('🟢 Usuario creado:', data);
+      this.snackBar.open('✅ Nuevo usuario creado: ' + data.username, 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-success']
+      });
+      this.loadUsers();
+    },
+    error: (err) => console.error('❌ SSE user.created:', err)
+  });
+
+  // Usuario actualizado
+  this.realtimeService.listenToEvent('user.updated', url).subscribe({
+    next: ({ data }) => {
+      console.log('🟡 Usuario actualizado:', data);
+      this.snackBar.open('✏️ Usuario actualizado: ' + data.username, 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-info']
+      });
+      this.loadUsers();
+    },
+    error: (err) => console.error('❌ SSE user.updated:', err)
+  });
+
+  // Usuario eliminado
+  this.realtimeService.listenToEvent('user.deleted', url).subscribe({
+    next: ({ data }) => {
+      console.log('🔴 Usuario eliminado:', data);
+      this.snackBar.open('🗑️ Usuario eliminado: ' + data.username, 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-warn']
+      });
+      this.loadUsers();
+    },
+    error: (err) => console.error('❌ SSE user.deleted:', err)
+  });
+}
+
+
 
   loadUsers(): void {
     this.loading = true;
