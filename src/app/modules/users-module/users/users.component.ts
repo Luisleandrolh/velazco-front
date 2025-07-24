@@ -23,7 +23,7 @@ export class UsersComponent implements OnInit {
     email: '',
     password: '',
     active: true,
-    roleId: '1',
+    roleId: '',
     role: '',
   };
 
@@ -162,20 +162,16 @@ export class UsersComponent implements OnInit {
     this.showModal = true;
     this.selectedUser = { ...user };
     this.showPassword = false;
-
-    // Asegurarnos de que selectedUser no sea null y roleId esté definido
-    if (
-      this.selectedUser &&
-      this.selectedUser.roleId !== undefined &&
-      this.selectedUser.roleId !== null
-    ) {
-      this.selectedUser.roleId = this.selectedUser.roleId.toString();
-    } else {
-      // Asignar un valor por defecto si roleId es null/undefined
-      this.selectedUser.roleId = '1'; // O el valor por defecto que prefieras
-    }
+  
+    // Validar existencia de selectedUser, role y roles
+    const roleName = this.selectedUser?.role;
+    const matchedRole = roleName && this.roles?.length
+      ? this.roles.find(r => r.name === roleName)
+      : null;
+  
+    this.selectedUser.roleId = matchedRole ? matchedRole.id.toString() : '1';
   }
-
+  
   closeModal(): void {
     this.showModal = false;
     this.currentView = 'list';
