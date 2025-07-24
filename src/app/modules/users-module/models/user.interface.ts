@@ -4,6 +4,6 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  roleId: string;
+  roleId: string | number; // Asegúrate de que no sea opcional
   role?: string;
 }

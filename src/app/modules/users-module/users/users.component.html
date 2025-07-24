@@ -168,12 +168,16 @@
           </button>
         </div>
         
-        <div class="detail-label">Rol</div>
-        <div class="detail-value">
-          <select [(ngModel)]="selectedUser.roleId" class="form-select">
-            <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.name }}</option>
-          </select>
-        </div>
+<div class="detail-label">Rol</div>
+  <div class="detail-value">
+     <select [(ngModel)]="selectedUser.roleId" class="form-select">
+    <option *ngFor="let rol of roles" 
+            [ngValue]="rol.id.toString()"
+            [selected]="rol.id.toString() === (selectedUser.roleId ? selectedUser.roleId.toString() : '')">
+      {{ rol.name }}
+    </option>
+  </select>
+</div>
         
         <div class="detail-label">Estado</div>
         <div class="detail-value">
